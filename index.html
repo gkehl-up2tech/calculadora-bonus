@@ -289,7 +289,7 @@ function calcular(){
   const me=+document.getElementById('meta-estoque').value||0;
   const re=+document.getElementById('real-estoque').value||0;
   const av=atVendas(mv,rv),am=atMargem(mmPct,rmPct),ae=atDOH(me,re);
-  const p=calcPonderado(av,am,ae),f=bonusFinal(p),val=sal*f;
+  const p=calcPonderado(av,am,ae),f=bonusFinal(p),val=sal*ba*f;
   document.getElementById('pct-vendas').textContent=fp(av);
   document.getElementById('pct-margem').textContent=fp(am);
   document.getElementById('pct-estoque').textContent=fp(ae);
@@ -300,9 +300,9 @@ function calcular(){
   document.getElementById('res-ating').textContent=fp(p);
   document.getElementById('res-pct').textContent=fp(f);
   document.getElementById('res-valor').textContent=fr(val);
-  document.getElementById('res-formula').textContent=fr(sal)+' \xd7 '+fp(f);
+  document.getElementById('res-formula').textContent=fr(sal)+' \xd7 '+ba+' \xd7 '+fp(f);
   document.getElementById('breakdown').innerHTML=
-    '<strong>Detalhamento:</strong> &nbsp; Vendas '+fp(av)+' \xd7 40% = <strong>'+fp(av*0.4)+'</strong> &nbsp;+&nbsp; Margem '+fp(am)+' \xd7 40% = <strong>'+fp(am*0.4)+'</strong> &nbsp;+&nbsp; DOH '+fp(ae)+' \xd7 20% = <strong>'+fp(ae*0.2)+'</strong> &nbsp;\u2192&nbsp; Ponderado = <strong>'+fp(p)+'</strong> \u2192 B\xf4nus = <strong>'+fp(f)+'</strong>';
+    '<strong>Detalhamento:</strong> &nbsp; Vendas '+fp(av)+' \xd7 40% = <strong>'+fp(av*0.4)+'</strong> &nbsp;+&nbsp; Margem '+fp(am)+' \xd7 40% = <strong>'+fp(am*0.4)+'</strong> &nbsp;+&nbsp; DOH '+fp(ae)+' \xd7 20% = <strong>'+fp(ae*0.2)+'</strong> &nbsp;\u2192&nbsp; Ponderado = <strong>'+fp(p)+'</strong> \u2192 B\xf4nus = <strong>'+fp(f)+'</strong> &nbsp;\u2192&nbsp; '+fr(sal)+' \xd7 '+ba+' sal. \xd7 '+fp(f)+' = <strong>'+fr(val)+'</strong>';
 }
 
 let equipe=[
@@ -315,7 +315,7 @@ function remM(i){equipe.splice(i,1);renderEquipe();}
 function upM(i,f,v){if(['salario','mv','rv'].includes(f))equipe[i][f]=parseMoney(v);else if(['mmPct','rmPct'].includes(f))equipe[i][f]=parsePct(v);else equipe[i][f]=isNaN(parseFloat(v))?v:(parseFloat(v)||v);calcEquipe();}
 
 function calcEquipe(){
-  const R=equipe.map(m=>{const av=atVendas(m.mv,m.rv),am=atMargem(m.mmPct,m.rmPct),ae=atDOH(m.me,m.re),p=calcPonderado(av,am,ae),f=bonusFinal(p),val=m.salario*f;return{nome:m.nome,cargo:m.cargo,p,f,val};});
+  const R=equipe.map(m=>{const ba=BALVO[m.cargo]||1,av=atVendas(m.mv,m.rv),am=atMargem(m.mmPct,m.rmPct),ae=atDOH(m.me,m.re),p=calcPonderado(av,am,ae),f=bonusFinal(p),val=m.salario*ba*f;return{nome:m.nome,cargo:m.cargo,p,f,val};});
   if(!R.length)return;
   const mp=R.reduce((s,r)=>s+r.f,0)/R.length,mv2=R.reduce((s,r)=>s+r.val,0)/R.length,top=R.reduce((a,b)=>b.val>a.val?b:a);
   document.getElementById('eq-media-pct').textContent=fp(mp);
