@@ -48,8 +48,7 @@ label{font-size:10px;font-weight:700;color:var(--muted);display:block;margin-bot
 .fw .pfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--muted);pointer-events:none;}
 .fw .sfx{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--muted);pointer-events:none;}
 .fw input{width:100%;font-size:12px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:6px;padding:7px 10px;background:#fff;color:var(--navy);font-weight:600;outline:none;transition:border-color .15s;}
-.fw.p input{padding-left:28px;}
-.fw.s input{padding-right:28px;}
+.fw.p input{padding-left:28px;}.fw.s input{padding-right:28px;}
 .fw input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,123,196,.1);}
 .fw input[readonly]{background:var(--bg2);color:var(--muted);}
 select{width:100%;font-size:12px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:6px;padding:7px 10px;background:#fff;color:var(--navy);font-weight:600;outline:none;}
@@ -96,6 +95,8 @@ select{width:100%;font-size:12px;font-family:'Montserrat',Arial,sans-serif;borde
 .sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:6px;}
 .sync-dot.idle{background:#B8D4EE;}.sync-dot.ok{background:#64C97A;}.sync-dot.err{background:#E24B4A;}
 input.synced{background:#EBF4FC;border-color:#5BA3D9;}
+.breakdown{background:var(--bg2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:11px;color:var(--muted);}
+.breakdown strong{color:var(--navy);}
 @media(max-width:600px){.row2,.row3,.res-grid{grid-template-columns:1fr;}.ind-in{grid-template-columns:1fr;}.hd{flex-direction:column;gap:10px;}.hd-right{text-align:center;}body{padding:8px;}}
 </style>
 </head>
@@ -103,7 +104,6 @@ input.synced{background:#EBF4FC;border-color:#5BA3D9;}
 
 <div id="login-overlay">
   <div class="wm-login" aria-hidden="true">
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
@@ -125,7 +125,6 @@ input.synced{background:#EBF4FC;border-color:#5BA3D9;}
 
 <div class="shell">
   <div class="wm" aria-hidden="true">
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
@@ -168,7 +167,7 @@ input.synced{background:#EBF4FC;border-color:#5BA3D9;}
         </div>
         <button class="sync-btn" id="sync-btn" onclick="syncSheets()">&#8635; Sincronizar Sheets</button>
       </div>
-      <div class="alert a-info">Pesos: <strong>Vendas 40% &middot; Margem 40% &middot; Estoque 20%</strong></div>
+      <div class="alert a-info">Pesos: <strong>Vendas 40% &middot; Margem 40% &middot; Estoque 20%</strong> &mdash; Atingimento ponderado = atingimentos relativos &times; pesos</div>
       <div class="ind">
         <div class="ind-hd"><span class="ind-name">Vendas <span class="badge b-navy" style="margin-left:6px;font-size:9px">40%</span></span><span class="ind-pct" id="pct-vendas">&#8212;</span></div>
         <div class="ind-in">
@@ -199,6 +198,7 @@ input.synced{background:#EBF4FC;border-color:#5BA3D9;}
         <div class="rc rc-navy"><div class="rc-label">B&#244;nus % aplicado</div><div class="rc-value" id="res-pct">&#8212;</div></div>
         <div class="rc rc-blue"><div class="rc-label">B&#244;nus estimado</div><div class="rc-value" id="res-valor">&#8212;</div><div class="rc-sub" id="res-formula">&#8212;</div></div>
       </div>
+      <div class="breakdown" id="breakdown">&#8212;</div>
     </div>
 
     <div id="panel-equipe" class="panel">
@@ -219,36 +219,22 @@ input.synced{background:#EBF4FC;border-color:#5BA3D9;}
       <div class="sec">Elegibilidade e pagamento</div>
       <div class="gl-item"><div class="gl-term">Quem &#233; eleg&#237;vel?</div><div class="gl-def">Colaboradores da VP do Guilherme Matiello a partir dos cargos de <strong>Especialista, Comprador e Coordenador</strong>. Necess&#225;rio ter trabalhado o trimestre completo.</div></div>
       <div class="gl-item"><div class="gl-term">Periodicidade</div><div class="gl-def"><strong>Quarter:</strong> 30 dias ap&#243;s fechamento. <strong>Anual:</strong> 60 dias ap&#243;s fechamento do ano.</div></div>
-      <div class="sec">Indicadores e pesos</div>
-      <div class="gl-item"><div class="gl-term">Vendas &#8212; 40%</div><div class="gl-def">Margem Comercial (Compras) ou Margem de Contribui&#231;&#227;o (demais times). Maior melhor.</div></div>
-      <div class="gl-item"><div class="gl-term">Margem &#8212; 40%</div><div class="gl-def">Inserir em % (ex: 19,0). Fator de 0&#215; a 1,6&#215; conforme valor absoluto realizado.</div></div>
-      <div class="gl-item"><div class="gl-term">DOH &#8212; 20%</div><div class="gl-def">Centro melhor: 100% na meta, cai linearmente com toler&#226;ncia de 24%.</div><div class="gl-ex">Ex.: meta 45d &#8594; realizado 50d &#8776; 54%; 56d &#8776; 0%</div></div>
-      <div class="sec">Ranges &#8212; atingimento ponderado</div>
+      <div class="sec">L&#243;gica de c&#225;lculo</div>
+      <div class="gl-item">
+        <div class="gl-term">Atingimento ponderado</div>
+        <div class="gl-def">Soma dos atingimentos relativos de cada indicador, ponderados pelos seus pesos:</div>
+        <div class="gl-ex">(Real. Vendas &#247; Meta Vendas) &#215; 40% + (Real. Margem &#247; Meta Margem) &#215; 40% + (Ating. DOH) &#215; 20%</div>
+      </div>
+      <div class="gl-item"><div class="gl-term">DOH &#8212; centro melhor</div><div class="gl-def">Atingimento = max(0, 1 &#8722; |realizado &#8722; meta| / (meta &#215; 24%)). 100% na meta, caindo linearmente at&#233; zero.</div><div class="gl-ex">Ex.: meta 45d &#8594; realizado 50d &#8776; 54%; 38d &#8776; 35%; 45d = 100%</div></div>
+      <div class="sec">Faixas de b&#244;nus &#8212; sobre o atingimento ponderado</div>
       <div class="gl-item">
         <table class="up-table">
-          <tr><th>Atingimento</th><th>B&#244;nus</th></tr>
+          <tr><th>Atingimento ponderado</th><th>B&#244;nus aplicado</th></tr>
           <tr><td>Abaixo de 70%</td><td><span class="badge b-red">0%</span></td></tr>
           <tr><td>70% &#8211; 79,99%</td><td><span class="badge b-amber">70% do alvo</span></td></tr>
           <tr><td>80% &#8211; 89,99%</td><td><span class="badge b-amber">80% do alvo</span></td></tr>
           <tr><td>90% &#8211; 99,99%</td><td><span class="badge b-green">90% do alvo</span></td></tr>
-          <tr><td>100%+</td><td><span class="badge b-green">100% + proporcional</span></td></tr>
-        </table>
-      </div>
-      <div class="sec">Ranges &#8212; margem (valor absoluto)</div>
-      <div class="gl-item">
-        <table class="up-table">
-          <tr><th>Margem realizada</th><th>Fator</th></tr>
-          <tr><td>Abaixo de 17,5%</td><td>0&#215;</td></tr>
-          <tr><td>17,5% &#8211; 17,99%</td><td>0,70&#215;</td></tr>
-          <tr><td>18,0% &#8211; 18,49%</td><td>0,80&#215;</td></tr>
-          <tr><td>18,5% &#8211; 18,99%</td><td>0,90&#215;</td></tr>
-          <tr><td>19,0% &#8211; 19,49%</td><td>1,00&#215;</td></tr>
-          <tr><td>19,5% &#8211; 19,99%</td><td>1,10&#215;</td></tr>
-          <tr><td>20,0% &#8211; 20,49%</td><td>1,20&#215;</td></tr>
-          <tr><td>20,5% &#8211; 20,99%</td><td>1,30&#215;</td></tr>
-          <tr><td>21,0% &#8211; 21,49%</td><td>1,40&#215;</td></tr>
-          <tr><td>21,5% &#8211; 21,99%</td><td>1,50&#215;</td></tr>
-          <tr><td>&#8805; 22,0%</td><td>1,60&#215;</td></tr>
+          <tr><td>&#8805; 100%</td><td><span class="badge b-green">100% + proporcional</span></td></tr>
         </table>
       </div>
       <div class="sec">B&#244;nus alvo por cargo</div>
@@ -270,7 +256,6 @@ input.synced{background:#EBF4FC;border-color:#5BA3D9;}
 
 <script>
 const BALVO={Especialista:1,Coordenador:1,Comprador:1,Gerente:1.5,Diretor:2,VP:3};
-const RM=[{min:0,max:17.49,b:0},{min:17.5,max:17.99,b:.7},{min:18,max:18.49,b:.8},{min:18.5,max:18.99,b:.9},{min:19,max:19.49,b:1},{min:19.5,max:19.99,b:1.1},{min:20,max:20.49,b:1.2},{min:20.5,max:20.99,b:1.3},{min:21,max:21.49,b:1.4},{min:21.5,max:21.99,b:1.5},{min:22,max:999,b:1.6}];
 const TOL=.24;
 const SHEETS_CSV='https://docs.google.com/spreadsheets/d/e/2PACX-1vSgaPxax63qi38s8qXTMmsqNvwELqeuXkafVogB0yEYy05kKdAibXHJO8k-DomKLj5sQFiCUo7eYJuU/pub?gid=881184393&single=true&output=csv';
 
@@ -280,22 +265,21 @@ function onMoney(el){let r=el.value.replace(/\D/g,'');if(!r){el.value='';calcula
 function onMoneyBlur(el){let v=parseMoney(el.value);el.value=v?v.toLocaleString('pt-BR'):'';calcular();}
 function onPct(el){el.value=el.value.replace(/[^\d,\.]/g,'');calcular();}
 function onPctBlur(el){let v=parsePct(el.value);el.value=v?v.toFixed(1).replace('.',','):'';calcular();}
+function fp(v){return(v*100).toFixed(1)+'%';}
+function fr(v){return'R$ '+Math.round(v).toLocaleString('pt-BR');}
 
 function switchTab(t){document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.panel').forEach(e=>e.classList.remove('active'));document.querySelector('[onclick="switchTab(\''+t+'\')"]').classList.add('active');document.getElementById('panel-'+t).classList.add('active');if(t==='equipe')calcEquipe();}
 function updateCargo(){const c=document.getElementById('cargo').value;document.getElementById('bonus_alvo').value=BALVO[c]||1;calcular();}
-function getFactorMargem(r){for(let x of RM)if(r>=x.min&&r<=x.max)return x.b;return 0;}
+
 function atVendas(m,r){return m?r/m:0;}
-function atEstoque(m,r){return m?Math.max(0,1-Math.abs(r-m)/(m*TOL)):0;}
-function bonusVendas(a){if(a>=1)return a;if(a>=.9)return.9;if(a>=.8)return.8;if(a>=.7)return.7;return 0;}
-function ponderado(v,m,e){return v*.4+m*.4+e*.2;}
-function bonusFinal(p){if(p<.7)return 0;if(p<.8)return.7;if(p<.9)return.8;if(p<1)return.9;return p;}
-function fp(v){return(v*100).toFixed(1)+'%';}
-function fr(v){return'R$ '+Math.round(v).toLocaleString('pt-BR');}
+function atMargem(mm,rm){return mm?rm/mm:0;}
+function atDOH(m,r){return m?Math.max(0,1-Math.abs(r-m)/(m*TOL)):0;}
+function calcPonderado(av,am,ae){return av*0.4+am*0.4+ae*0.2;}
+function bonusFinal(p){if(p<0.7)return 0;if(p<0.8)return 0.7;if(p<0.9)return 0.8;if(p<1.0)return 0.9;return p;}
 
 function calcular(){
   const cargo=document.getElementById('cargo').value;
   const sal=parseMoney(document.getElementById('salario').value);
-  const trim=+document.getElementById('trimestres').value||1;
   const ba=BALVO[cargo]||1;
   document.getElementById('bonus_alvo').value=ba;
   const mv=parseMoney(document.getElementById('meta-vendas').value);
@@ -304,65 +288,58 @@ function calcular(){
   const rmPct=parsePct(document.getElementById('real-margem').value);
   const me=+document.getElementById('meta-estoque').value||0;
   const re=+document.getElementById('real-estoque').value||0;
-  const av=atVendas(mv,rv);
-  const atMargem=mmPct?rmPct/mmPct:0;
-  const ae=atEstoque(me,re);
-  const bv=bonusVendas(av);
-  const bm=getFactorMargem(rmPct);
-  const p=ponderado(bv,bm,ae);
-  const f=bonusFinal(p);
-  const val=sal*f;
+  const av=atVendas(mv,rv),am=atMargem(mmPct,rmPct),ae=atDOH(me,re);
+  const p=calcPonderado(av,am,ae),f=bonusFinal(p),val=sal*f;
   document.getElementById('pct-vendas').textContent=fp(av);
-  document.getElementById('pct-margem').textContent=fp(atMargem);
+  document.getElementById('pct-margem').textContent=fp(am);
   document.getElementById('pct-estoque').textContent=fp(ae);
   document.getElementById('bar-vendas').style.width=Math.min(av*100,100)+'%';
-  document.getElementById('bar-margem').style.width=Math.min(atMargem*100,100)+'%';
+  document.getElementById('bar-margem').style.width=Math.min(am*100,100)+'%';
   document.getElementById('bar-estoque').style.width=Math.min(ae*100,100)+'%';
-  document.getElementById('alert-venda').style.display=av<.7?'block':'none';
+  document.getElementById('alert-venda').style.display=av<0.7?'block':'none';
   document.getElementById('res-ating').textContent=fp(p);
   document.getElementById('res-pct').textContent=fp(f);
   document.getElementById('res-valor').textContent=fr(val);
   document.getElementById('res-formula').textContent=fr(sal)+' \xd7 '+fp(f);
+  document.getElementById('breakdown').innerHTML=
+    '<strong>Detalhamento:</strong> &nbsp; Vendas '+fp(av)+' \xd7 40% = <strong>'+fp(av*0.4)+'</strong> &nbsp;+&nbsp; Margem '+fp(am)+' \xd7 40% = <strong>'+fp(am*0.4)+'</strong> &nbsp;+&nbsp; DOH '+fp(ae)+' \xd7 20% = <strong>'+fp(ae*0.2)+'</strong> &nbsp;\u2192&nbsp; Ponderado = <strong>'+fp(p)+'</strong> \u2192 B\xf4nus = <strong>'+fp(f)+'</strong>';
 }
 
 let equipe=[
-  {nome:'Ana',cargo:'Especialista',salario:7000,trim:1,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
-  {nome:'Bruno',cargo:'Coordenador',salario:9000,trim:1,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
-  {nome:'Diego',cargo:'Gerente',salario:13000,trim:1,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
+  {nome:'Ana',cargo:'Especialista',salario:7000,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
+  {nome:'Bruno',cargo:'Coordenador',salario:9000,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
+  {nome:'Diego',cargo:'Gerente',salario:13000,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
 ];
-function addMembro(){if(equipe.length>=8)return;equipe.push({nome:'Colaborador',cargo:'Especialista',salario:8000,trim:1,mv:100000,rv:100000,mmPct:19,rmPct:19,me:45,re:45});renderEquipe();}
+function addMembro(){if(equipe.length>=8)return;equipe.push({nome:'Colaborador',cargo:'Especialista',salario:8000,mv:100000,rv:100000,mmPct:19,rmPct:19,me:45,re:45});renderEquipe();}
 function remM(i){equipe.splice(i,1);renderEquipe();}
 function upM(i,f,v){if(['salario','mv','rv'].includes(f))equipe[i][f]=parseMoney(v);else if(['mmPct','rmPct'].includes(f))equipe[i][f]=parsePct(v);else equipe[i][f]=isNaN(parseFloat(v))?v:(parseFloat(v)||v);calcEquipe();}
 
 function calcEquipe(){
-  const R=equipe.map(m=>{const bv=bonusVendas(atVendas(m.mv,m.rv)),bm=getFactorMargem(m.rmPct),ae=atEstoque(m.me,m.re),p=ponderado(bv,bm,ae),f=bonusFinal(p),val=m.salario*f;return{nome:m.nome,cargo:m.cargo,p,f,val};});
+  const R=equipe.map(m=>{const av=atVendas(m.mv,m.rv),am=atMargem(m.mmPct,m.rmPct),ae=atDOH(m.me,m.re),p=calcPonderado(av,am,ae),f=bonusFinal(p),val=m.salario*f;return{nome:m.nome,cargo:m.cargo,p,f,val};});
   if(!R.length)return;
   const mp=R.reduce((s,r)=>s+r.f,0)/R.length,mv2=R.reduce((s,r)=>s+r.val,0)/R.length,top=R.reduce((a,b)=>b.val>a.val?b:a);
   document.getElementById('eq-media-pct').textContent=fp(mp);
   document.getElementById('eq-media-val').textContent=fr(mv2);
   document.getElementById('eq-top').textContent=fr(top.val);
   document.getElementById('eq-top-nome').textContent=top.nome;
-  document.getElementById('eq-table').innerHTML='<table class="up-table"><tr><th>Nome</th><th>Cargo</th><th>Ating.</th><th>B\xf4nus %</th><th>B\xf4nus R$</th></tr>'+R.map(r=>'<tr><td>'+r.nome+'</td><td>'+r.cargo+'</td><td>'+fp(r.p)+'</td><td><span class="badge '+(r.f>=1?'b-green':r.f>0?'b-amber':'b-red')+'">'+fp(r.f)+'</span></td><td style="font-weight:700">'+fr(r.val)+'</td></tr>').join('')+'</table>';
+  document.getElementById('eq-table').innerHTML='<table class="up-table"><tr><th>Nome</th><th>Cargo</th><th>Ating. pond.</th><th>B\xf4nus %</th><th>B\xf4nus R$</th></tr>'+R.map(r=>'<tr><td>'+r.nome+'</td><td>'+r.cargo+'</td><td>'+fp(r.p)+'</td><td><span class="badge '+(r.f>=1?'b-green':r.f>0?'b-amber':'b-red')+'">'+fp(r.f)+'</span></td><td style="font-weight:700">'+fr(r.val)+'</td></tr>').join('')+'</table>';
 }
 
 function renderEquipe(){
   const cargos=['Especialista','Coordenador','Comprador','Gerente','Diretor','VP'];
-  const inp=(val,cb,pfx,sfx)=>`<div style="position:relative">${pfx?`<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#4A6FA5">${pfx}</span>`:''}<input type="text" value="${val}" onchange="${cb}" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px ${sfx?'22px':'8px'} 6px ${pfx?'26px':'8px'};font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;">${sfx?`<span style="position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#4A6FA5">${sfx}</span>`:''}</div>`;
+  const minp=(val,cb,pfx,sfx)=>`<div style="position:relative">${pfx?`<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#4A6FA5">${pfx}</span>`:''}<input type="text" value="${val}" onchange="${cb}" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px ${sfx?'22px':'8px'} 6px ${pfx?'26px':'8px'};font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;">${sfx?`<span style="position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#4A6FA5">${sfx}</span>`:''}</div>`;
   document.getElementById('equipe-list').innerHTML=equipe.map((m,i)=>`
     <div class="eq-card">
-      <div class="eq-hd">
-        <input value="${m.nome}" onchange="upM(${i},'nome',this.value)" style="font-weight:700;font-size:13px;border:none;background:transparent;color:#1B3A6B;padding:0;width:200px;font-family:Montserrat,Arial,sans-serif;outline:none;">
-        <button onclick="remM(${i})" style="background:none;border:none;cursor:pointer;color:#4A6FA5;font-size:15px;">&times;</button>
-      </div>
+      <div class="eq-hd"><input value="${m.nome}" onchange="upM(${i},'nome',this.value)" style="font-weight:700;font-size:13px;border:none;background:transparent;color:#1B3A6B;padding:0;width:200px;font-family:Montserrat,Arial,sans-serif;outline:none;"><button onclick="remM(${i})" style="background:none;border:none;cursor:pointer;color:#4A6FA5;font-size:15px;">&times;</button></div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:7px">
         <div><label>Cargo</label><select onchange="upM(${i},'cargo',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;">${cargos.map(c=>`<option ${c===m.cargo?'selected':''}>${c}</option>`).join('')}</select></div>
-        <div><label>Sal&aacute;rio</label>${inp(m.salario.toLocaleString('pt-BR'),`upM(${i},'salario',this.value)`,'R$','')}</div>
-        <div><label>Meta vendas</label>${inp(m.mv.toLocaleString('pt-BR'),`upM(${i},'mv',this.value)`,'R$','')}</div>
-        <div><label>Real. vendas</label>${inp(m.rv.toLocaleString('pt-BR'),`upM(${i},'rv',this.value)`,'R$','')}</div>
+        <div><label>Sal&aacute;rio</label>${minp(m.salario.toLocaleString('pt-BR'),`upM(${i},'salario',this.value)`,'R$','')}</div>
+        <div><label>Meta vendas</label>${minp(m.mv.toLocaleString('pt-BR'),`upM(${i},'mv',this.value)`,'R$','')}</div>
+        <div><label>Real. vendas</label>${minp(m.rv.toLocaleString('pt-BR'),`upM(${i},'rv',this.value)`,'R$','')}</div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
-        <div><label>Meta margem</label>${inp(m.mmPct.toFixed(1).replace('.',','),`upM(${i},'mmPct',this.value)`,'','%')}</div>
-        <div><label>Real. margem</label>${inp(m.rmPct.toFixed(1).replace('.',','),`upM(${i},'rmPct',this.value)`,'','%')}</div>
+        <div><label>Meta margem</label>${minp(m.mmPct.toFixed(1).replace('.',','),`upM(${i},'mmPct',this.value)`,'','%')}</div>
+        <div><label>Real. margem</label>${minp(m.rmPct.toFixed(1).replace('.',','),`upM(${i},'rmPct',this.value)`,'','%')}</div>
         <div><label>Meta estoque</label><input type="number" value="${m.me}" onchange="upM(${i},'me',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;"></div>
         <div><label>Real. estoque</label><input type="number" value="${m.re}" onchange="upM(${i},'re',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;"></div>
       </div>
@@ -374,8 +351,7 @@ async function syncSheets(){
   const btn=document.getElementById('sync-btn'),dot=document.getElementById('sync-dot'),status=document.getElementById('sync-status');
   btn.classList.add('loading');btn.textContent='Sincronizando...';dot.className='sync-dot idle';
   try{
-    const res=await fetch(SHEETS_CSV+'&t='+Date.now());
-    if(!res.ok)throw new Error('HTTP '+res.status);
+    const res=await fetch(SHEETS_CSV+'&t='+Date.now());if(!res.ok)throw new Error('HTTP '+res.status);
     const text=await res.text();
     const rows=text.trim().split('\n').map(r=>r.split(',').map(c=>c.trim().replace(/^"|"$/g,'')));
     if(rows.length<2)throw new Error('Sem dados');
@@ -388,20 +364,15 @@ async function syncSheets(){
     document.getElementById('real-vendas').value=rv.toLocaleString('pt-BR');
     document.getElementById('meta-margem').value=mmPct.toFixed(1).replace('.',',');
     document.getElementById('real-margem').value=rmPct.toFixed(1).replace('.',',');
-    document.getElementById('meta-estoque').value=me;
-    document.getElementById('real-estoque').value=re;
+    document.getElementById('meta-estoque').value=me;document.getElementById('real-estoque').value=re;
     ['meta-vendas','real-vendas','meta-margem','real-margem','meta-estoque','real-estoque'].forEach(id=>{const el=document.getElementById(id);el.classList.add('synced');el.readOnly=true;});
     equipe.forEach(m=>{m.mv=mv;m.rv=rv;m.mmPct=mmPct;m.rmPct=rmPct;m.me=me;m.re=re;});
     renderEquipe();calcular();
     const now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
     dot.className='sync-dot ok';
-    status.innerHTML='Sincronizado &agrave;s <span>'+now+'</span> &middot; <span>Base Calculadora B&ocirc;nus</span> <span style="color:#3B6D11"> &#10003;</span>';
+    status.innerHTML='Sincronizado \xe0s <span>'+now+'</span> \xb7 <span>Base Calculadora B\xf4nus</span> <span style="color:#3B6D11"> \u2713</span>';
     btn.classList.remove('loading');btn.textContent='\u21bb Atualizar';
-  }catch(e){
-    dot.className='sync-dot err';
-    status.innerHTML='<span style="color:#A32D2D">Erro ao sincronizar</span>';
-    btn.classList.remove('loading');btn.textContent='\u21bb Tentar novamente';
-  }
+  }catch(e){dot.className='sync-dot err';status.innerHTML='<span style="color:#A32D2D">Erro ao sincronizar</span>';btn.classList.remove('loading');btn.textContent='\u21bb Tentar novamente';}
 }
 
 function doLogin(){
@@ -410,8 +381,7 @@ function doLogin(){
   else{document.getElementById('login-err').style.display='block';document.getElementById('login-pass').value='';document.getElementById('login-pass').focus();}
 }
 
-updateCargo();
-renderEquipe();
+updateCargo();renderEquipe();
 </script>
 </body>
 </html>
