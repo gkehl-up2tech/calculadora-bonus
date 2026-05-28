@@ -144,7 +144,6 @@ input.synced{background:#EBF4FC;border-color:#5BA3D9;}
   <div class="tabs">
     <button class="tab active" onclick="switchTab('individual')">Individual</button>
     <button class="tab" onclick="switchTab('equipe')">Equipe</button>
-    <button class="tab" onclick="switchTab('glossario')">Gloss&#225;rio</button>
   </div>
   <div class="body">
 
@@ -215,38 +214,6 @@ input.synced{background:#EBF4FC;border-color:#5BA3D9;}
       <div id="eq-table" style="margin-top:14px;overflow-x:auto"></div>
     </div>
 
-    <div id="panel-glossario" class="panel">
-      <div class="sec">Elegibilidade e pagamento</div>
-      <div class="gl-item"><div class="gl-term">Quem &#233; eleg&#237;vel?</div><div class="gl-def">Colaboradores da VP do Guilherme Matiello a partir dos cargos de <strong>Especialista, Comprador e Coordenador</strong>. Necess&#225;rio ter trabalhado o trimestre completo.</div></div>
-      <div class="gl-item"><div class="gl-term">Periodicidade</div><div class="gl-def"><strong>Quarter:</strong> 45 dias ap&#243;s fechamento. <strong>Anual:</strong> 60 dias ap&#243;s fechamento do ano.</div></div>
-      <div class="sec">L&#243;gica de c&#225;lculo</div>
-      <div class="gl-item">
-        <div class="gl-term">Atingimento ponderado</div>
-        <div class="gl-def">Soma dos atingimentos relativos de cada indicador, ponderados pelos seus pesos:</div>
-        <div class="gl-ex">(Real. Vendas &#247; Meta Vendas) &#215; 40% + (Real. Margem &#247; Meta Margem) &#215; 40% + (Ating. DOH) &#215; 20%</div>
-      </div>
-      <div class="gl-item"><div class="gl-term">DOH &#8212; centro melhor</div><div class="gl-def">Atingimento = max(0, 1 &#8722; |realizado &#8722; meta| / (meta &#215; 24%)). 100% na meta, caindo linearmente at&#233; zero.</div><div class="gl-ex">Ex.: meta 45d &#8594; realizado 50d &#8776; 54%; 38d &#8776; 35%; 45d = 100%</div></div>
-      <div class="sec">Faixas de b&#244;nus &#8212; sobre o atingimento ponderado</div>
-      <div class="gl-item">
-        <table class="up-table">
-          <tr><th>Atingimento ponderado</th><th>B&#244;nus aplicado</th></tr>
-          <tr><td>Abaixo de 70%</td><td><span class="badge b-red">0%</span></td></tr>
-          <tr><td>70% &#8211; 79,99%</td><td><span class="badge b-amber">70% do alvo</span></td></tr>
-          <tr><td>80% &#8211; 89,99%</td><td><span class="badge b-amber">80% do alvo</span></td></tr>
-          <tr><td>90% &#8211; 99,99%</td><td><span class="badge b-green">90% do alvo</span></td></tr>
-          <tr><td>&#8805; 100%</td><td><span class="badge b-green">100% + proporcional</span></td></tr>
-        </table>
-      </div>
-      <div class="sec">B&#244;nus alvo por cargo</div>
-      <div class="gl-item">
-        <table class="up-table">
-          <tr><th>Cargo</th><th>Por quarter</th><th>Anual</th></tr>
-          <tr><td>Especialista / Coordenador / Comprador</td><td>1 sal&#225;rio</td><td>2 sal&#225;rios</td></tr>
-          <tr><td>Gerente</td><td>1,5 sal&#225;rio</td><td>3 sal&#225;rios</td></tr>
-          <tr><td>Diretor / Head</td><td>2 sal&#225;rios</td><td>4 sal&#225;rios</td></tr>
-        </table>
-      </div>
-    </div>
   </div>
   <div class="ft">
     <span>Confidencial &#8212; UP2Tech &#8212; 2026</span>
@@ -272,8 +239,30 @@ function switchTab(t){document.querySelectorAll('.tab').forEach(e=>e.classList.r
 function updateCargo(){const c=document.getElementById('cargo').value;document.getElementById('bonus_alvo').value=BALVO[c]||1;calcular();}
 
 function atVendas(m,r){return m?r/m:0;}
-function atMargem(mm,rm){return mm?rm/mm:0;}
-function atDOH(m,r){return m?Math.max(0,1-Math.abs(r-m)/(m*TOL)):0;}
+// Margem: lookup pelo valor absoluto realizado (%)
+function atMargem(mm,rm){
+  if(rm<17.5) return 0;
+  if(rm<18.0) return 0.70;
+  if(rm<18.5) return 0.80;
+  if(rm<19.0) return 0.90;
+  if(rm<19.5) return 1.00;
+  if(rm<20.0) return 1.10;
+  if(rm<20.5) return 1.20;
+  if(rm<21.0) return 1.30;
+  if(rm<21.5) return 1.40;
+  if(rm<22.0) return 1.50;
+  return 1.60; // >= 22% -> teto 160%
+}
+// DOH: lookup pelos dias realizados (ranges fixos)
+function atDOH(m,r){
+  if(r>=65) return 0;
+  if(r>=57) return 0.70;
+  if(r>=51) return 0.80;
+  if(r>=46) return 0.90;
+  if(r>=43) return 1.00;
+  if(r>=38) return 1.10;
+  return 1.20; // <= 37 dias -> teto 120%
+}
 function calcPonderado(av,am,ae){return av*0.4+am*0.4+ae*0.2;}
 function bonusFinal(p){if(p<0.7)return 0;if(p<0.8)return 0.7;if(p<0.9)return 0.8;if(p<1.0)return 0.9;return p;}
 
