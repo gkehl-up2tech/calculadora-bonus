@@ -7,181 +7,123 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --navy:#1B3A6B;
-  --blue:#2E7BC4;
-  --light:#5BA3D9;
-  --bg:#D6E9F8;
-  --bg2:#EBF4FC;
-  --muted:#4A6FA5;
-  --white:#ffffff;
-}
-body{font-family:'Montserrat',Arial,sans-serif;background:linear-gradient(135deg,#D6E9F8 0%,#EBF4FC 50%,#f4f9fd 100%);min-height:100vh;padding:24px 16px;}
-
-/* Login overlay */
+:root{--navy:#1B3A6B;--blue:#2E7BC4;--light:#5BA3D9;--bg:#D6E9F8;--bg2:#EBF4FC;--muted:#4A6FA5;}
+body{font-family:'Montserrat',Arial,sans-serif;background:linear-gradient(135deg,#D6E9F8 0%,#EBF4FC 50%,#f4f9fd 100%);min-height:100vh;padding:16px;}
 #login-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1B3A6B 0%,#1e4a8a 60%,#2E7BC4 100%);}
-#login-overlay .wm-login{position:absolute;inset:0;overflow:hidden;opacity:.07;display:flex;flex-direction:column;justify-content:space-around;font-weight:800;font-size:13px;color:#fff;letter-spacing:.02em;text-transform:uppercase;line-height:2.4;pointer-events:none;}
-#login-overlay .wm-login .wm-row{white-space:nowrap;}
-.login-box{position:relative;z-index:2;background:#fff;border-radius:16px;padding:40px 44px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
-.login-logo{text-align:center;margin-bottom:28px;}
-.login-logo .lm{font-size:32px;font-weight:900;color:#1B3A6B;letter-spacing:-.5px;}
-.login-logo .lm span{color:#5BA3D9;}
-.login-logo .ls{font-size:9px;font-weight:700;color:#4A6FA5;letter-spacing:.18em;margin-top:4px;}
-.login-title{font-size:13px;font-weight:700;color:#4A6FA5;text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px;}
-.login-field{margin-bottom:16px;}
-.login-field label{font-size:10px;font-weight:700;color:#4A6FA5;display:block;margin-bottom:5px;letter-spacing:.08em;text-transform:uppercase;}
-.login-field input{width:100%;font-size:14px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:8px;padding:10px 14px;color:#1B3A6B;font-weight:600;outline:none;transition:border-color .15s;}
-.login-field input:focus{border-color:#2E7BC4;box-shadow:0 0 0 3px rgba(46,123,196,.12);}
-.login-err{font-size:11px;font-weight:700;color:#A32D2D;background:#FEECEC;border-radius:6px;padding:8px 12px;margin-bottom:14px;display:none;text-align:center;}
-.login-btn{width:100%;padding:12px;font-size:13px;font-weight:800;font-family:'Montserrat',Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:8px;border:none;background:linear-gradient(135deg,#1B3A6B,#2E7BC4);color:#fff;margin-top:4px;transition:opacity .15s;}
-.login-btn:hover{opacity:.88;}
-.login-footer{text-align:center;font-size:10px;font-weight:600;color:#4A6FA5;margin-top:20px;letter-spacing:.06em;text-transform:uppercase;}
-
-.shell{max-width:900px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(27,58,107,0.18);border:1px solid #B8D4EE;position:relative;}
-
-/* Watermark */
-.wm{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-around;pointer-events:none;overflow:hidden;opacity:0.055;z-index:0;font-family:'Montserrat',Arial,sans-serif;font-weight:800;font-size:13px;color:var(--navy);letter-spacing:.02em;text-transform:uppercase;line-height:2.4;}
+.wm-login{position:absolute;inset:0;overflow:hidden;opacity:.07;display:flex;flex-direction:column;justify-content:space-around;font-weight:800;font-size:12px;color:#fff;letter-spacing:.02em;text-transform:uppercase;line-height:2.4;pointer-events:none;}
 .wm-row{white-space:nowrap;}
-
-/* Header */
-.hd{background:linear-gradient(135deg,#1B3A6B 0%,#1e4a8a 100%);padding:18px 28px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
-.logo-main{font-size:26px;font-weight:900;color:#fff;letter-spacing:-0.5px;line-height:1;}
+.login-box{position:relative;z-index:2;background:#fff;border-radius:16px;padding:36px 40px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.28);}
+.login-logo{text-align:center;margin-bottom:24px;}
+.lm{font-size:30px;font-weight:900;color:#1B3A6B;letter-spacing:-.5px;}
+.lm span{color:#5BA3D9;}
+.ls{font-size:9px;font-weight:700;color:#4A6FA5;letter-spacing:.18em;margin-top:3px;}
+.login-title{font-size:12px;font-weight:700;color:#4A6FA5;text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;}
+.login-field{margin-bottom:14px;}
+.login-field label{font-size:10px;font-weight:700;color:#4A6FA5;display:block;margin-bottom:4px;letter-spacing:.08em;text-transform:uppercase;}
+.login-field input{width:100%;font-size:14px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:8px;padding:9px 13px;color:#1B3A6B;font-weight:600;outline:none;}
+.login-err{font-size:11px;font-weight:700;color:#A32D2D;background:#FEECEC;border-radius:6px;padding:8px 12px;margin-bottom:12px;display:none;text-align:center;}
+.login-btn{width:100%;padding:11px;font-size:12px;font-weight:800;font-family:'Montserrat',Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:8px;border:none;background:linear-gradient(135deg,#1B3A6B,#2E7BC4);color:#fff;margin-top:4px;}
+.login-footer{text-align:center;font-size:9px;font-weight:600;color:#4A6FA5;margin-top:18px;letter-spacing:.06em;text-transform:uppercase;}
+.shell{max-width:860px;margin:0 auto;border-radius:14px;overflow:hidden;box-shadow:0 6px 32px rgba(27,58,107,.16);border:1px solid #B8D4EE;position:relative;}
+.wm{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-around;pointer-events:none;overflow:hidden;opacity:.05;z-index:0;font-family:'Montserrat',Arial,sans-serif;font-weight:800;font-size:12px;color:var(--navy);letter-spacing:.02em;text-transform:uppercase;line-height:2.4;}
+.hd{background:linear-gradient(135deg,#1B3A6B 0%,#1e4a8a 100%);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
+.logo-main{font-size:24px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1;}
 .logo-main span{color:var(--light);}
-.logo-sub{font-size:9px;font-weight:700;color:#7AB8E8;letter-spacing:.18em;margin-top:3px;}
+.logo-sub{font-size:8px;font-weight:700;color:#7AB8E8;letter-spacing:.18em;margin-top:2px;}
 .hd-right{text-align:right;}
-.hd-right .t1{font-size:14px;font-weight:700;color:#fff;letter-spacing:.05em;text-transform:uppercase;}
-.hd-right .t2{font-size:10px;color:#7AB8E8;font-weight:500;margin-top:3px;}
-
-/* Tabs */
+.hd-right .t1{font-size:13px;font-weight:700;color:#fff;letter-spacing:.05em;text-transform:uppercase;}
+.hd-right .t2{font-size:9px;color:#7AB8E8;font-weight:500;margin-top:2px;}
 .tabs{background:var(--bg);display:flex;border-bottom:2.5px solid var(--blue);position:relative;z-index:2;}
-.tab{padding:12px 24px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:none;background:transparent;border-bottom:2.5px solid transparent;margin-bottom:-2.5px;transition:all .15s;font-family:'Montserrat',Arial,sans-serif;}
+.tab{padding:10px 20px;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:none;background:transparent;border-bottom:2.5px solid transparent;margin-bottom:-2.5px;transition:all .15s;font-family:'Montserrat',Arial,sans-serif;}
 .tab.active{color:var(--navy);border-bottom-color:var(--navy);background:rgba(255,255,255,.5);}
 .tab:hover:not(.active){color:var(--navy);background:rgba(255,255,255,.3);}
-
-/* Body */
-.body{background:linear-gradient(180deg,#F4F9FD 0%,#fff 100%);padding:24px 28px;position:relative;z-index:1;min-height:480px;}
-.panel{display:none;}
-.panel.active{display:block;}
-
-.sec{font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px;margin-top:20px;}
+.body{background:linear-gradient(180deg,#F4F9FD 0%,#fff 100%);padding:20px 24px;position:relative;z-index:1;min-height:440px;}
+.panel{display:none;}.panel.active{display:block;}
+.sec{font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;margin-top:18px;}
 .sec:first-child{margin-top:0;}
-
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;}
-label{font-size:10px;font-weight:700;color:var(--muted);display:block;margin-bottom:4px;letter-spacing:.06em;text-transform:uppercase;}
-input,select{width:100%;font-size:13px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:7px;padding:8px 11px;background:#fff;color:var(--navy);font-weight:600;outline:none;transition:border-color .15s;}
-input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,123,196,.12);}
-input[readonly]{background:var(--bg2);color:var(--muted);}
-
-/* Indicator cards */
-.ind{background:#fff;border:1.5px solid #B8D4EE;border-left:5px solid var(--blue);border-radius:9px;padding:14px 18px;margin-bottom:12px;}
-.ind-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.ind-name{font-size:13px;font-weight:700;color:var(--navy);}
-.ind-pct{font-size:16px;font-weight:800;color:var(--blue);}
-.ind-in{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.prog{background:var(--bg);border-radius:99px;height:6px;margin-top:10px;overflow:hidden;}
-.prog-fill{height:6px;border-radius:99px;transition:width .4s ease;}
-
-/* Result cards */
-.res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:20px;}
-.rc{border-radius:9px;padding:16px 18px;}
-.rc-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;}
-.rc-value{font-size:22px;font-weight:800;}
-.rc-sub{font-size:11px;margin-top:4px;font-weight:500;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+label{font-size:10px;font-weight:700;color:var(--muted);display:block;margin-bottom:3px;letter-spacing:.05em;text-transform:uppercase;}
+.fw{position:relative;}
+.fw .pfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--muted);pointer-events:none;}
+.fw .sfx{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--muted);pointer-events:none;}
+.fw input{width:100%;font-size:12px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:6px;padding:7px 10px;background:#fff;color:var(--navy);font-weight:600;outline:none;transition:border-color .15s;}
+.fw.p input{padding-left:28px;}
+.fw.s input{padding-right:28px;}
+.fw input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,123,196,.1);}
+.fw input[readonly]{background:var(--bg2);color:var(--muted);}
+select{width:100%;font-size:12px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:6px;padding:7px 10px;background:#fff;color:var(--navy);font-weight:600;outline:none;}
+.ind{background:#fff;border:1.5px solid #B8D4EE;border-left:5px solid var(--blue);border-radius:8px;padding:12px 16px;margin-bottom:10px;}
+.ind-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.ind-name{font-size:12px;font-weight:700;color:var(--navy);}
+.ind-pct{font-size:15px;font-weight:800;color:var(--blue);}
+.ind-in{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.prog{background:var(--bg);border-radius:99px;height:5px;margin-top:8px;overflow:hidden;}
+.prog-fill{height:5px;border-radius:99px;transition:width .4s ease;}
+.res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:16px;}
+.rc{border-radius:8px;padding:14px 16px;}
+.rc-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.rc-value{font-size:20px;font-weight:800;}
+.rc-sub{font-size:10px;margin-top:3px;font-weight:500;}
 .rc-navy{background:var(--navy);}.rc-navy .rc-label{color:#7AB8E8;}.rc-navy .rc-value,.rc-navy .rc-sub{color:#fff;}
 .rc-blue{background:var(--blue);}.rc-blue .rc-label{color:#B8D9F5;}.rc-blue .rc-value,.rc-blue .rc-sub{color:#fff;}
-.rc-light{background:var(--bg2);}.rc-light .rc-label{color:var(--muted);}.rc-light .rc-value{color:var(--navy);}.rc-light .rc-sub{color:var(--muted);}
-
-.alert{border-radius:7px;padding:10px 14px;font-size:12px;font-weight:600;margin-bottom:12px;border-left:4px solid;}
+.alert{border-radius:6px;padding:9px 12px;font-size:11px;font-weight:600;margin-bottom:10px;border-left:4px solid;}
 .a-info{background:#EBF4FC;color:var(--blue);border-color:var(--blue);}
 .a-red{background:#FEECEC;color:#A32D2D;border-color:#E24B4A;}
-
-.badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.04em;}
-.b-green{background:#EAF3DE;color:#3B6D11;}
-.b-amber{background:#FAEEDA;color:#854F0B;}
-.b-red{background:#FEECEC;color:#A32D2D;}
-.b-navy{background:var(--navy);color:#fff;}
-.b-blue{background:#E6F1FB;color:#185FA5;}
-
-/* Footer */
-.ft{background:var(--blue);padding:8px 28px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;}
-.ft span{font-size:9px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.1em;text-transform:uppercase;}
-
-/* Equipe */
-.eq-card{background:#fff;border:1.5px solid #B8D4EE;border-radius:9px;padding:14px 18px;margin-bottom:12px;}
-.eq-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-
-/* Glossário */
-.gl-item{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--bg);}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.04em;}
+.b-green{background:#EAF3DE;color:#3B6D11;}.b-amber{background:#FAEEDA;color:#854F0B;}.b-red{background:#FEECEC;color:#A32D2D;}.b-navy{background:var(--navy);color:#fff;}
+.ft{background:var(--blue);padding:7px 24px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;}
+.ft span{font-size:8px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.1em;text-transform:uppercase;}
+.eq-card{background:#fff;border:1.5px solid #B8D4EE;border-radius:8px;padding:12px 16px;margin-bottom:10px;}
+.eq-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.gl-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bg);}
 .gl-item:last-child{border-bottom:none;}
-.gl-term{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.gl-def{font-size:12px;color:var(--muted);line-height:1.65;font-weight:500;}
-.gl-ex{font-size:11px;color:var(--blue);background:#EBF4FC;border-radius:6px;padding:9px 13px;margin-top:7px;font-weight:600;}
-
-.up-table{width:100%;border-collapse:collapse;font-size:12px;}
-.up-table th{text-align:left;padding:8px 11px;font-size:10px;font-weight:700;color:#fff;background:var(--navy);letter-spacing:.07em;text-transform:uppercase;}
-.up-table th:first-child{border-radius:6px 0 0 0;}
-.up-table th:last-child{border-radius:0 6px 0 0;}
-.up-table td{padding:8px 11px;border-bottom:1px solid var(--bg);color:var(--navy);font-weight:500;}
-.up-table tr:last-child td{border-bottom:none;}
-.up-table tr:hover td{background:var(--bg2);}
-
-.add-btn{font-size:11px;font-weight:700;cursor:pointer;padding:8px 18px;border:1.5px solid var(--blue);border-radius:7px;background:transparent;color:var(--blue);font-family:'Montserrat',Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;margin-top:6px;transition:all .15s;}
+.gl-term{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.gl-def{font-size:11px;color:var(--muted);line-height:1.6;font-weight:500;}
+.gl-ex{font-size:10px;color:var(--blue);background:#EBF4FC;border-radius:5px;padding:7px 11px;margin-top:6px;font-weight:600;}
+.up-table{width:100%;border-collapse:collapse;font-size:11px;}
+.up-table th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;color:#fff;background:var(--navy);letter-spacing:.07em;text-transform:uppercase;}
+.up-table th:first-child{border-radius:5px 0 0 0;}.up-table th:last-child{border-radius:0 5px 0 0;}
+.up-table td{padding:7px 10px;border-bottom:1px solid var(--bg);color:var(--navy);font-weight:500;}
+.up-table tr:last-child td{border-bottom:none;}.up-table tr:hover td{background:var(--bg2);}
+.add-btn{font-size:10px;font-weight:700;cursor:pointer;padding:7px 16px;border:1.5px solid var(--blue);border-radius:6px;background:transparent;color:var(--blue);font-family:'Montserrat',Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;margin-top:4px;transition:all .15s;}
 .add-btn:hover{background:var(--blue);color:#fff;}
-.sync-bar{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1.5px solid #B8D4EE;border-radius:9px;padding:10px 16px;margin-bottom:16px;gap:12px;}
-.sync-status{font-size:11px;font-weight:600;color:var(--muted);}
+.sync-bar{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1.5px solid #B8D4EE;border-radius:8px;padding:9px 14px;margin-bottom:14px;gap:10px;}
+.sync-status{font-size:10px;font-weight:600;color:var(--muted);}
 .sync-status span{font-weight:700;}
-.sync-btn{font-size:11px;font-weight:800;cursor:pointer;padding:7px 16px;border:none;border-radius:7px;background:var(--navy);color:#fff;font-family:'Montserrat',Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
-.sync-btn:hover{background:var(--blue);}
-.sync-btn.loading{opacity:.6;pointer-events:none;}
-.sync-dot{width:8px;height:8px;border-radius:50%;background:#64C97A;display:inline-block;flex-shrink:0;}
-.sync-dot.err{background:#E24B4A;}
-.sync-dot.idle{background:#B8D4EE;}
-input.synced{background:#EBF4FC;color:var(--navy);border-color:#5BA3D9;}
-
-@media(max-width:600px){
-  .row2,.row3,.res-grid{grid-template-columns:1fr;}
-  .ind-in{grid-template-columns:1fr;}
-  .hd{flex-direction:column;gap:10px;text-align:center;}
-  .hd-right{text-align:center;}
-  body{padding:12px 8px;}
-}
+.sync-btn{font-size:10px;font-weight:800;cursor:pointer;padding:6px 14px;border:none;border-radius:6px;background:var(--navy);color:#fff;font-family:'Montserrat',Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
+.sync-btn:hover{background:var(--blue);}.sync-btn.loading{opacity:.6;pointer-events:none;}
+.sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:6px;}
+.sync-dot.idle{background:#B8D4EE;}.sync-dot.ok{background:#64C97A;}.sync-dot.err{background:#E24B4A;}
+input.synced{background:#EBF4FC;border-color:#5BA3D9;}
+@media(max-width:600px){.row2,.row3,.res-grid{grid-template-columns:1fr;}.ind-in{grid-template-columns:1fr;}.hd{flex-direction:column;gap:10px;}.hd-right{text-align:center;}body{padding:8px;}}
 </style>
 </head>
 <body>
 
-<!-- Login Overlay -->
 <div id="login-overlay">
   <div class="wm-login" aria-hidden="true">
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
   </div>
   <div class="login-box">
     <div class="login-logo">
-      <div class="lm">UP<span>2</span>TECH<span style="font-size:18px;color:#7AB8E8;margin-left:3px">&#174;</span></div>
+      <div class="lm">UP<span>2</span>TECH<span style="font-size:16px;color:#7AB8E8;margin-left:3px">&#174;</span></div>
       <div class="ls">Connecting Businesses</div>
     </div>
     <div class="login-title">Calculadora de B&#244;nus</div>
     <div class="login-err" id="login-err">Usu&#225;rio ou senha incorretos.</div>
-    <div class="login-field">
-      <label>Usu&#225;rio</label>
-      <input type="text" id="login-user" placeholder="Digite seu usu&#225;rio" autocomplete="username">
-    </div>
-    <div class="login-field">
-      <label>Senha</label>
-      <input type="password" id="login-pass" placeholder="Digite sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
+    <div class="login-field"><label>Usu&#225;rio</label><input type="text" id="login-user" placeholder="Digite seu usu&#225;rio" autocomplete="username"></div>
+    <div class="login-field"><label>Senha</label><input type="password" id="login-pass" placeholder="Digite sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <button class="login-btn" onclick="doLogin()">Entrar</button>
     <div class="login-footer">Acesso restrito &middot; UP2Tech 2026</div>
   </div>
 </div>
 
 <div class="shell">
-  <!-- Watermark -->
   <div class="wm" aria-hidden="true">
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
@@ -189,414 +131,287 @@ input.synced{background:#EBF4FC;color:var(--navy);border-color:#5BA3D9;}
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
     <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
-    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
   </div>
-
-  <!-- Header -->
   <div class="hd">
     <div>
-      <div class="logo-main">UP<span>2</span>TECH<span style="font-size:15px;color:#7AB8E8;margin-left:4px">®</span></div>
+      <div class="logo-main">UP<span>2</span>TECH<span style="font-size:13px;color:#7AB8E8;margin-left:4px">&#174;</span></div>
       <div class="logo-sub">Connecting Businesses</div>
     </div>
     <div class="hd-right">
-      <div class="t1">Calculadora de Bônus</div>
-      <div class="t2">Marketplace · VP Guilherme Matiello</div>
+      <div class="t1">Calculadora de B&#244;nus</div>
+      <div class="t2">Marketplace &middot; VP Guilherme Matiello</div>
     </div>
   </div>
-
-  <!-- Tabs -->
   <div class="tabs">
     <button class="tab active" onclick="switchTab('individual')">Individual</button>
     <button class="tab" onclick="switchTab('equipe')">Equipe</button>
-    <button class="tab" onclick="switchTab('glossario')">Glossário</button>
+    <button class="tab" onclick="switchTab('glossario')">Gloss&#225;rio</button>
   </div>
-
-  <!-- Body -->
   <div class="body">
 
-    <!-- INDIVIDUAL -->
     <div id="panel-individual" class="panel active">
       <div class="sec">Dados do colaborador</div>
       <div class="row2">
-        <div><label>Nome</label><input type="text" id="nome" value="Colaborador Exemplo"></div>
-        <div><label>Cargo</label>
-          <select id="cargo" onchange="updateCargo()">
-            <option>Especialista</option><option>Coordenador</option><option>Comprador</option>
-            <option>Gerente</option><option>Diretor</option><option>VP</option>
-          </select>
-        </div>
+        <div><label>Nome</label><div class="fw"><input type="text" id="nome" value="Colaborador Exemplo"></div></div>
+        <div><label>Cargo</label><select id="cargo" onchange="updateCargo()"><option>Especialista</option><option>Coordenador</option><option>Comprador</option><option>Gerente</option><option>Diretor</option><option>VP</option></select></div>
       </div>
       <div class="row3">
-        <div><label>Salário base (R$)</label><input type="number" id="salario" value="8000" oninput="calcular()"></div>
-        <div><label>Trimestres base</label><input type="number" id="trimestres" value="1" min="1" max="4" oninput="calcular()"></div>
-        <div><label>Bônus alvo (nº salários)</label><input type="number" id="bonus_alvo" value="1" step="0.5" readonly></div>
+        <div><label>Sal&#225;rio base</label><div class="fw p"><span class="pfx">R$</span><input type="text" id="salario" value="8.000" oninput="onMoney(this)" onblur="onMoneyBlur(this)"></div></div>
+        <div><label>Trimestres base</label><div class="fw"><input type="number" id="trimestres" value="1" min="1" max="4" oninput="calcular()"></div></div>
+        <div><label>B&#244;nus alvo (sal&#225;rios)</label><div class="fw"><input type="number" id="bonus_alvo" value="1" step="0.5" readonly></div></div>
       </div>
-
       <div class="sec">Indicadores de desempenho</div>
       <div class="sync-bar">
-        <div style="display:flex;align-items:center;gap:8px">
+        <div style="display:flex;align-items:center">
           <div class="sync-dot idle" id="sync-dot"></div>
-          <div class="sync-status" id="sync-status">Dados não sincronizados &nbsp;&middot;&nbsp; <span>Base Calculadora Bônus</span></div>
+          <div class="sync-status" id="sync-status">N&#227;o sincronizado &nbsp;&middot;&nbsp; <span>Base Calculadora B&#244;nus</span></div>
         </div>
         <button class="sync-btn" id="sync-btn" onclick="syncSheets()">&#8635; Sincronizar Sheets</button>
       </div>
-      <div class="alert a-info">Pesos fixos: <strong>Vendas 40% · Margem 40% · Dias de Estoque 20%</strong></div>
-
+      <div class="alert a-info">Pesos: <strong>Vendas 40% &middot; Margem 40% &middot; Estoque 20%</strong></div>
       <div class="ind">
-        <div class="ind-hd">
-          <span class="ind-name">Vendas <span class="badge b-navy" style="margin-left:6px;font-size:9px">40%</span></span>
-          <span class="ind-pct" id="pct-vendas">—</span>
-        </div>
+        <div class="ind-hd"><span class="ind-name">Vendas <span class="badge b-navy" style="margin-left:6px;font-size:9px">40%</span></span><span class="ind-pct" id="pct-vendas">&#8212;</span></div>
         <div class="ind-in">
-          <div><label>Meta (R$)</label><input type="number" id="meta-vendas" value="100000" oninput="calcular()"></div>
-          <div><label>Realizado (R$)</label><input type="number" id="real-vendas" value="92000" oninput="calcular()"></div>
+          <div><label>Meta</label><div class="fw p"><span class="pfx">R$</span><input type="text" id="meta-vendas" value="100.000" oninput="onMoney(this)" onblur="onMoneyBlur(this)"></div></div>
+          <div><label>Realizado</label><div class="fw p"><span class="pfx">R$</span><input type="text" id="real-vendas" value="92.000" oninput="onMoney(this)" onblur="onMoneyBlur(this)"></div></div>
         </div>
         <div class="prog"><div class="prog-fill" id="bar-vendas" style="width:0%;background:#1B3A6B"></div></div>
       </div>
-
       <div class="ind" style="border-left-color:#5BA3D9">
-        <div class="ind-hd">
-          <span class="ind-name">Margem comercial <span class="badge b-navy" style="margin-left:6px;font-size:9px">40%</span></span>
-          <span class="ind-pct" id="pct-margem">—</span>
-        </div>
+        <div class="ind-hd"><span class="ind-name">Margem comercial <span class="badge b-navy" style="margin-left:6px;font-size:9px">40%</span></span><span class="ind-pct" id="pct-margem">&#8212;</span></div>
         <div class="ind-in">
-          <div><label>Meta (ex: 0.19 = 19%)</label><input type="number" id="meta-margem" value="0.19" step="0.001" oninput="calcular()"></div>
-          <div><label>Realizado</label><input type="number" id="real-margem" value="0.18" step="0.001" oninput="calcular()"></div>
+          <div><label>Meta</label><div class="fw s"><input type="text" id="meta-margem" value="19,0" oninput="onPct(this)" onblur="onPctBlur(this)"><span class="sfx">%</span></div></div>
+          <div><label>Realizado</label><div class="fw s"><input type="text" id="real-margem" value="18,0" oninput="onPct(this)" onblur="onPctBlur(this)"><span class="sfx">%</span></div></div>
         </div>
         <div class="prog"><div class="prog-fill" id="bar-margem" style="width:0%;background:#5BA3D9"></div></div>
       </div>
-
       <div class="ind" style="border-left-color:#2E7BC4">
-        <div class="ind-hd">
-          <span class="ind-name">Dias de estoque (DOH) <span class="badge b-navy" style="margin-left:6px;font-size:9px">20%</span></span>
-          <span class="ind-pct" id="pct-estoque">—</span>
-        </div>
+        <div class="ind-hd"><span class="ind-name">Dias de estoque (DOH) <span class="badge b-navy" style="margin-left:6px;font-size:9px">20%</span></span><span class="ind-pct" id="pct-estoque">&#8212;</span></div>
         <div class="ind-in">
-          <div><label>Meta (dias)</label><input type="number" id="meta-estoque" value="45" oninput="calcular()"></div>
-          <div><label>Realizado (dias)</label><input type="number" id="real-estoque" value="38" oninput="calcular()"></div>
+          <div><label>Meta (dias)</label><div class="fw s"><input type="number" id="meta-estoque" value="45" oninput="calcular()"><span class="sfx" style="font-size:10px">d</span></div></div>
+          <div><label>Realizado (dias)</label><div class="fw s"><input type="number" id="real-estoque" value="38" oninput="calcular()"><span class="sfx" style="font-size:10px">d</span></div></div>
         </div>
         <div class="prog"><div class="prog-fill" id="bar-estoque" style="width:0%;background:#2E7BC4"></div></div>
       </div>
-
-      <div id="alert-venda" class="alert a-red" style="display:none;margin-top:12px">⚠ Meta de vendas abaixo de 70% — bônus total zerado.</div>
-
+      <div id="alert-venda" class="alert a-red" style="display:none;margin-top:10px">&#9888; Meta de vendas abaixo de 70% &#8212; b&#244;nus zerado.</div>
       <div class="res-grid">
-        <div class="rc rc-navy"><div class="rc-label">Atingimento ponderado</div><div class="rc-value" id="res-ating">—</div></div>
-        <div class="rc rc-navy"><div class="rc-label">Bônus % aplicado</div><div class="rc-value" id="res-pct">—</div></div>
-        <div class="rc rc-blue"><div class="rc-label">Bônus estimado</div><div class="rc-value" id="res-valor">—</div></div>
+        <div class="rc rc-navy"><div class="rc-label">Atingimento ponderado</div><div class="rc-value" id="res-ating">&#8212;</div></div>
+        <div class="rc rc-navy"><div class="rc-label">B&#244;nus % aplicado</div><div class="rc-value" id="res-pct">&#8212;</div></div>
+        <div class="rc rc-blue"><div class="rc-label">B&#244;nus estimado</div><div class="rc-value" id="res-valor">&#8212;</div><div class="rc-sub" id="res-formula">&#8212;</div></div>
       </div>
-      <div style="font-size:11px;color:var(--muted);margin-top:10px;font-weight:500;line-height:1.6" id="res-detalhe"></div>
     </div>
 
-    <!-- EQUIPE -->
     <div id="panel-equipe" class="panel">
       <div class="sec">Comparativo da equipe</div>
-      <div class="alert a-info">Cada colaborador calcula pesos e bônus conforme seu cargo. Até 8 pessoas.</div>
+      <div class="alert a-info">Cada colaborador calcula b&#244;nus conforme seu cargo. At&#233; 8 pessoas.</div>
       <div id="equipe-list"></div>
       <button class="add-btn" onclick="addMembro()">+ Adicionar colaborador</button>
-
-      <div class="sec" style="margin-top:24px">Resumo do time</div>
+      <div class="sec" style="margin-top:20px">Resumo do time</div>
       <div class="res-grid">
-        <div class="rc rc-navy"><div class="rc-label">Média bônus %</div><div class="rc-value" id="eq-media-pct">—</div></div>
-        <div class="rc rc-navy"><div class="rc-label">Média bônus R$</div><div class="rc-value" id="eq-media-val">—</div></div>
-        <div class="rc rc-blue"><div class="rc-label">Maior bônus</div><div class="rc-value" id="eq-top">—</div><div class="rc-sub" id="eq-top-nome">—</div></div>
+        <div class="rc rc-navy"><div class="rc-label">M&#233;dia b&#244;nus %</div><div class="rc-value" id="eq-media-pct">&#8212;</div></div>
+        <div class="rc rc-navy"><div class="rc-label">M&#233;dia b&#244;nus R$</div><div class="rc-value" id="eq-media-val">&#8212;</div></div>
+        <div class="rc rc-blue"><div class="rc-label">Maior b&#244;nus</div><div class="rc-value" id="eq-top">&#8212;</div><div class="rc-sub" id="eq-top-nome">&#8212;</div></div>
       </div>
-      <div id="eq-table" style="margin-top:18px;overflow-x:auto"></div>
+      <div id="eq-table" style="margin-top:14px;overflow-x:auto"></div>
     </div>
 
-    <!-- GLOSSÁRIO -->
     <div id="panel-glossario" class="panel">
-
       <div class="sec">Elegibilidade e pagamento</div>
-      <div class="gl-item">
-        <div class="gl-term">Quem é elegível?</div>
-        <div class="gl-def">Todos os colaboradores da VP do Guilherme Matiello a partir dos cargos de <strong>Especialista, Comprador e Coordenador</strong>. É necessário ter trabalhado o trimestre completo para receber o bônus do período.</div>
-      </div>
-      <div class="gl-item">
-        <div class="gl-term">Periodicidade de pagamento</div>
-        <div class="gl-def"><strong>Por quarter:</strong> pago 30 dias após o fechamento do mês. <strong>Anual:</strong> pago 60 dias após o fechamento do ano.</div>
-      </div>
-
+      <div class="gl-item"><div class="gl-term">Quem &#233; eleg&#237;vel?</div><div class="gl-def">Colaboradores da VP do Guilherme Matiello a partir dos cargos de <strong>Especialista, Comprador e Coordenador</strong>. Necess&#225;rio ter trabalhado o trimestre completo.</div></div>
+      <div class="gl-item"><div class="gl-term">Periodicidade</div><div class="gl-def"><strong>Quarter:</strong> 30 dias ap&#243;s fechamento. <strong>Anual:</strong> 60 dias ap&#243;s fechamento do ano.</div></div>
       <div class="sec">Indicadores e pesos</div>
-      <div class="gl-item">
-        <div class="gl-term">Vendas — peso 40%</div>
-        <div class="gl-def">Meta de Margem Comercial para o time de Compras. Meta de Margem de Contribuição para os times de MKPs, Distribuição, VP, Logística, Planejamento, Marketing e Site. Direção: <em>maior melhor</em>.</div>
-      </div>
-      <div class="gl-item">
-        <div class="gl-term">Margem — peso 40%</div>
-        <div class="gl-def">Margem em decimal (0.19 = 19%). Possui tabela própria de ranges com multiplicadores de 0× a 1,6× conforme o valor absoluto realizado — independente do atingimento relativo à meta.</div>
-      </div>
-      <div class="gl-item">
-        <div class="gl-term">DOH — Dias de Estoque — peso 20%</div>
-        <div class="gl-def">Days on Hand: dias de cobertura de estoque. Lógica <em>centro melhor</em>: pontuação máxima na meta, caindo linearmente até zero quando o desvio atinge a tolerância de 24%.</div>
-        <div class="gl-ex">Ex.: meta 45 dias, tolerância 24% (≈10,8d) → realizado 50d = ~54%; realizado 56d ≈ 0%</div>
-      </div>
-
-      <div class="sec">Direções de atingimento</div>
-      <div class="gl-item">
-        <div class="gl-term">Maior melhor</div>
-        <div class="gl-def">Atingimento = Realizado ÷ Meta. Quanto maior o realizado em relação à meta, maior a pontuação.</div>
-      </div>
-      <div class="gl-item">
-        <div class="gl-term">Menor melhor</div>
-        <div class="gl-def">Atingimento = Meta ÷ Realizado. Usado para métricas onde reduzir o número é positivo (ex.: custo, prazo de entrega).</div>
-      </div>
-      <div class="gl-item">
-        <div class="gl-term">Centro melhor</div>
-        <div class="gl-def">100% na meta exata, caindo linearmente conforme o desvio cresce (para mais ou para menos). A tolerância define a distância máxima com pontuação acima de zero.</div>
-        <div class="gl-ex">Fórmula: atingimento = max(0, 1 − |realizado − meta| / (meta × tolerância))</div>
-      </div>
-
-      <div class="sec">Ranges de bônus — atingimento ponderado</div>
+      <div class="gl-item"><div class="gl-term">Vendas &#8212; 40%</div><div class="gl-def">Margem Comercial (Compras) ou Margem de Contribui&#231;&#227;o (demais times). Maior melhor.</div></div>
+      <div class="gl-item"><div class="gl-term">Margem &#8212; 40%</div><div class="gl-def">Inserir em % (ex: 19,0). Fator de 0&#215; a 1,6&#215; conforme valor absoluto realizado.</div></div>
+      <div class="gl-item"><div class="gl-term">DOH &#8212; 20%</div><div class="gl-def">Centro melhor: 100% na meta, cai linearmente com toler&#226;ncia de 24%.</div><div class="gl-ex">Ex.: meta 45d &#8594; realizado 50d &#8776; 54%; 56d &#8776; 0%</div></div>
+      <div class="sec">Ranges &#8212; atingimento ponderado</div>
       <div class="gl-item">
         <table class="up-table">
-          <tr><th>Atingimento ponderado</th><th>Bônus aplicado</th></tr>
-          <tr><td>Abaixo de 70%</td><td><span class="badge b-red">0% — sem bônus</span></td></tr>
-          <tr><td>70% – 79,99%</td><td><span class="badge b-amber">70% do valor alvo</span></td></tr>
-          <tr><td>80% – 89,99%</td><td><span class="badge b-amber">80% do valor alvo</span></td></tr>
-          <tr><td>90% – 99,99%</td><td><span class="badge b-green">90% do valor alvo</span></td></tr>
-          <tr><td>100% ou mais</td><td><span class="badge b-green">100% + excesso proporcional</span></td></tr>
+          <tr><th>Atingimento</th><th>B&#244;nus</th></tr>
+          <tr><td>Abaixo de 70%</td><td><span class="badge b-red">0%</span></td></tr>
+          <tr><td>70% &#8211; 79,99%</td><td><span class="badge b-amber">70% do alvo</span></td></tr>
+          <tr><td>80% &#8211; 89,99%</td><td><span class="badge b-amber">80% do alvo</span></td></tr>
+          <tr><td>90% &#8211; 99,99%</td><td><span class="badge b-green">90% do alvo</span></td></tr>
+          <tr><td>100%+</td><td><span class="badge b-green">100% + proporcional</span></td></tr>
         </table>
-        <div class="gl-def" style="margin-top:9px">Acima de 100%: cada ponto percentual adicional é somado. Ex.: 102% de atingimento → colaborador recebe 102% do valor alvo.</div>
       </div>
-
-      <div class="sec">Ranges de bônus — margem (valor absoluto realizado)</div>
+      <div class="sec">Ranges &#8212; margem (valor absoluto)</div>
       <div class="gl-item">
         <table class="up-table">
-          <tr><th>Margem realizada</th><th>Fator multiplicador</th></tr>
-          <tr><td>Abaixo de 17,5%</td><td>0×</td></tr>
-          <tr><td>17,5% – 17,99%</td><td>0,70×</td></tr>
-          <tr><td>18,0% – 18,49%</td><td>0,80×</td></tr>
-          <tr><td>18,5% – 18,99%</td><td>0,90×</td></tr>
-          <tr><td>19,0% – 19,49%</td><td>1,00×</td></tr>
-          <tr><td>19,5% – 19,99%</td><td>1,10×</td></tr>
-          <tr><td>20,0% – 20,49%</td><td>1,20×</td></tr>
-          <tr><td>20,5% – 20,99%</td><td>1,30×</td></tr>
-          <tr><td>21,0% – 21,49%</td><td>1,40×</td></tr>
-          <tr><td>21,5% – 21,99%</td><td>1,50×</td></tr>
-          <tr><td>22,0% – 22,49%</td><td>1,60×</td></tr>
+          <tr><th>Margem realizada</th><th>Fator</th></tr>
+          <tr><td>Abaixo de 17,5%</td><td>0&#215;</td></tr>
+          <tr><td>17,5% &#8211; 17,99%</td><td>0,70&#215;</td></tr>
+          <tr><td>18,0% &#8211; 18,49%</td><td>0,80&#215;</td></tr>
+          <tr><td>18,5% &#8211; 18,99%</td><td>0,90&#215;</td></tr>
+          <tr><td>19,0% &#8211; 19,49%</td><td>1,00&#215;</td></tr>
+          <tr><td>19,5% &#8211; 19,99%</td><td>1,10&#215;</td></tr>
+          <tr><td>20,0% &#8211; 20,49%</td><td>1,20&#215;</td></tr>
+          <tr><td>20,5% &#8211; 20,99%</td><td>1,30&#215;</td></tr>
+          <tr><td>21,0% &#8211; 21,49%</td><td>1,40&#215;</td></tr>
+          <tr><td>21,5% &#8211; 21,99%</td><td>1,50&#215;</td></tr>
+          <tr><td>&#8805; 22,0%</td><td>1,60&#215;</td></tr>
         </table>
       </div>
-
-      <div class="sec">Bônus alvo por cargo (100% de meta)</div>
+      <div class="sec">B&#244;nus alvo por cargo</div>
       <div class="gl-item">
         <table class="up-table">
           <tr><th>Cargo</th><th>Por quarter</th><th>Anual</th></tr>
-          <tr><td>Especialista</td><td>1 salário</td><td>2 salários</td></tr>
-          <tr><td>Coordenador</td><td>1 salário</td><td>2 salários</td></tr>
-          <tr><td>Comprador</td><td>1 salário</td><td>2 salários</td></tr>
-          <tr><td>Gerente</td><td>1,5 salário</td><td>3 salários</td></tr>
-          <tr><td>Diretor / Head</td><td>2 salários</td><td>4 salários</td></tr>
+          <tr><td>Especialista / Coordenador / Comprador</td><td>1 sal&#225;rio</td><td>2 sal&#225;rios</td></tr>
+          <tr><td>Gerente</td><td>1,5 sal&#225;rio</td><td>3 sal&#225;rios</td></tr>
+          <tr><td>Diretor / Head</td><td>2 sal&#225;rios</td><td>4 sal&#225;rios</td></tr>
         </table>
       </div>
-
-      <div class="sec">Composição de metas por período</div>
-      <div class="gl-item">
-        <div class="gl-term">Q2 — metas por BU</div>
-        <div class="gl-def">No segundo trimestre as metas são definidas por Unidade de Negócio (BU). O simulador considera apenas a meta individual.</div>
-      </div>
-      <div class="gl-item">
-        <div class="gl-term">Q3 em diante — metas mistas</div>
-        <div class="gl-def">A composição muda para <strong>60% meta individual + 40% meta total empresa</strong>.</div>
-      </div>
-
     </div>
-  </div><!-- /body -->
-
-  <!-- Footer -->
-  <div class="ft">
-    <span>Confidencial — UP2Tech — 2026</span>
-    <span>Calculadora de Bônus · Marketplace</span>
   </div>
-</div><!-- /shell -->
+  <div class="ft">
+    <span>Confidencial &#8212; UP2Tech &#8212; 2026</span>
+    <span>Calculadora de B&#244;nus &middot; Marketplace</span>
+  </div>
+</div>
 
 <script>
 const BALVO={Especialista:1,Coordenador:1,Comprador:1,Gerente:1.5,Diretor:2,VP:3};
-const RM=[{min:0,max:.1749,b:0},{min:.175,max:.1799,b:.7},{min:.18,max:.1849,b:.8},{min:.185,max:.1899,b:.9},{min:.19,max:.1949,b:1},{min:.195,max:.1999,b:1.1},{min:.2,max:.2049,b:1.2},{min:.205,max:.2099,b:1.3},{min:.21,max:.2149,b:1.4},{min:.215,max:.2199,b:1.5},{min:.22,max:.2249,b:1.6}];
+const RM=[{min:0,max:17.49,b:0},{min:17.5,max:17.99,b:.7},{min:18,max:18.49,b:.8},{min:18.5,max:18.99,b:.9},{min:19,max:19.49,b:1},{min:19.5,max:19.99,b:1.1},{min:20,max:20.49,b:1.2},{min:20.5,max:20.99,b:1.3},{min:21,max:21.49,b:1.4},{min:21.5,max:21.99,b:1.5},{min:22,max:999,b:1.6}];
 const TOL=.24;
+const SHEETS_CSV='https://docs.google.com/spreadsheets/d/e/2PACX-1vSgaPxax63qi38s8qXTMmsqNvwELqeuXkafVogB0yEYy05kKdAibXHJO8k-DomKLj5sQFiCUo7eYJuU/pub?gid=881184393&single=true&output=csv';
 
-function switchTab(t){
-  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(e=>e.classList.remove('active'));
-  document.querySelector(`[onclick="switchTab('${t}')"]`).classList.add('active');
-  document.getElementById('panel-'+t).classList.add('active');
-  if(t==='equipe')calcEquipe();
-}
-function updateCargo(){
-  const c=document.getElementById('cargo').value;
-  document.getElementById('bonus_alvo').value=BALVO[c]||1;
-  calcular();
-}
-function atV(m,r){return m?r/m:0;}
-function bM(r){for(let x of RM)if(r>=x.min&&r<=x.max)return x.b;return r>=.225?1.6:0;}
-function atE(m,r){return m?Math.max(0,1-Math.abs(r-m)/(m*TOL)):0;}
-function bV(a){if(a>=1)return a;if(a>=.9)return.9;if(a>=.8)return.8;if(a>=.7)return.7;return 0;}
-function pond(v,m,e){return v*.4+m*.4+e*.2;}
-function bf(p){if(p<.7)return 0;if(p<.8)return.7;if(p<.9)return.8;if(p<1)return.9;return p;}
+function parseMoney(s){return parseFloat(String(s).replace(/\./g,'').replace(',','.'))||0;}
+function parsePct(s){return parseFloat(String(s).replace(',','.'))||0;}
+function onMoney(el){let r=el.value.replace(/\D/g,'');if(!r){el.value='';calcular();return;}el.value=parseInt(r,10).toLocaleString('pt-BR');calcular();}
+function onMoneyBlur(el){let v=parseMoney(el.value);el.value=v?v.toLocaleString('pt-BR'):'';calcular();}
+function onPct(el){el.value=el.value.replace(/[^\d,\.]/g,'');calcular();}
+function onPctBlur(el){let v=parsePct(el.value);el.value=v?v.toFixed(1).replace('.',','):'';calcular();}
+
+function switchTab(t){document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.panel').forEach(e=>e.classList.remove('active'));document.querySelector('[onclick="switchTab(\''+t+'\')"]').classList.add('active');document.getElementById('panel-'+t).classList.add('active');if(t==='equipe')calcEquipe();}
+function updateCargo(){const c=document.getElementById('cargo').value;document.getElementById('bonus_alvo').value=BALVO[c]||1;calcular();}
+function getFactorMargem(r){for(let x of RM)if(r>=x.min&&r<=x.max)return x.b;return 0;}
+function atVendas(m,r){return m?r/m:0;}
+function atEstoque(m,r){return m?Math.max(0,1-Math.abs(r-m)/(m*TOL)):0;}
+function bonusVendas(a){if(a>=1)return a;if(a>=.9)return.9;if(a>=.8)return.8;if(a>=.7)return.7;return 0;}
+function ponderado(v,m,e){return v*.4+m*.4+e*.2;}
+function bonusFinal(p){if(p<.7)return 0;if(p<.8)return.7;if(p<.9)return.8;if(p<1)return.9;return p;}
 function fp(v){return(v*100).toFixed(1)+'%';}
 function fr(v){return'R$ '+Math.round(v).toLocaleString('pt-BR');}
 
 function calcular(){
   const cargo=document.getElementById('cargo').value;
-  const sal=+document.getElementById('salario').value||0;
+  const sal=parseMoney(document.getElementById('salario').value);
   const trim=+document.getElementById('trimestres').value||1;
   const ba=BALVO[cargo]||1;
   document.getElementById('bonus_alvo').value=ba;
-  const mv=+document.getElementById('meta-vendas').value||0,rv=+document.getElementById('real-vendas').value||0;
-  const mm=+document.getElementById('meta-margem').value||0,rm=+document.getElementById('real-margem').value||0;
-  const me=+document.getElementById('meta-estoque').value||0,re=+document.getElementById('real-estoque').value||0;
-  const av=atV(mv,rv),bv=bV(av),bm=bM(rm),ae=atE(me,re);
-  const p=pond(bv,bm,ae),f=bf(p),base=sal*trim*ba,val=base*f;
+  const mv=parseMoney(document.getElementById('meta-vendas').value);
+  const rv=parseMoney(document.getElementById('real-vendas').value);
+  const mmPct=parsePct(document.getElementById('meta-margem').value);
+  const rmPct=parsePct(document.getElementById('real-margem').value);
+  const me=+document.getElementById('meta-estoque').value||0;
+  const re=+document.getElementById('real-estoque').value||0;
+  const av=atVendas(mv,rv);
+  const atMargem=mmPct?rmPct/mmPct:0;
+  const ae=atEstoque(me,re);
+  const bv=bonusVendas(av);
+  const bm=getFactorMargem(rmPct);
+  const p=ponderado(bv,bm,ae);
+  const f=bonusFinal(p);
+  const val=sal*f;
   document.getElementById('pct-vendas').textContent=fp(av);
-  document.getElementById('pct-margem').textContent=fp(rm)+' real.';
+  document.getElementById('pct-margem').textContent=fp(atMargem);
   document.getElementById('pct-estoque').textContent=fp(ae);
   document.getElementById('bar-vendas').style.width=Math.min(av*100,100)+'%';
-  document.getElementById('bar-margem').style.width=Math.min(bm*100,100)+'%';
+  document.getElementById('bar-margem').style.width=Math.min(atMargem*100,100)+'%';
   document.getElementById('bar-estoque').style.width=Math.min(ae*100,100)+'%';
   document.getElementById('alert-venda').style.display=av<.7?'block':'none';
   document.getElementById('res-ating').textContent=fp(p);
   document.getElementById('res-pct').textContent=fp(f);
   document.getElementById('res-valor').textContent=fr(val);
-  document.getElementById('res-detalhe').textContent=
-    `Base de cálculo: ${fr(base)} = ${sal.toLocaleString('pt-BR')} × ${trim} trimestre(s) × ${ba} salário(s)  ·  Bônus estimado: ${fr(val)}`;
+  document.getElementById('res-formula').textContent=fr(sal)+' \xd7 '+fp(f);
 }
 
 let equipe=[
-  {nome:'Ana',cargo:'Especialista',salario:7000,trim:1,mv:100000,rv:92000,mm:.19,rm:.18,me:45,re:38},
-  {nome:'Bruno',cargo:'Coordenador',salario:9000,trim:1,mv:100000,rv:92000,mm:.19,rm:.18,me:45,re:38},
-  {nome:'Diego',cargo:'Gerente',salario:13000,trim:1,mv:100000,rv:92000,mm:.19,rm:.18,me:45,re:38},
+  {nome:'Ana',cargo:'Especialista',salario:7000,trim:1,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
+  {nome:'Bruno',cargo:'Coordenador',salario:9000,trim:1,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
+  {nome:'Diego',cargo:'Gerente',salario:13000,trim:1,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
 ];
-function addMembro(){
-  if(equipe.length>=8)return;
-  equipe.push({nome:'Colaborador',cargo:'Especialista',salario:8000,trim:1,mv:100000,rv:100000,mm:.19,rm:.19,me:45,re:45});
-  renderEquipe();
-}
+function addMembro(){if(equipe.length>=8)return;equipe.push({nome:'Colaborador',cargo:'Especialista',salario:8000,trim:1,mv:100000,rv:100000,mmPct:19,rmPct:19,me:45,re:45});renderEquipe();}
 function remM(i){equipe.splice(i,1);renderEquipe();}
-function upM(i,f,v){equipe[i][f]=isNaN(parseFloat(v))?v:(parseFloat(v)||v);calcEquipe();}
+function upM(i,f,v){if(['salario','mv','rv'].includes(f))equipe[i][f]=parseMoney(v);else if(['mmPct','rmPct'].includes(f))equipe[i][f]=parsePct(v);else equipe[i][f]=isNaN(parseFloat(v))?v:(parseFloat(v)||v);calcEquipe();}
+
+function calcEquipe(){
+  const R=equipe.map(m=>{const bv=bonusVendas(atVendas(m.mv,m.rv)),bm=getFactorMargem(m.rmPct),ae=atEstoque(m.me,m.re),p=ponderado(bv,bm,ae),f=bonusFinal(p),val=m.salario*f;return{nome:m.nome,cargo:m.cargo,p,f,val};});
+  if(!R.length)return;
+  const mp=R.reduce((s,r)=>s+r.f,0)/R.length,mv2=R.reduce((s,r)=>s+r.val,0)/R.length,top=R.reduce((a,b)=>b.val>a.val?b:a);
+  document.getElementById('eq-media-pct').textContent=fp(mp);
+  document.getElementById('eq-media-val').textContent=fr(mv2);
+  document.getElementById('eq-top').textContent=fr(top.val);
+  document.getElementById('eq-top-nome').textContent=top.nome;
+  document.getElementById('eq-table').innerHTML='<table class="up-table"><tr><th>Nome</th><th>Cargo</th><th>Ating.</th><th>B\xf4nus %</th><th>B\xf4nus R$</th></tr>'+R.map(r=>'<tr><td>'+r.nome+'</td><td>'+r.cargo+'</td><td>'+fp(r.p)+'</td><td><span class="badge '+(r.f>=1?'b-green':r.f>0?'b-amber':'b-red')+'">'+fp(r.f)+'</span></td><td style="font-weight:700">'+fr(r.val)+'</td></tr>').join('')+'</table>';
+}
 
 function renderEquipe(){
   const cargos=['Especialista','Coordenador','Comprador','Gerente','Diretor','VP'];
+  const inp=(val,cb,pfx,sfx)=>`<div style="position:relative">${pfx?`<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#4A6FA5">${pfx}</span>`:''}<input type="text" value="${val}" onchange="${cb}" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px ${sfx?'22px':'8px'} 6px ${pfx?'26px':'8px'};font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;">${sfx?`<span style="position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#4A6FA5">${sfx}</span>`:''}</div>`;
   document.getElementById('equipe-list').innerHTML=equipe.map((m,i)=>`
     <div class="eq-card">
       <div class="eq-hd">
-        <input value="${m.nome}" onchange="upM(${i},'nome',this.value)" style="font-weight:700;font-size:14px;border:none;background:transparent;color:#1B3A6B;padding:0;width:220px;font-family:Montserrat,Arial,sans-serif;outline:none;">
-        <button onclick="remM(${i})" style="background:none;border:none;cursor:pointer;color:#4A6FA5;font-size:16px;line-height:1;">✕</button>
+        <input value="${m.nome}" onchange="upM(${i},'nome',this.value)" style="font-weight:700;font-size:13px;border:none;background:transparent;color:#1B3A6B;padding:0;width:200px;font-family:Montserrat,Arial,sans-serif;outline:none;">
+        <button onclick="remM(${i})" style="background:none;border:none;cursor:pointer;color:#4A6FA5;font-size:15px;">&times;</button>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px">
-        <div><label>Cargo</label><select onchange="upM(${i},'cargo',this.value)" style="font-size:12px">${cargos.map(c=>`<option ${c===m.cargo?'selected':''}>${c}</option>`).join('')}</select></div>
-        <div><label>Salário (R$)</label><input type="number" value="${m.salario}" onchange="upM(${i},'salario',this.value)" style="font-size:12px"></div>
-        <div><label>Meta vendas</label><input type="number" value="${m.mv}" onchange="upM(${i},'mv',this.value)" style="font-size:12px"></div>
-        <div><label>Real. vendas</label><input type="number" value="${m.rv}" onchange="upM(${i},'rv',this.value)" style="font-size:12px"></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:7px">
+        <div><label>Cargo</label><select onchange="upM(${i},'cargo',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;">${cargos.map(c=>`<option ${c===m.cargo?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div><label>Sal&aacute;rio</label>${inp(m.salario.toLocaleString('pt-BR'),`upM(${i},'salario',this.value)`,'R$','')}</div>
+        <div><label>Meta vendas</label>${inp(m.mv.toLocaleString('pt-BR'),`upM(${i},'mv',this.value)`,'R$','')}</div>
+        <div><label>Real. vendas</label>${inp(m.rv.toLocaleString('pt-BR'),`upM(${i},'rv',this.value)`,'R$','')}</div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-        <div><label>Meta margem</label><input type="number" value="${m.mm}" step="0.001" onchange="upM(${i},'mm',this.value)" style="font-size:12px"></div>
-        <div><label>Real. margem</label><input type="number" value="${m.rm}" step="0.001" onchange="upM(${i},'rm',this.value)" style="font-size:12px"></div>
-        <div><label>Meta estoque</label><input type="number" value="${m.me}" onchange="upM(${i},'me',this.value)" style="font-size:12px"></div>
-        <div><label>Real. estoque</label><input type="number" value="${m.re}" onchange="upM(${i},'re',this.value)" style="font-size:12px"></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
+        <div><label>Meta margem</label>${inp(m.mmPct.toFixed(1).replace('.',','),`upM(${i},'mmPct',this.value)`,'','%')}</div>
+        <div><label>Real. margem</label>${inp(m.rmPct.toFixed(1).replace('.',','),`upM(${i},'rmPct',this.value)`,'','%')}</div>
+        <div><label>Meta estoque</label><input type="number" value="${m.me}" onchange="upM(${i},'me',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;"></div>
+        <div><label>Real. estoque</label><input type="number" value="${m.re}" onchange="upM(${i},'re',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;"></div>
       </div>
     </div>`).join('');
   calcEquipe();
 }
 
-function calcEquipe(){
-  const R=equipe.map(m=>{
-    const ba=BALVO[m.cargo]||1,av=atV(m.mv,m.rv),bv=bV(av),bm=bM(m.rm),ae=atE(m.me,m.re);
-    const p=pond(bv,bm,ae),f=bf(p),base=m.salario*m.trim*ba,val=base*f;
-    return{nome:m.nome,cargo:m.cargo,p,f,val};
-  });
-  if(!R.length)return;
-  const mp=R.reduce((s,r)=>s+r.f,0)/R.length;
-  const mv=R.reduce((s,r)=>s+r.val,0)/R.length;
-  const top=R.reduce((a,b)=>b.val>a.val?b:a);
-  document.getElementById('eq-media-pct').textContent=fp(mp);
-  document.getElementById('eq-media-val').textContent=fr(mv);
-  document.getElementById('eq-top').textContent=fr(top.val);
-  document.getElementById('eq-top-nome').textContent=top.nome;
-  document.getElementById('eq-table').innerHTML=`
-    <table class="up-table">
-      <tr><th>Nome</th><th>Cargo</th><th>Ating. pond.</th><th>Bônus %</th><th>Bônus R$</th></tr>
-      ${R.map(r=>`<tr>
-        <td>${r.nome}</td><td>${r.cargo}</td><td>${fp(r.p)}</td>
-        <td><span class="badge ${r.f>=1?'b-green':r.f>0?'b-amber':'b-red'}">${fp(r.f)}</span></td>
-        <td style="font-weight:700">${fr(r.val)}</td>
-      </tr>`).join('')}
-    </table>`;
-}
-
-updateCargo();
-renderEquipe();
-
-const SHEETS_CSV='https://docs.google.com/spreadsheets/d/e/2PACX-1vSgaPxax63qi38s8qXTMmsqNvwELqeuXkafVogB0yEYy05kKdAibXHJO8k-DomKLj5sQFiCUo7eYJuU/pub?gid=881184393&single=true&output=csv';
-
 async function syncSheets(){
-  const btn=document.getElementById('sync-btn');
-  const dot=document.getElementById('sync-dot');
-  const status=document.getElementById('sync-status');
-  btn.classList.add('loading');
-  btn.textContent='Sincronizando...';
-  dot.className='sync-dot idle';
+  const btn=document.getElementById('sync-btn'),dot=document.getElementById('sync-dot'),status=document.getElementById('sync-status');
+  btn.classList.add('loading');btn.textContent='Sincronizando...';dot.className='sync-dot idle';
   try{
     const res=await fetch(SHEETS_CSV+'&t='+Date.now());
     if(!res.ok)throw new Error('HTTP '+res.status);
     const text=await res.text();
     const rows=text.trim().split('\n').map(r=>r.split(',').map(c=>c.trim().replace(/^"|"$/g,'')));
-    if(rows.length<2){
-      throw new Error('Planilha sem dados. Preencha pelo menos uma linha na Base Calculadora Bonus.');
-    }
-    // rows[0] = headers, rows[1] = first data row
+    if(rows.length<2)throw new Error('Sem dados');
     const d=rows[1];
-    const mv=parseFloat(d[0])||0;
-    const rv=parseFloat(d[1])||0;
-    const mm=parseFloat(d[2])||0;
-    const rm=parseFloat(d[3])||0;
-    const me=parseFloat(d[4])||0;
-    const re=parseFloat(d[5])||0;
-    // Fill individual panel
-    const fields={
-      'meta-vendas':mv,'real-vendas':rv,
-      'meta-margem':mm,'real-margem':rm,
-      'meta-estoque':me,'real-estoque':re
-    };
-    Object.entries(fields).forEach(([id,val])=>{
-      const el=document.getElementById(id);
-      el.value=val;
-      el.classList.add('synced');
-      el.readOnly=true;
-    });
-    // Fill equipe rows too
-    equipe.forEach(m=>{m.mv=mv;m.rv=rv;m.mm=mm;m.rm=rm;m.me=me;m.re=re;});
-    renderEquipe();
-    calcular();
+    const mv=parseFloat(d[0])||0,rv=parseFloat(d[1])||0;
+    const mmRaw=parseFloat(d[2])||0,rmRaw=parseFloat(d[3])||0;
+    const mmPct=mmRaw<1?mmRaw*100:mmRaw,rmPct=rmRaw<1?rmRaw*100:rmRaw;
+    const me=parseFloat(d[4])||0,re=parseFloat(d[5])||0;
+    document.getElementById('meta-vendas').value=mv.toLocaleString('pt-BR');
+    document.getElementById('real-vendas').value=rv.toLocaleString('pt-BR');
+    document.getElementById('meta-margem').value=mmPct.toFixed(1).replace('.',',');
+    document.getElementById('real-margem').value=rmPct.toFixed(1).replace('.',',');
+    document.getElementById('meta-estoque').value=me;
+    document.getElementById('real-estoque').value=re;
+    ['meta-vendas','real-vendas','meta-margem','real-margem','meta-estoque','real-estoque'].forEach(id=>{const el=document.getElementById(id);el.classList.add('synced');el.readOnly=true;});
+    equipe.forEach(m=>{m.mv=mv;m.rv=rv;m.mmPct=mmPct;m.rmPct=rmPct;m.me=me;m.re=re;});
+    renderEquipe();calcular();
     const now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-    dot.className='sync-dot';
-    status.innerHTML=`Sincronizado &agrave;s <span>${now}</span> &nbsp;&middot;&nbsp; <span>Base Calculadora B&ocirc;nus</span> &nbsp;<span style="font-weight:400;color:#3B6D11">&#10003; OK</span>`;
-    btn.classList.remove('loading');
-    btn.innerHTML='&#8635; Atualizar';
+    dot.className='sync-dot ok';
+    status.innerHTML='Sincronizado &agrave;s <span>'+now+'</span> &middot; <span>Base Calculadora B&ocirc;nus</span> <span style="color:#3B6D11"> &#10003;</span>';
+    btn.classList.remove('loading');btn.textContent='\u21bb Atualizar';
   }catch(e){
     dot.className='sync-dot err';
-    status.innerHTML=`<span style="color:#A32D2D">Erro ao sincronizar &mdash; verifique a planilha</span>`;
-    btn.classList.remove('loading');
-    btn.innerHTML='&#8635; Tentar novamente';
-    console.error(e);
+    status.innerHTML='<span style="color:#A32D2D">Erro ao sincronizar</span>';
+    btn.classList.remove('loading');btn.textContent='\u21bb Tentar novamente';
   }
 }
 
 function doLogin(){
-  const u=document.getElementById('login-user').value.trim();
-  const p=document.getElementById('login-pass').value;
-  const err=document.getElementById('login-err');
-  if(u==='admin'&&p==='admin'){
-    const ov=document.getElementById('login-overlay');
-    ov.style.transition='opacity .4s ease';
-    ov.style.opacity='0';
-    setTimeout(()=>ov.style.display='none',400);
-  } else {
-    err.style.display='block';
-    document.getElementById('login-pass').value='';
-    document.getElementById('login-pass').focus();
-  }
+  const u=document.getElementById('login-user').value.trim(),p=document.getElementById('login-pass').value;
+  if(u==='admin'&&p==='admin'){const ov=document.getElementById('login-overlay');ov.style.transition='opacity .4s ease';ov.style.opacity='0';setTimeout(()=>ov.style.display='none',400);}
+  else{document.getElementById('login-err').style.display='block';document.getElementById('login-pass').value='';document.getElementById('login-pass').focus();}
 }
+
+updateCargo();
+renderEquipe();
 </script>
 </body>
 </html>
