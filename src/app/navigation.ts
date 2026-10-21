@@ -1,4 +1,4 @@
-import { Home, Package, Palette, Plug, Settings, SlidersHorizontal } from 'lucide-react'
+import { Palette, Plug, Settings, SlidersHorizontal } from 'lucide-react'
 import type { NavEntry } from '@/design-system'
 
 /**
@@ -9,16 +9,17 @@ export const routes = {
   home: '/',
   products: '/produtos',
   product: (id: string) => `/produtos/${id}`,
+  newProduct: '/produtos/novo',
   connections: '/conexoes',
   settings: '/configuracoes',
   designSystem: '/configuracoes/design-system',
 } as const
 
-/** Navegação principal, exibida no cabeçalho. */
+/** Navegação principal: o toggle exibido acima do PageHeader de cada página (sem ícones). */
 export const mainNav: NavEntry[] = [
-  { id: 'home', label: 'Início', href: routes.home, icon: Home, end: true },
+  { id: 'home', label: 'Início', href: routes.home, end: true },
   // end: na página do produto (/produtos/:id) nenhum item do menu fica marcado como "página atual".
-  { id: 'products', label: 'Todos os produtos', href: routes.products, icon: Package, end: true },
+  { id: 'products', label: 'Todos os produtos', href: routes.products, end: true },
 ]
 
 /** Destinos do menu do usuário (ícone de perfil no cabeçalho). */

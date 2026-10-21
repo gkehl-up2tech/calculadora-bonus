@@ -13,7 +13,7 @@ const MIN_QUERY = 2
 
 const normalize = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
 
-/** Moldura de todas as páginas: cabeçalho com navegação e busca global de produtos. */
+/** Moldura de todas as páginas: cabeçalho (busca global), toggle de navegação e o conteúdo da rota. */
 export function AppLayout() {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
@@ -74,7 +74,7 @@ export function AppLayout() {
       ))}
       logo={
         <NavLink to={routes.home} aria-label="UP2Tech — Início" className="rounded-md">
-          <Logo />
+          <Logo wordmarkOnly />
         </NavLink>
       }
     >

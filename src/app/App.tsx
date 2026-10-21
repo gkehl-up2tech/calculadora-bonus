@@ -1,7 +1,7 @@
 import { createBrowserRouter, createMemoryRouter, RouterProvider, type RouteObject } from 'react-router'
 import { Toaster, TooltipProvider } from '@/design-system'
 import { ConnectionsPage } from '@/pages/ConnectionsPage'
-import { HomePage } from '@/pages/HomePage'
+import { HomePage } from '@/pages/home/HomePage'
 import { ProductPage } from '@/pages/products/ProductPage'
 import { ProductsPage } from '@/pages/products/ProductsPage'
 import { DesignSystemPage } from '@/pages/design-system/DesignSystemPage'
@@ -16,7 +16,8 @@ const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: 'produtos', element: <ProductsPage /> },
-      // Sem item de menu: só pela lista de produtos ou pela busca global.
+      // Sem item de menu: só pela lista de produtos, pela busca global ou pelo botão "Novo produto" do Início.
+      { path: 'produtos/novo', element: <ProductPage isNew /> },
       { path: 'produtos/:produtoId', element: <ProductPage /> },
       { path: 'conexoes', element: <ConnectionsPage /> },
       {

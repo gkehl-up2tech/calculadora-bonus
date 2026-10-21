@@ -195,12 +195,16 @@ export function AtomsSection() {
         <Specimen title="Icon, Divider e Logo" code={`<Icon icon={Package} size="md" />
 <Divider />
 <Divider orientation="vertical" />
-<Logo />`} previewClassName="!grid">
+<Logo />            // símbolo + texto
+<Logo wordmarkOnly /> // só o texto (usado no cabeçalho)
+<Logo markOnly />    // só o símbolo`} previewClassName="!grid">
           <div className="flex flex-wrap items-center gap-4">
             <Icon icon={Package} size="md" />
             <Icon icon={Trash2} size="md" className="text-tone-danger-fg" />
             <Divider orientation="vertical" className="h-6" />
             <Logo />
+            <Divider orientation="vertical" className="h-6" />
+            <Logo wordmarkOnly />
             <Divider orientation="vertical" className="h-6" />
             <Logo markOnly />
           </div>

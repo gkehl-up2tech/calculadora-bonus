@@ -7,10 +7,13 @@ Sistema de cadastro de produtos (fiscal + vendas) da UP2Tech. Interface em **por
 - Rode `npm run check` antes de concluir qualquer mudança.
 
 ## Navegação e páginas
-- **Sem menu lateral.** A navegação principal fica no `AppHeader` (cabeçalho); no celular desce para uma 2ª linha. Rotas e menus ficam em `src/app/navigation.ts`.
-- Menu principal: Início e Todos os produtos. **Conexões** e **Configurações** só pelo menu do usuário (ícone de perfil).
-- **Página do produto** (`/produtos/:produtoId`) não tem item de menu: só pela lista de produtos ou pela busca global. Nunca a coloque em menus.
+- **Sem menu lateral e sem menu no cabeçalho.** A navegação principal é o toggle `SegmentedNav` (links com aparência de toggle, **sem ícones**) logo **acima do `PageHeader`**, renderizado pelo `AppShell` em toda página. Rotas e menus ficam em `src/app/navigation.ts`.
+- O `AppHeader` tem só: marca em texto (sem a imagem do logo), botão **Buscar produtos** centralizado (só texto), tema e usuário.
+- Toggle: Início e Todos os produtos. **Conexões** e **Configurações** só pelo menu do usuário (ícone de perfil).
+- **Página do produto** (`/produtos/:produtoId`) não tem item de menu: só pela lista de produtos, pela busca global ou pelo botão *Novo produto* (`/produtos/novo`). Nunca a coloque em menus.
 - Páginas novas começam em branco (`<h1 className="sr-only">` + `usePageTitle`) e são construídas uma a uma, sob instrução.
+- **Início** (pronta): `PageHeader` com `hideTitle` só com o botão *Novo produto* (leva a `/produtos/novo`) + dashboard (`src/pages/home`, métricas em `src/app/dashboard/metrics.ts`).
+- Gráficos: `StatCard` (um `hero` por tela), `BarList` (uma cor para categorias nominais) e `DistributionBar` (parte-do-todo com legenda). Todo valor aparece também em texto; cores de marcas gráficas vêm dos tons `solid` (validados a ≥ 3:1 por `check:contrast`).
 - A busca global (`CommandPalette`) usa `searchProducts` (`src/app/products/search.ts`) sobre dados de exemplo **temporários**.
 
 ## Design System (src/design-system) — Atomic Design

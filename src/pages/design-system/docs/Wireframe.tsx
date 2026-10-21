@@ -15,8 +15,11 @@ export function Wireframe({ kind }: { kind: 'app-shell' | 'settings' | 'list' | 
     <div aria-hidden className="h-56 w-full max-w-md">
       {kind === 'app-shell' ? (
         <div className="grid h-full grid-rows-[2.25rem_minmax(0,1fr)] gap-1.5">
-          <Box className="bg-primary-soft text-primary-soft-fg">AppHeader — logo · navegação · busca · usuário</Box>
-          <Box className="bg-surface">main {'{children}'}</Box>
+          <Box className="bg-primary-soft text-primary-soft-fg">AppHeader — marca · busca · tema · usuário</Box>
+          <div className="grid grid-rows-[2rem_minmax(0,1fr)] gap-1.5">
+            <Box>SegmentedNav (toggle)</Box>
+            <Box className="bg-surface">main {'{children}'}</Box>
+          </div>
         </div>
       ) : null}
       {kind === 'settings' ? (

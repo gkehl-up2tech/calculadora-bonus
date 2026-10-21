@@ -1,7 +1,10 @@
 import { useState, type ElementType, type ReactNode } from 'react'
-import { AppHeader, CommandPalette, type CommandPaletteProps, type NavEntry } from '../organisms'
+import type { NavEntry } from '../cells'
+import { SegmentedNav } from '../molecules'
+import { AppHeader, CommandPalette, type CommandPaletteProps } from '../organisms'
 
 export interface AppShellProps {
+  /** Navegação principal: vira o toggle acima do conteúdo de toda página (acima do PageHeader). */
   nav: NavEntry[]
   user: { name: string; email?: string }
   /** Destinos do menu do usuário (ex.: Conexões, Configurações). */
@@ -17,8 +20,8 @@ export interface AppShellProps {
 }
 
 /**
- * Estrutura global: link "pular para o conteúdo", cabeçalho fixo com a navegação (sem menu lateral),
- * busca global e a área principal.
+ * Estrutura global, sem menu lateral: link "pular para o conteúdo", cabeçalho fixo (marca, busca, tema, usuário),
+ * o toggle de navegação principal e, abaixo dele, o conteúdo da página (que começa pelo PageHeader).
  */
 export function AppShell({ nav, user, userMenu, search, linkAs, hrefProp, currentPath, logo, children }: AppShellProps) {
   const [paletteOpen, setPaletteOpen] = useState(false)
@@ -34,17 +37,16 @@ export function AppShell({ nav, user, userMenu, search, linkAs, hrefProp, curren
 
       <AppHeader
         logo={logo}
-        nav={nav}
-        linkAs={linkAs}
-        hrefProp={hrefProp}
-        currentPath={currentPath}
         user={user}
         userMenu={userMenu}
         onSearchClick={search ? () => setPaletteOpen(true) : undefined}
       />
 
       <main id="conteudo" tabIndex={-1} className="px-4 py-6 outline-none sm:px-6 lg:px-8 lg:py-8">
-        <div className="mx-auto max-w-(--content-max)">{children}</div>
+        <div className="mx-auto grid max-w-(--content-max) gap-6">
+          {nav.length ? <SegmentedNav items={nav} linkAs={linkAs} hrefProp={hrefProp} currentPath={currentPath} /> : null}
+          {children}
+        </div>
       </main>
 
       {search ? (

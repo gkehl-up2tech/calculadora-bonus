@@ -2,17 +2,18 @@
 
 Sistema de cadastro de produtos — dados **fiscais** e de **vendas**. Esta é a base do novo sistema (substitui a antiga calculadora de bônus, preservada em [`legacy/`](legacy/index.html)).
 
-**Estado atual:** moldura da aplicação (cabeçalho com navegação e busca global) e as páginas abaixo, todas **em branco** — serão construídas uma a uma. A exceção é **Configurações › Design System**, que documenta e demonstra todos os componentes.
+**Estado atual:** moldura da aplicação e as páginas abaixo, construídas uma a uma. **Início** está pronta (botão *Novo produto* + dashboard); as demais estão **em branco**. **Configurações › Design System** documenta e demonstra todos os componentes.
 
 ## Mapa de páginas
 
-Não há menu lateral: a navegação principal fica no **cabeçalho** (no celular desce para uma segunda linha).
+Não há menu lateral. A navegação principal é um **toggle** (Início | Todos os produtos), sem ícones, logo **acima do `PageHeader`** de toda página. O cabeçalho tem só a marca (texto), o botão **Buscar produtos** centralizado, o tema e o usuário.
 
 | Página | Rota | Como se chega |
 | --- | --- | --- |
-| Início | `/` | Navegação principal |
-| Todos os produtos | `/produtos` | Navegação principal |
+| Início | `/` | Toggle de navegação. Botão **Novo produto** e dashboard de indicadores |
+| Todos os produtos | `/produtos` | Toggle de navegação |
 | Página do produto | `/produtos/:produtoId` | **Somente** pela lista de produtos ou pela busca global (Ctrl/⌘ + K). Sem item de menu |
+| Novo produto | `/produtos/novo` | Botão *Novo produto* do Início (mesma página do produto, em modo de criação). Em branco |
 | Conexões | `/conexoes` | **Somente** pelo menu do usuário (ícone de perfil) |
 | Configurações | `/configuracoes` (abas: Geral, Design System) | **Somente** pelo menu do usuário |
 
@@ -51,10 +52,10 @@ src/
 ├─ design-system/        ATOMIC DESIGN
 │  ├─ atoms/             Button, Input, Badge, Checkbox…                     (20)
 │  ├─ cells/             IconButton, CheckboxField, InputGroup, StatusBadge… (15)
-│  ├─ molecules/         FormField, Select, Combobox, Dialog, Pagination…    (22)
+│  ├─ molecules/         FormField, Select, Combobox, StatCard, SegmentedNav… (26)
 │  ├─ organisms/         DataTable, AppHeader, FilterBar, FormSection…       (9)
 │  └─ templates/         AppShell, ListPage, FormPage, SettingsLayout        (4)
-├─ app/                  rotas e navegação (navigation.ts), layout, busca de produtos
+├─ app/                  rotas e navegação (navigation.ts), layout, busca de produtos, métricas do dashboard
 └─ pages/                páginas (dados e regras de negócio)
 ```
 
@@ -75,7 +76,7 @@ A documentação viva está em **Configurações › Design System** (`/configur
 
 ## Acessibilidade e qualidade
 
-Meta: **WCAG 2.2 AA**. Verificado por `check:contrast` (82 pares de cores nos dois temas) e, na entrega do Design System, por varredura com axe-core em todas as páginas e temas (0 violações), além de teste de interação por teclado. Ferramentas automáticas não substituem teste manual com leitor de tela.
+Meta: **WCAG 2.2 AA**. Verificado por `check:contrast` (94 pares de cores nos dois temas) e, na entrega do Design System, por varredura com axe-core em todas as páginas e temas (0 violações), além de teste de interação por teclado. Ferramentas automáticas não substituem teste manual com leitor de tela.
 
 ## Dados de exemplo
 

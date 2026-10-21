@@ -1,6 +1,6 @@
 import type { ElementType, ReactNode } from 'react'
-import { NavItem } from '../cells'
-import { PageHeader, type NavEntry } from '../organisms'
+import { NavItem, type NavEntry } from '../cells'
+import { PageHeader } from '../organisms'
 
 export interface SettingsLayoutProps {
   title?: string

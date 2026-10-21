@@ -5,6 +5,16 @@
  */
 export type ProductStatus = 'active' | 'inactive' | 'draft'
 
+/** Dado que falta para o cadastro ficar completo. */
+export type Pendencia = 'fiscal' | 'preco' | 'gtin' | 'descricao'
+
+export const PENDENCIA_LABEL: Record<Pendencia, string> = {
+  fiscal: 'Sem dados fiscais',
+  preco: 'Sem preço de venda',
+  gtin: 'Sem GTIN',
+  descricao: 'Sem descrição',
+}
+
 export interface Product {
   id: string
   sku: string
@@ -14,6 +24,8 @@ export interface Product {
   price: number
   stock: number
   status: ProductStatus
+  /** Vazio = cadastro completo. */
+  pendencias: Pendencia[]
 }
 
 const bases = [
@@ -37,6 +49,14 @@ const statuses: ProductStatus[] = ['active', 'active', 'active', 'inactive', 'ac
 export const PRODUCTS: Product[] = Array.from({ length: 57 }, (_, i) => {
   const base = bases[i % bases.length]!
   const variant = variants[Math.floor(i / bases.length) % variants.length]!
+  const status = statuses[i % statuses.length]!
+  const pendencias: Pendencia[] = []
+  if (status === 'draft') {
+    pendencias.push('fiscal')
+    if (i % 2 === 0) pendencias.push('preco')
+  }
+  if (i % 9 === 0) pendencias.push('gtin')
+  if (i % 11 === 3) pendencias.push('descricao')
   return {
     id: `p${i + 1}`,
     sku: `UP-${String(1000 + i * 7)}`,
@@ -45,7 +65,8 @@ export const PRODUCTS: Product[] = Array.from({ length: 57 }, (_, i) => {
     ncm: base.ncm,
     price: Math.round(base.price * (1 + (i % 5) * 0.15) * 100) / 100,
     stock: (i * 37) % 420,
-    status: statuses[i % statuses.length]!,
+    status,
+    pendencias,
   }
 })
 

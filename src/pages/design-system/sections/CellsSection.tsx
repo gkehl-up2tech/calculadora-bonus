@@ -192,7 +192,7 @@ export function CellsSection() {
         <Specimen
           title="NavItem"
           composedOf={['Icon', 'Text', 'Badge']}
-          description="Item de navegação (usado no cabeçalho e nas abas de Configurações). O estado ativo vem de aria-current=page — com o NavLink do React Router isso é automático. Aceita qualquer componente de link via as."
+          description="Item de navegação em formato de pílula (usado nas abas de Configurações). A navegação principal usa o SegmentedNav. O estado ativo vem de aria-current=page — com o NavLink do React Router isso é automático. Aceita qualquer componente de link via as."
           code={`<NavItem as={NavLink} to="/" icon={Home} end>Início</NavItem>
 <NavItem href="#" icon={Package} trailing={<Badge size="sm">12</Badge>}>Produtos</NavItem>`}
           previewClassName="!block"

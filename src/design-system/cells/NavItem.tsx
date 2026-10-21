@@ -3,6 +3,17 @@ import type { LucideIcon } from 'lucide-react'
 import { Icon } from '../atoms'
 import { cn } from '@/lib/cn'
 
+export interface NavEntry {
+  id: string
+  label: string
+  href: string
+  icon?: LucideIcon
+  /** Contador/Badge à direita. */
+  badge?: ReactNode
+  /** Só fica ativo na rota exata (use no item raiz "/"). */
+  end?: boolean
+}
+
 type NavItemOwnProps = {
   icon?: LucideIcon
   /** Contador ou Badge à direita. */

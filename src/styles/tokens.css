@@ -218,7 +218,7 @@
   --tone-warning-soft: var(--color-warning-50);
   --tone-warning-line: var(--color-warning-100);
   --tone-warning-fg: var(--color-warning-700);
-  --tone-warning-solid: var(--color-warning-500);
+  --tone-warning-solid: var(--color-warning-600);
   --tone-warning-on: var(--color-neutral-900);
 
   --tone-danger-soft: var(--color-danger-50);
@@ -237,8 +237,7 @@
   --control-sm: 2rem;
   --control-md: 2.5rem;
   --control-lg: 3rem;
-  /* Cabeçalho: 1 linha (56px) a partir de md; no celular a navegação desce para uma 2ª linha (+44px). */
-  --header-h: 6.25rem;
+  --header-h: 3.5rem;
   --content-max: 80rem;
 
   /* Camadas */
@@ -249,12 +248,6 @@
   --z-popover: 80;
   --z-toast: 90;
   --z-tooltip: 100;
-}
-
-@media (min-width: 768px) {
-  :root {
-    --header-h: 3.5rem;
-  }
 }
 
 @media (pointer: coarse) {
@@ -305,7 +298,7 @@
   --tone-neutral-soft: var(--color-neutral-800);
   --tone-neutral-line: var(--color-neutral-700);
   --tone-neutral-fg: var(--color-neutral-300);
-  --tone-neutral-solid: var(--color-neutral-600);
+  --tone-neutral-solid: var(--color-neutral-500);
   --tone-neutral-on: var(--color-white);
 
   --tone-brand-soft: var(--color-brand-900);
@@ -382,7 +375,7 @@
     --tone-neutral-soft: var(--color-neutral-800);
     --tone-neutral-line: var(--color-neutral-700);
     --tone-neutral-fg: var(--color-neutral-300);
-    --tone-neutral-solid: var(--color-neutral-600);
+    --tone-neutral-solid: var(--color-neutral-500);
     --tone-neutral-on: var(--color-white);
   
     --tone-brand-soft: var(--color-brand-900);

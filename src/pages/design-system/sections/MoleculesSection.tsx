@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { Copy, FilePlus2, Info, MoreHorizontal, Package, Pencil, Printer, Trash2 } from 'lucide-react'
+import { CircleCheck, Copy, FilePlus2, Info, MoreHorizontal, Package, PackageX, Pencil, Printer, Trash2, TriangleAlert } from 'lucide-react'
 import {
-  Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, Badge, Breadcrumb, Button, Card, CardContent,
+  Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, BarList, Badge, Breadcrumb, Button, Card, CardContent,
   CardDescription, CardFooter, CardHeader, CardTitle, Combobox, CurrencyInput, Dialog, DialogClose, DialogContent, DialogTrigger,
+  DistributionBar, SegmentedNav, StatCard,
   DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
   DropdownMenuTrigger, EmptyState, FormField, IconButton, Input, MaskedInput, Pagination, Popover, PopoverContent, PopoverTrigger,
   SearchField, SegmentedControl, Select, Sheet, SheetContent, SheetTrigger, Stepper, Tabs, TabsContent, TabsList, TabsTrigger,
@@ -353,6 +354,69 @@ toast('Produto excluído', { action: { label: 'Desfazer', onClick: undo } })`}
         </Specimen>
         <Specimen title="Stepper" composedOf={['Icon', 'Text', 'ProgressBar']} description="Indicador de etapas — usado dentro do organismo Wizard. Etapas concluídas voltam ao clicar. No celular vira “Etapa 2 de 4” com barra de progresso (redimensione a janela)." code={`<Stepper steps={steps} current={1} onStepClick={setCurrent} />`} previewClassName="!block">
           <StepperDemo />
+        </Specimen>
+      </SubSection>
+
+      <SubSection title="Navegação principal">
+        <Specimen
+          title="SegmentedNav"
+          composedOf={['Link', 'estilo de toggle']}
+          description="A navegação principal do sistema: parece um toggle, mas é feita de links — cada opção leva a uma página. Fica logo acima do PageHeader. O item atual usa aria-current=page; em páginas fora do menu (Conexões, Configurações, produto) nenhuma opção fica marcada. Sem ícones."
+          code={`<SegmentedNav
+  items={[{ id: 'home', label: 'Início', href: '/', end: true }, { id: 'products', label: 'Todos os produtos', href: '/produtos', end: true }]}
+  linkAs={NavLink} hrefProp="to"
+/>`}
+          previewClassName="!grid gap-4"
+        >
+          <SegmentedNav label="Exemplo: Início selecionado" currentPath="#moleculas" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Todos os produtos', href: '#moleculas-b', end: true }]} />
+          <SegmentedNav label="Exemplo: segundo item selecionado" currentPath="#moleculas-b" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Todos os produtos', href: '#moleculas-b', end: true }]} />
+          <SegmentedNav label="Exemplo: fora do menu" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Todos os produtos', href: '#moleculas-b', end: true }]} />
+        </Specimen>
+      </SubSection>
+
+      <SubSection title="Indicadores e gráficos" description="Regras de visualização: um número que é a resposta vira indicador (não gráfico); categorias sem ordem usam uma cor só; parte-do-todo é uma barra empilhada com legenda; todo gráfico traz os valores em texto (gêmeo em tabela) e nada depende só da cor.">
+        <Specimen
+          title="StatCard"
+          composedOf={['Card', 'Text', 'Icon']}
+          description="Rótulo + número + contexto. A cor fica só no ícone (o significado); o número nunca é colorido. Use um único hero por visão (número ≥ 48 px) e agrupe os cartões num <dl>. Números grandes aparecem compactos (R$ 2,4 mi)."
+          code={`<dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+  <StatCard hero label="Produtos cadastrados" value="57" helper="Total do catálogo" className="col-span-2" />
+  <StatCard label="Produtos ativos" value="40" helper="70% do cadastro" icon={CircleCheck} tone="success" />
+  <StatCard label="Produtos incompletos" value="12" helper="21% com pendências" icon={TriangleAlert} tone="warning" />
+</dl>`}
+          previewClassName="!block bg-canvas"
+        >
+          <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <StatCard hero label="Produtos cadastrados" value="57" helper="Total do catálogo" className="col-span-2" />
+            <StatCard label="Produtos ativos" value="40" helper="70% do cadastro" icon={CircleCheck} tone="success" />
+            <StatCard label="Produtos incompletos" value="12" helper="21% com pendências" icon={TriangleAlert} tone="warning" />
+            <StatCard label="Sem estoque" value="3" helper="Saldo zerado" icon={PackageX} tone="danger" className="col-span-2 lg:col-span-1" />
+          </dl>
+        </Specimen>
+        <Specimen
+          title="BarList"
+          composedOf={['Text', 'barra fina']}
+          description="Ranking em barras horizontais. A lista de texto (rótulo, valor e %) é a leitura principal; as barras só reforçam (aria-hidden). Categorias nominais usam UMA cor, sem rampa de valor. Barra de 8 px, ponta arredondada e base reta."
+          code={`<BarList aria-label="Produtos por categoria" total={57} items={[{ id: 'e', label: 'Eletrônicos', value: 17 }, …]} />
+<BarList tone="warning" aria-label="Pendências" items={…} />`}
+          previewClassName="!grid gap-8 md:grid-cols-2"
+        >
+          <BarList aria-label="Exemplo: produtos por categoria" items={[{ id: 'a', label: 'Eletrônicos', value: 17 }, { id: 'b', label: 'Ferragens', value: 9 }, { id: 'c', label: 'Informática', value: 6 }, { id: 'd', label: 'Vestuário', value: 4 }, { id: 'e', label: 'Cosméticos', value: 0 }]} />
+          <BarList aria-label="Exemplo: pendências" tone="warning" items={[{ id: 'a', label: 'Sem dados fiscais', value: 8 }, { id: 'b', label: 'Sem GTIN', value: 5 }, { id: 'c', label: 'Sem descrição', value: 2 }]} />
+        </Specimen>
+        <Specimen
+          title="DistributionBar"
+          composedOf={['Text', 'barra empilhada']}
+          description="Parte-do-todo em uma barra empilhada (até ~4 partes), com 2 px de respiro entre os segmentos e legenda sempre presente com valor e %. As cores têm significado de status (sucesso, atenção, erro) e vêm sempre com o nome."
+          code={`<DistributionBar segments={[
+  { id: 'a', label: 'Ativos', value: 40, tone: 'success' },
+  { id: 'i', label: 'Inativos', value: 9, tone: 'neutral' },
+  { id: 'r', label: 'Rascunhos', value: 8, tone: 'warning' },
+]} />`}
+          previewClassName="!grid gap-8 md:grid-cols-2"
+        >
+          <DistributionBar segments={[{ id: 'a', label: 'Ativos', value: 40, tone: 'success' }, { id: 'i', label: 'Inativos', value: 9, tone: 'neutral' }, { id: 'r', label: 'Rascunhos', value: 8, tone: 'warning' }]} />
+          <DistributionBar segments={[{ id: 'a', label: 'Estoque saudável', value: 44, tone: 'success' }, { id: 'b', label: 'Estoque baixo', value: 10, tone: 'warning' }, { id: 'c', label: 'Sem estoque', value: 3, tone: 'danger' }]} />
         </Specimen>
       </SubSection>
 

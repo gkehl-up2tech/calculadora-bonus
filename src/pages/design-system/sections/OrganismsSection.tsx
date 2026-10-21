@@ -1,18 +1,13 @@
 import { useState } from 'react'
-import { Home, Package, Plug, Plus, Settings } from 'lucide-react'
+import { Package, Plug, Plus, Settings } from 'lucide-react'
 import {
   AppHeader, Button, CheckboxField, CommandPalette, ConfirmDialog, DropdownMenuItem, FormField, FormGrid, FormSection, Input, Logo,
-  PageHeader, StickyActionBar, Wizard, toast, type NavEntry,
+  PageHeader, StickyActionBar, Wizard, toast,
 } from '@/design-system'
 import { DocSection, SubSection } from '../docs/DocSection'
 import { Frame } from '../docs/Frame'
 import { Specimen } from '../docs/Specimen'
 import { ProductListExample } from '../docs/examples/ProductListExample'
-
-const demoNav: NavEntry[] = [
-  { id: 'home', label: 'Início', href: '#organismos', icon: Home, end: true },
-  { id: 'products', label: 'Todos os produtos', href: '#organismos-produtos', icon: Package },
-]
 
 function WizardDemo() {
   const [name, setName] = useState('')
@@ -87,12 +82,10 @@ export function OrganismsSection() {
       <SubSection title="Estrutura da aplicação">
         <Specimen
           title="AppHeader"
-          composedOf={['Logo', 'NavItem', 'ThemeToggle', 'DropdownMenu', 'Persona', 'Kbd']}
-          description="O único menu do sistema — não há menu lateral. Logotipo, navegação principal, busca global de produtos, tema e usuário. Destinos secundários (Conexões, Configurações) ficam no menu do usuário. A página atual é marcada com aria-current, e o NavLink do roteador é aceito. No celular a navegação desce para uma segunda linha."
+          composedOf={['Logo', 'ThemeToggle', 'DropdownMenu', 'Persona']}
+          description="Cabeçalho enxuto: marca à esquerda, botão “Buscar produtos” centralizado (abre a busca global, também com Ctrl/⌘ + K), tema e usuário à direita. Não há menu: a navegação principal é o toggle SegmentedNav acima do PageHeader de cada página. Destinos secundários (Conexões, Configurações) ficam no menu do usuário."
           code={`<AppHeader
-  logo={<NavLink to="/"><Logo /></NavLink>}
-  nav={[{ id: 'home', label: 'Início', href: '/', icon: Home, end: true }, …]}
-  linkAs={NavLink} hrefProp="to"
+  logo={<NavLink to="/"><Logo wordmarkOnly /></NavLink>}
   user={{ name, email }}
   userMenu={<DropdownMenuItem icon={Plug}>Conexões</DropdownMenuItem>}
   onSearchClick={openSearch}
@@ -106,7 +99,7 @@ export function OrganismsSection() {
         <Specimen
           title="PageHeader"
           composedOf={['Breadcrumb', 'Heading', 'Text', 'Button']}
-          description="Topo de toda página: trilha, título (o único h1), descrição e ações. No celular as ações descem para baixo do título."
+          description="Topo de toda página, logo abaixo do toggle de navegação: trilha, título (o único h1), descrição e ações. No celular as ações descem para baixo do título. Com hideTitle o título fica só para leitores de tela e as ações vão para a direita — como no Início."
           code={`<PageHeader
   title="Produtos"
   description="Catálogo fiscal e comercial."
@@ -226,10 +219,7 @@ function AppHeaderPreview() {
   return (
     <div className="[&>header]:static">
       <AppHeader
-        logo={<Logo />}
-        nav={demoNav}
-        navLabel="Exemplo de navegação principal"
-        currentPath="#organismos-produtos"
+        logo={<Logo wordmarkOnly />}
         user={{ name: 'Usuário UP2Tech', email: 'usuario@up2tech.com.br' }}
         userMenu={
           <>

@@ -73,6 +73,8 @@ for (const bg of ['--primary-soft', '--primary-soft-hover']) add('--primary-soft
 for (const t of tones) {
   add(`--tone-${t}-fg`, `--tone-${t}-soft`, TEXT)
   add(`--tone-${t}-on`, `--tone-${t}-solid`, TEXT)
+  // Barras e segmentos de gráfico usam o tom "solid": marca gráfica precisa de 3:1 contra a superfície (WCAG 1.4.11).
+  add(`--tone-${t}-solid`, '--bg-surface', UI, `marca de gráfico (${t}) sobre surface (1.4.11)`)
 }
 add('--line-control', '--bg-surface', UI, 'borda de controle sobre surface (1.4.11)')
 add('--line-control', '--bg-canvas', UI, 'borda de controle sobre canvas (1.4.11)')
