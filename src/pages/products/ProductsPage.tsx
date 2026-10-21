@@ -5,7 +5,6 @@ import { DataTable, PageHeader, SearchField, Select, Text, Thumbnail } from '@/d
 import { routes } from '@/app/navigation'
 import { filterProducts } from '@/app/products/search'
 import { DEPARTMENTS, PRODUCTS, type Product } from '@/app/products/sample-products'
-import { formatNumber } from '@/lib/format'
 import { usePageTitle } from '@/lib/usePageTitle'
 
 const ALL = 'all'
@@ -76,10 +75,7 @@ export function ProductsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Produtos"
-        description={`${formatNumber(PRODUCTS.length)} produtos no catálogo. Abra um produto para ver os detalhes.`}
-      />
+      <PageHeader title="Produtos" />
       <DataTable
         caption="Produtos"
         data={data}

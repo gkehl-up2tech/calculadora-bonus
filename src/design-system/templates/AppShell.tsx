@@ -7,6 +7,8 @@ export interface AppShellProps {
   /** Navegação principal: vira o toggle acima do conteúdo de toda página (acima do PageHeader). */
   nav: NavEntry[]
   user: { name: string; email?: string }
+  /** Ação da página alinhada à direita, na mesma linha do toggle (ex.: botão "Novo produto"). */
+  navActions?: ReactNode
   /** Destinos do menu do usuário (ex.: Conexões, Configurações). */
   userMenu?: ReactNode
   /** Configuração da busca global (Ctrl/⌘ + K). Sem ela, a busca não aparece. */
@@ -21,9 +23,9 @@ export interface AppShellProps {
 
 /**
  * Estrutura global, sem menu lateral: link "pular para o conteúdo", cabeçalho fixo (marca, busca, tema, usuário),
- * o toggle de navegação principal e, abaixo dele, o conteúdo da página (que começa pelo PageHeader).
+ * o toggle de navegação principal (com a ação da página à direita, na mesma linha) e, abaixo dele, o conteúdo da página (que começa pelo PageHeader).
  */
-export function AppShell({ nav, user, userMenu, search, linkAs, hrefProp, currentPath, logo, children }: AppShellProps) {
+export function AppShell({ nav, navActions, user, userMenu, search, linkAs, hrefProp, currentPath, logo, children }: AppShellProps) {
   const [paletteOpen, setPaletteOpen] = useState(false)
 
   return (
@@ -44,7 +46,12 @@ export function AppShell({ nav, user, userMenu, search, linkAs, hrefProp, curren
 
       <main id="conteudo" tabIndex={-1} className="px-4 py-6 outline-none sm:px-6 lg:px-8 lg:py-8">
         <div className="mx-auto grid max-w-(--content-max) gap-6">
-          {nav.length ? <SegmentedNav items={nav} linkAs={linkAs} hrefProp={hrefProp} currentPath={currentPath} /> : null}
+          {nav.length || navActions ? (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              {nav.length ? <SegmentedNav items={nav} linkAs={linkAs} hrefProp={hrefProp} currentPath={currentPath} /> : <span />}
+              {navActions}
+            </div>
+          ) : null}
           {children}
         </div>
       </main>

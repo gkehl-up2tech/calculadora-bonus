@@ -20,7 +20,9 @@ Sistema de cadastro de produtos (fiscal + vendas) da UP2Tech. Interface em **por
   - **Preço, custo e estoque não são controlados aqui** (vêm de outro sistema): não crie campos, abas, colunas nem indicadores deles. Por isso não há aba Comercial, e Operacional tem só Logística; Marketing não tem publicação por canal nem vídeo.
   - `/produtos/novo` segue em branco até a próxima etapa.
 - **Vocabulário do produto:** use **título** (não "nome") e **departamento** (não "categoria"), em código e interface.
-- **Início** (pronta): `PageHeader` com `hideTitle` só com o botão *Novo produto* (leva a `/produtos/novo`) + dashboard (`src/pages/home`, métricas em `src/app/dashboard/metrics.ts`).
+- **Novo produto**: botão **sem ícone**, na mesma linha do toggle de navegação (à direita; slot `navActions` do `AppShell`, montado no `AppLayout`), só em Início e Produtos. Leva a `/produtos/novo`.
+- **Cabeçalho de página só com o título**: sem texto descritivo abaixo (Produtos, Início).
+- **Início** (pronta): só o dashboard (`src/pages/home`, métricas em `src/app/dashboard/metrics.ts`).
 - Gráficos: `StatCard` (um `hero` por tela), `BarList` (uma cor para categorias nominais) e `DistributionBar` (parte-do-todo com legenda). Todo valor aparece também em texto; cores de marcas gráficas vêm dos tons `solid` (validados a ≥ 3:1 por `check:contrast`).
 - A busca global (`CommandPalette`) usa `searchProducts` (`src/app/products/search.ts`) sobre dados de exemplo **temporários**.
 

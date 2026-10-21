@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router'
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { Home, Monitor, Moon, Package, Palette, Plug, Settings, Sun } from 'lucide-react'
-import { AppShell, DropdownMenuItem, Logo, type CommandGroup, type CommandItem } from '@/design-system'
+import { AppShell, Button, DropdownMenuItem, Logo, type CommandGroup, type CommandItem } from '@/design-system'
 import { setThemePreference } from '@/lib/theme'
 import { searchProducts } from './products/search'
 import { mainNav, routes, userMenuItems } from './navigation'
@@ -16,6 +16,7 @@ const normalize = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '
 /** Moldura de todas as páginas: cabeçalho (busca global), toggle de navegação e o conteúdo da rota. */
 export function AppLayout() {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [query, setQuery] = useState('')
 
   const groups = useMemo<CommandGroup[]>(() => {
@@ -58,6 +59,12 @@ export function AppLayout() {
   return (
     <AppShell
       nav={mainNav}
+      // "Novo produto" fica na linha do toggle, só em Início e Produtos.
+      navActions={
+        pathname === routes.home || pathname === routes.products ? (
+          <Button onClick={() => navigate(routes.newProduct)}>Novo produto</Button>
+        ) : undefined
+      }
       user={user}
       linkAs={NavLink}
       hrefProp="to"

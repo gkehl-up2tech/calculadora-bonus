@@ -2,7 +2,7 @@
 
 Sistema de cadastro de produtos — dados **fiscais** e de **vendas**. Esta é a base do novo sistema (substitui a antiga calculadora de bônus, preservada em [`legacy/`](legacy/index.html)).
 
-**Estado atual:** moldura da aplicação e as páginas abaixo, construídas uma a uma. **Início** (botão *Novo produto* + dashboard), **Produtos** (tabela do catálogo) e a **página do produto** (abas, leitura e edição) estão prontas; as demais estão **em branco**. **Configurações › Design System** documenta e demonstra todos os componentes.
+**Estado atual:** moldura da aplicação e as páginas abaixo, construídas uma a uma. **Início** (dashboard), **Produtos** (tabela do catálogo) e a **página do produto** (abas, leitura e edição) estão prontas; as demais estão **em branco**. **Configurações › Design System** documenta e demonstra todos os componentes.
 
 ## Mapa de páginas
 
@@ -10,10 +10,10 @@ Não há menu lateral. A navegação principal é um **toggle** (Início | Produ
 
 | Página | Rota | Como se chega |
 | --- | --- | --- |
-| Início | `/` | Toggle de navegação. Botão **Novo produto** e dashboard de indicadores |
+| Início | `/` | Toggle de navegação (com o botão **Novo produto** à direita, na mesma linha) e dashboard de indicadores |
 | Produtos | `/produtos` | Toggle de navegação. Tabela do catálogo: foto, SKU, título, NCM, EAN e departamento; clicar numa linha abre o produto |
 | Página do produto | `/produtos/:produtoId` | **Somente** pela lista de produtos ou pela busca global (Ctrl/⌘ + K). Sem item de menu. Abas: Principal, Fiscal, Operacional (só Logística), Marketing, Imagens, Especificações, Variações e kits, Histórico (`?aba=`). Botão **Editar produto**. Mapa completo dos campos em [`docs/produto-mapa-de-informacoes.md`](docs/produto-mapa-de-informacoes.md) |
-| Novo produto | `/produtos/novo` | Botão *Novo produto* do Início (mesma página do produto, em modo de criação). Em branco |
+| Novo produto | `/produtos/novo` | Botão *Novo produto* da linha do toggle, em Início e Produtos (mesma página do produto, em modo de criação). Em branco |
 | Conexões | `/conexoes` | **Somente** pelo menu do usuário (ícone de perfil) |
 | Configurações | `/configuracoes` (abas: Geral, Design System) | **Somente** pelo menu do usuário |
 
