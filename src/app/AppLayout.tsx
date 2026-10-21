@@ -1,12 +1,16 @@
 import { useMemo, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { Home, Monitor, Moon, Package, Palette, Plug, Settings, Sun } from 'lucide-react'
-import { AppShell, Button, DropdownMenuItem, Logo, type CommandGroup, type CommandItem } from '@/design-system'
+import {
+  AppShell, Button, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, Logo,
+  toast, type CommandGroup, type CommandItem,
+} from '@/design-system'
 import { setThemePreference } from '@/lib/theme'
+import { can } from './access/permissions'
+import { setSession, useSession } from './access/session'
+import { ROLE_LABEL, USERS } from './access/users'
 import { searchProducts } from './products/search'
 import { mainNav, routes, userMenuItems } from './navigation'
-
-const user = { name: 'Usuário UP2Tech', email: 'usuario@up2tech.com.br' }
 
 /** Mínimo de letras para consultar produtos (evita listar o catálogo inteiro ao digitar a primeira letra). */
 const MIN_QUERY = 2
@@ -17,6 +21,7 @@ const normalize = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '
 export function AppLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const user = useSession()
   const [query, setQuery] = useState('')
 
   const groups = useMemo<CommandGroup[]>(() => {
@@ -27,9 +32,13 @@ export function AppLayout() {
     const pages = match([
       { id: 'go-home', label: 'Início', icon: Home, onSelect: () => navigate(routes.home) },
       { id: 'go-products', label: 'Produtos', icon: Package, keywords: ['catálogo', 'lista', 'todos os produtos'], onSelect: () => navigate(routes.products) },
-      { id: 'go-connections', label: 'Conexões', icon: Plug, keywords: ['integrações'], onSelect: () => navigate(routes.connections) },
-      { id: 'go-settings', label: 'Configurações', icon: Settings, onSelect: () => navigate(routes.settings) },
-      { id: 'go-ds', label: 'Design System', icon: Palette, keywords: ['componentes', 'tokens', 'cores'], onSelect: () => navigate(routes.designSystem) },
+      ...(can(user, 'connections.view') ? [{ id: 'go-connections', label: 'Conexões', icon: Plug, keywords: ['integrações'], onSelect: () => navigate(routes.connections) }] : []),
+      ...(can(user, 'settings.view')
+        ? [
+            { id: 'go-settings', label: 'Configurações', icon: Settings, onSelect: () => navigate(routes.settings) },
+            { id: 'go-ds', label: 'Design System', icon: Palette, keywords: ['componentes', 'tokens', 'cores'], onSelect: () => navigate(routes.designSystem) },
+          ]
+        : []),
     ])
     const theme = match([
       { id: 'theme-light', label: 'Tema claro', icon: Sun, onSelect: () => setThemePreference('light') },
@@ -54,18 +63,18 @@ export function AppLayout() {
       ...(pages.length ? [{ id: 'go', heading: 'Ir para', items: pages }] : []),
       ...(theme.length ? [{ id: 'theme', heading: 'Tema', items: theme }] : []),
     ]
-  }, [query, navigate])
+  }, [query, navigate, user])
 
   return (
     <AppShell
       nav={mainNav}
       // "Novo produto" fica na linha do toggle, só em Início e Produtos.
       navActions={
-        pathname === routes.home || pathname === routes.products ? (
+        can(user, 'product.create') && (pathname === routes.home || pathname === routes.products) ? (
           <Button onClick={() => navigate(routes.newProduct)}>Novo produto</Button>
         ) : undefined
       }
-      user={user}
+      user={{ name: user.name, email: user.email, role: ROLE_LABEL[user.role] }}
       linkAs={NavLink}
       hrefProp="to"
       search={{
@@ -74,11 +83,35 @@ export function AppLayout() {
         placeholder: 'Buscar produto por nome, SKU ou NCM…',
         emptyText: 'Nenhum produto ou página encontrado.',
       }}
-      userMenu={userMenuItems.map((item) => (
-        <DropdownMenuItem key={item.id} icon={item.icon} onSelect={() => navigate(item.href)}>
-          {item.label}
-        </DropdownMenuItem>
-      ))}
+      userMenu={
+        <>
+          {userMenuItems.filter((item) => can(user, item.access)).map((item) => (
+            <DropdownMenuItem key={item.id} icon={item.icon} onSelect={() => navigate(item.href)}>
+              {item.label}
+            </DropdownMenuItem>
+          ))}
+          {/* Provisório: sem login, o perfil de demonstração é escolhido aqui. */}
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Entrar como (demonstração)</DropdownMenuLabel>
+          <DropdownMenuRadioGroup
+            value={user.id}
+            onValueChange={(id) => {
+              setSession(id)
+              const next = USERS.find((u) => u.id === id)
+              if (next) toast.info(`Agora você é ${next.name}`, { description: ROLE_LABEL[next.role] })
+            }}
+          >
+            {USERS.map((u) => (
+              <DropdownMenuRadioItem key={u.id} value={u.id}>
+                <span className="grid min-w-0 leading-tight">
+                  <span className="truncate">{u.name}</span>
+                  <span className="truncate text-xs text-fg-muted">{ROLE_LABEL[u.role]}</span>
+                </span>
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+        </>
+      }
       logo={
         <NavLink to={routes.home} aria-label="UP2Tech — Início" className="rounded-md">
           <Logo wordmarkOnly />

@@ -26,6 +26,12 @@ Sistema de cadastro de produtos (fiscal + vendas) da UP2Tech. Interface em **por
 - Gráficos: `StatCard` (um `hero` por tela), `BarList` (uma cor para categorias nominais) e `DistributionBar` (parte-do-todo com legenda). Todo valor aparece também em texto; cores de marcas gráficas vêm dos tons `solid` (validados a ≥ 3:1 por `check:contrast`).
 - A busca global (`CommandPalette`) usa `searchProducts` (`src/app/products/search.ts`) sobre dados de exemplo **temporários**.
 
+## Acessos (perfis)
+- Três perfis em `src/app/access/`: **Master** (tudo), **Gerente de produto** (cria produtos e edita só os de que é *responsável*; os demais, leitura) e **Acesso comum** (só leitura). Matriz completa em `docs/acessos.md`; a regra vive **só** em `can(user, action, product?)` (`permissions.ts`): nunca compare `role` direto na tela, chame `can`.
+- Todo produto tem `owner` (campo **Responsável**, `masterOnly`: só o Master troca). Conexões e Configurações (inclui Design System) são só do Master: somem do menu do usuário e da busca, e as rotas usam `RequireAccess`.
+- Tela sem permissão **esconde a ação** (Editar produto, Novo produto) e mostra o motivo ("Somente leitura"); campo `masterOnly` aparece sem controle para os demais.
+- Sem login ainda: o perfil de demonstração vem de `useSession` (`session.ts`) e é trocado no menu do usuário ("Entrar como"). **Provisório.** A checagem na interface não substitui a do servidor.
+
 ## Design System (src/design-system) — Atomic Design
 - Camadas: `atoms → cells → molecules → organisms → templates`. **Só importe de camadas abaixo** (o ESLint falha caso contrário).
 - Onde fica um componente novo: átomo = elemento único; célula = 2–3 átomos sem estado/lógica própria; molécula = comportamento próprio para uma tarefa; organismo = seção da tela; template = estrutura com slots. Guia completo em Configurações › Design System › Introdução.

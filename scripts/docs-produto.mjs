@@ -27,7 +27,7 @@ for (const tab of TABS) {
     if (s.custom) { lines.push('_Tabela/lista própria (não são campos do esquema)._', ''); continue }
     lines.push('| Campo | Tipo | Importância | Observação |', '|---|---|---|---|')
     for (const f of FIELDS.filter((x) => x.section === s.id)) {
-      const notes = [f.hint, f.unit && `unidade: ${f.unit}`, f.maxLength && `até ${f.maxLength} caracteres`, f.departments && `só em: ${f.departments.join(', ')}`, f.readOnly && 'somente leitura']
+      const notes = [f.hint, f.unit && `unidade: ${f.unit}`, f.maxLength && `até ${f.maxLength} caracteres`, f.departments && `só em: ${f.departments.join(', ')}`, f.readOnly && 'somente leitura', f.masterOnly && 'só o Master altera']
         .filter(Boolean).join(' · ')
       lines.push(`| ${f.label} | ${KIND[f.kind]} | ${IMP[f.importance] ?? 'opcional'} | ${notes.replaceAll('|', '/')} |`)
     }

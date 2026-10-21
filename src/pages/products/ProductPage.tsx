@@ -5,6 +5,9 @@ import {
   Alert, Badge, Button, Card, ConfirmDialog, EmptyState, KeyValue, PageHeader, StatusBadge, StickyActionBar,
   Tabs, TabsContent, TabsList, TabsTrigger, Thumbnail, toast,
 } from '@/design-system'
+import { can, readOnlyReason } from '@/app/access/permissions'
+import { useSession } from '@/app/access/session'
+import { userName } from '@/app/access/users'
 import { routes } from '@/app/navigation'
 import { findProduct, saveProductValues, useProductDetail } from '@/app/products/detail'
 import { STATUS_LABEL, STATUS_TONE, type Product } from '@/app/products/sample-products'
@@ -47,10 +50,14 @@ function NotFound() {
 const SECTION_TABS = new Map<TabId, ReturnType<typeof sectionsOf>>(TABS.map((t) => [t.id, sectionsOf(t.id)]))
 
 function ProductDetailPage({ product }: { product: Product }) {
+  const user = useSession()
+  const canEdit = can(user, 'product.edit', product)
   const detail = useProductDetail(product)!
   const saved = detail.values
   const [params, setParams] = useSearchParams()
-  const [editing, setEditing] = useState(false)
+  // Quem está editando: trocar de perfil (demonstração) sem a permissão encerra a edição, sem efeitos colaterais.
+  const [editingBy, setEditingBy] = useState<string | null>(null)
+  const editing = editingBy === user.id && canEdit
   const [draft, setDraft] = useState<Values>(saved)
   const [submitted, setSubmitted] = useState(false)
   const [discardOpen, setDiscardOpen] = useState(false)
@@ -112,14 +119,15 @@ function ProductDetailPage({ product }: { product: Product }) {
   }, [focusTarget])
 
   function startEditing(tab?: TabId) {
+    if (!canEdit) return
     setDraft(saved)
     setSubmitted(false)
-    setEditing(true)
+    setEditingBy(user.id)
     if (tab) setTab(tab)
   }
 
   function stopEditing() {
-    setEditing(false)
+    setEditingBy(null)
     setSubmitted(false)
     setDraft(saved)
   }
@@ -138,8 +146,8 @@ function ProductDetailPage({ product }: { product: Product }) {
       setFocusTarget(`campo-${target}`)
       return
     }
-    const changed = saveProductValues(product, draft)
-    setEditing(false)
+    const changed = saveProductValues(product, draft, user)
+    setEditingBy(null)
     setSubmitted(false)
     toast.success(changed ? 'Produto salvo' : 'Nada foi alterado')
   }
@@ -159,6 +167,12 @@ function ProductDetailPage({ product }: { product: Product }) {
           <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
             <StatusBadge tone={STATUS_TONE[status]}>{STATUS_LABEL[status]}</StatusBadge>
             <span>SKU <span className="font-mono text-sm">{String(saved.sku)}</span></span>
+            {canEdit ? null : (
+              <span className="flex flex-wrap items-center gap-2">
+                <Badge tone="neutral">Somente leitura</Badge>
+                <span>{readOnlyReason(user, product, userName(product.owner))}</span>
+              </span>
+            )}
           </span>
         }
         actions={
@@ -168,18 +182,19 @@ function ProductDetailPage({ product }: { product: Product }) {
               <Button variant="secondary" onClick={() => (dirty ? setDiscardOpen(true) : stopEditing())}>Cancelar</Button>
               <Button onClick={save}><Save aria-hidden />Salvar alterações</Button>
             </> : undefined
-          ) : (
+          ) : canEdit ? (
             <Button onClick={() => startEditing()}><Pencil aria-hidden />Editar produto</Button>
-          )
+          ) : undefined
         }
       />
 
       <Card className="p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <Thumbnail src={product.photo} alt={`Foto de ${saved.title}`} size="xl" className="size-20 sm:size-24" />
-          <dl className="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-5">
+          <dl className="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-6">
             <KeyValue label="Departamento">{String(saved.departamento)}</KeyValue>
             <KeyValue label="Marca">{String(saved.marca)}</KeyValue>
+            <KeyValue label="Responsável">{userName(product.owner)}</KeyValue>
             <KeyValue label="NCM" mono>{String(saved.ncm)}</KeyValue>
             <KeyValue label="EAN" mono>{String(saved.ean)}</KeyValue>
             <KeyValue label="Tipo">{{ simples: 'Simples', variacoes: 'Com variações', kit: 'Kit' }[String(saved.tipo)] ?? ''}</KeyValue>
@@ -192,7 +207,7 @@ function ProductDetailPage({ product }: { product: Product }) {
           tone="warning"
           title={`${pendingTotal} ${pendingTotal === 1 ? 'informação pendente' : 'informações pendentes'}`}
           action={
-            editing ? undefined : <Button size="sm" variant="secondary" onClick={() => startEditing(pendingTabs[0]!.id)}>Completar cadastro</Button>
+            editing || !canEdit ? undefined : <Button size="sm" variant="secondary" onClick={() => startEditing(pendingTabs[0]!.id)}>Completar cadastro</Button>
           }
         >
           Faltam dados obrigatórios ou recomendados em:{' '}

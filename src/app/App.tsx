@@ -8,6 +8,7 @@ import { DesignSystemPage } from '@/pages/design-system/DesignSystemPage'
 import { SettingsGeneralPage } from '@/pages/settings/SettingsGeneralPage'
 import { SettingsRoute } from '@/pages/settings/SettingsRoute'
 import { EMBEDDED } from '@/lib/embedded'
+import { RequireAccess } from './access/RequireAccess'
 import { AppLayout } from './AppLayout'
 
 const routes: RouteObject[] = [
@@ -17,12 +18,12 @@ const routes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: 'produtos', element: <ProductsPage /> },
       // Sem item de menu: só pela lista de produtos, pela busca global ou pelo botão "Novo produto" do Início.
-      { path: 'produtos/novo', element: <ProductPage isNew /> },
+      { path: 'produtos/novo', element: <RequireAccess action="product.create"><ProductPage isNew /></RequireAccess> },
       { path: 'produtos/:produtoId', element: <ProductPage /> },
-      { path: 'conexoes', element: <ConnectionsPage /> },
+      { path: 'conexoes', element: <RequireAccess action="connections.view"><ConnectionsPage /></RequireAccess> },
       {
         path: 'configuracoes',
-        element: <SettingsRoute />,
+        element: <RequireAccess action="settings.view"><SettingsRoute /></RequireAccess>,
         children: [
           { index: true, element: <SettingsGeneralPage /> },
           { path: 'design-system', element: <DesignSystemPage /> },

@@ -6,7 +6,7 @@ import { AppHeader, CommandPalette, type CommandPaletteProps } from '../organism
 export interface AppShellProps {
   /** Navegação principal: vira o toggle acima do conteúdo de toda página (acima do PageHeader). */
   nav: NavEntry[]
-  user: { name: string; email?: string }
+  user: { name: string; email?: string; role?: string }
   /** Ação da página alinhada à direita, na mesma linha do toggle (ex.: botão "Novo produto"). */
   navActions?: ReactNode
   /** Destinos do menu do usuário (ex.: Conexões, Configurações). */

@@ -151,4 +151,4 @@ export const OPTION_SETS = {
   voltagem: VOLTAGEM_OPTIONS,
 } as const
 
-export type OptionSetKey = keyof typeof OPTION_SETS | 'departamento'
+export type OptionSetKey = keyof typeof OPTION_SETS | 'departamento' | 'responsavel'

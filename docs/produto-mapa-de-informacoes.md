@@ -2,7 +2,7 @@
 
 > Gerado por `npm run docs:produto` a partir de `src/app/products/schema.ts`. **Não edite à mão**: mude o esquema e gere de novo.
 
-89 campos em 8 abas. **Obrigatório** e *recomendado* ausentes viram pendência (selo na aba e alerta na página). Só obrigatório bloqueia o salvamento.
+90 campos em 8 abas. **Obrigatório** e *recomendado* ausentes viram pendência (selo na aba e alerta na página). Só obrigatório bloqueia o salvamento.
 
 Os valores fiscais de exemplo (CST, alíquotas, cClassTrib) e as listas de opções são ilustrativos e parciais: confirme nas tabelas oficiais vigentes antes de emitir documentos fiscais.
 
@@ -24,6 +24,7 @@ Como o produto é reconhecido no catálogo.
 | Marca | texto | recomendado | Exigida pela maioria dos marketplaces. · até 60 caracteres |
 | Modelo | texto | opcional | até 60 caracteres |
 | Fabricante | texto | opcional | até 80 caracteres |
+| Responsável | lista | **obrigatório** | Gerente de produto dono do cadastro: só ele (e o Master) edita. Só o Master troca. · só o Master altera |
 | Código do fabricante (MPN) | texto | opcional | até 40 caracteres |
 
 ### Códigos de barras

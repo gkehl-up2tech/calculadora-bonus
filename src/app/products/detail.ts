@@ -7,6 +7,8 @@
  * Valores fiscais (NCM, CST, alíquotas, CEST…) são ILUSTRATIVOS — não use para emitir documentos fiscais.
  */
 import { useSyncExternalStore } from 'react'
+import { can } from '../access/permissions'
+import { userName, type AppUser } from '../access/users'
 import { galleryFor } from './photos'
 import { PRODUCTS, type Product } from './sample-products'
 import { FIELDS, derivePendencias, isEmpty, type FieldDef, type Values } from './schema'
@@ -113,7 +115,7 @@ export function buildDetail(p: Product): ProductDetail {
 
   Object.assign(v, {
     // Principal
-    sku: p.sku, title: p.title, status: p.status, tipo: s.tipo ?? 'simples', condicao: 'novo',
+    sku: p.sku, title: p.title, status: p.status, responsavel: p.owner, tipo: s.tipo ?? 'simples', condicao: 'novo',
     marca: s.brand, modelo: `${s.model}${p.title.includes('·') ? '-' + p.title.split('· ')[1]!.slice(0, 3).toUpperCase() : ''}`,
     fabricante: s.brand, mpn: `${s.model}`.replace(/\s+/g, '-').toUpperCase(),
     ean: p.ean, gtinCaixa: p.ean ? ean13(i + 500) : '', unidadesCaixa: s.boxQty,
@@ -203,16 +205,22 @@ export function plainValue(value: Values[string]): string {
   return String(value)
 }
 
+const historyText = (fieldId: string, value: Values[string]) => (fieldId === 'responsavel' && typeof value === 'string' ? userName(value) : plainValue(value))
+
 /**
  * Salva os valores, registra no histórico o que mudou e devolve os campos principais ao registro da lista
- * (título, SKU, NCM, EAN, status, preço e pendências) — assim Produtos e Início refletem a edição.
+ * (título, SKU, NCM, EAN, status, responsável e pendências) — assim Produtos e Início refletem a edição.
  */
-export function saveProductValues(product: Product, values: Values) {
+export function saveProductValues(product: Product, input: Values, user: AppUser) {
+  // A interface já esconde a edição; esta checagem protege contra chamadas indevidas. A regra real é do servidor.
+  if (!can(user, 'product.edit', product)) throw new Error('Sem permissão para editar este produto.')
   const current = getProductDetail(product)
+  // Só o Master troca o responsável.
+  const values = can(user, 'product.reassign') ? input : { ...input, responsavel: product.owner }
   const changes = FIELDS.filter((f) => !f.readOnly && f.kind !== 'computed' && JSON.stringify(current.values[f.id]) !== JSON.stringify(values[f.id]))
   const at = new Date().toISOString()
   const entries: HistoryEntry[] = changes.slice(0, 12).map((f, n) => ({
-    id: `h-${at}-${n}`, at, user: 'Você', field: f.label, from: plainValue(current.values[f.id]), to: plainValue(values[f.id]),
+    id: `h-${at}-${n}`, at, user: user.name, field: f.label, from: historyText(f.id, current.values[f.id]), to: historyText(f.id, values[f.id]),
   }))
   edited.set(product.id, { values, extras: { ...current.extras, history: [...entries, ...current.extras.history] } })
 
@@ -223,6 +231,7 @@ export function saveProductValues(product: Product, values: Values) {
     ncm: String(values.ncm ?? ''),
     ean: String(values.ean ?? ''),
     status: values.status as Product['status'],
+    owner: String(values.responsavel ?? product.owner),
     pendencias: derivePendencias(values),
   })
   version++

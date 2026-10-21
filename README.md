@@ -17,6 +17,8 @@ Não há menu lateral. A navegação principal é um **toggle** (Início | Produ
 | Conexões | `/conexoes` | **Somente** pelo menu do usuário (ícone de perfil) |
 | Configurações | `/configuracoes` (abas: Geral, Design System) | **Somente** pelo menu do usuário |
 
+**Perfis de acesso:** Master (tudo), Gerente de produto (cria e edita os próprios produtos; vê os demais) e Acesso comum (só leitura). Conexões e Configurações são só do Master. Detalhes em [`docs/acessos.md`](docs/acessos.md). Como ainda não há login, o perfil é escolhido no menu do usuário (**Entrar como**, provisório).
+
 A busca global encontra produtos por título, SKU, NCM, EAN ou departamento e abre a página do produto. Hoje ela consulta dados de exemplo (`src/app/products/sample-products.ts` e `photos.ts`, **temporários**; as fotos são ilustrações em SVG embutido); ao ligar uma fonte real, troque `searchProducts` em `src/app/products/search.ts`.
 
 ## Começando

@@ -2,12 +2,15 @@ import { useMemo, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router'
 import type { ColumnDef } from '@tanstack/react-table'
 import { DataTable, PageHeader, SearchField, Select, Text, Thumbnail } from '@/design-system'
+import { useSession } from '@/app/access/session'
+import { OWNERS, userName } from '@/app/access/users'
 import { routes } from '@/app/navigation'
 import { filterProducts } from '@/app/products/search'
 import { DEPARTMENTS, PRODUCTS, type Product } from '@/app/products/sample-products'
 import { usePageTitle } from '@/lib/usePageTitle'
 
 const ALL = 'all'
+const MINE = 'mine'
 
 /**
  * Produtos — tabela do catálogo: foto, SKU, título, NCM, EAN e departamento.
@@ -19,11 +22,16 @@ export function ProductsPage() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [department, setDepartment] = useState(ALL)
+  const [owner, setOwner] = useState(ALL)
+  const user = useSession()
 
   // Memoizado: a tabela volta à página 1 quando `data` muda de referência.
   const data = useMemo(
-    () => filterProducts(PRODUCTS, search).filter((p) => department === ALL || p.department === department),
-    [search, department],
+    () =>
+      filterProducts(PRODUCTS, search).filter(
+        (p) => (department === ALL || p.department === department) && (owner === ALL || p.owner === (owner === MINE ? user.id : owner)),
+      ),
+    [search, department, owner, user.id],
   )
 
   const columns = useMemo<ColumnDef<Product, any>[]>( // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -69,6 +77,7 @@ export function ProductsPage() {
         },
       },
       { accessorKey: 'department', header: 'Departamento' },
+      { id: 'owner', accessorFn: (p) => userName(p.owner), header: 'Responsável' },
     ],
     [],
   )
@@ -94,6 +103,7 @@ export function ProductsPage() {
             <div className="min-w-0 flex-1 basis-64 sm:max-w-sm">
               <SearchField value={search} onValueChange={setSearch} aria-label="Buscar na tabela" placeholder="Título, SKU, NCM ou EAN" />
             </div>
+            <Select aria-label="Responsável" className="sm:w-52" value={owner} onValueChange={setOwner} options={[{ value: ALL, label: 'Todos os responsáveis' }, ...(user.role === 'viewer' ? [] : [{ value: MINE, label: 'Meus produtos' }]), ...OWNERS.filter((u) => u.id !== user.id || user.role === 'viewer').map((u) => ({ value: u.id, label: u.name }))]} />
             <Select aria-label="Departamento" className="sm:w-56" value={department} onValueChange={setDepartment} options={[{ value: ALL, label: 'Todos os departamentos' }, ...DEPARTMENTS.map((d) => ({ value: d, label: d }))]} />
           </div>
         }

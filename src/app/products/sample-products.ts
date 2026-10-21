@@ -27,6 +27,8 @@ export interface Product {
   /** Foto do produto (URL ou data URI). */
   photo: string
   status: ProductStatus
+  /** Id do gerente de produto responsável (src/app/access/users.ts). */
+  owner: string
   /** Vazio = cadastro completo. */
   pendencias: Pendencia[]
 }
@@ -76,6 +78,7 @@ export const PRODUCTS: Product[] = Array.from({ length: 57 }, (_, i) => {
     ean: pendencias.includes('gtin') ? '' : ean13(i),
     photo: PRODUCT_PHOTOS[i % bases.length]!,
     status,
+    owner: i % 2 === 0 ? 'u-marina' : 'u-rafael',
     pendencias,
   }
 })

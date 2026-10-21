@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react'
-import { Avatar, Logo } from '../atoms'
+import { Avatar, Badge, Logo } from '../atoms'
 import { Persona } from '../cells'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuHeader, DropdownMenuSeparator, DropdownMenuTrigger, ThemeToggle } from '../molecules'
 
 export interface AppHeaderProps {
   /** Marca à esquerda, já embrulhada no link para a página inicial. */
   logo?: ReactNode
-  user: { name: string; email?: string }
+  /** `role` aparece como selo no menu do usuário (ex.: perfil de acesso). */
+  user: { name: string; email?: string; role?: string }
   /** Itens do menu do usuário (DropdownMenuItem…). Destinos secundários (Conexões, Configurações) ficam aqui. */
   userMenu?: ReactNode
   /** Sem esta função, o botão de busca não aparece. */
@@ -52,6 +53,7 @@ export function AppHeader({ logo = <Logo wordmarkOnly />, user, userMenu, onSear
             <DropdownMenuContent className="w-64">
               <DropdownMenuHeader>
                 <Persona name={user.name} description={user.email} size="sm" />
+                {user.role ? <Badge tone="brand" size="sm" className="mt-2">{user.role}</Badge> : null}
               </DropdownMenuHeader>
               {userMenu ? <DropdownMenuSeparator /> : null}
               {userMenu}

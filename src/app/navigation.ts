@@ -1,5 +1,6 @@
 import { Palette, Plug, Settings, SlidersHorizontal } from 'lucide-react'
 import type { NavEntry } from '@/design-system'
+import type { Action } from './access/permissions'
 
 /**
  * Rotas do sistema. A página do produto (/produtos/:produtoId) NÃO aparece em nenhum menu:
@@ -24,9 +25,9 @@ export const mainNav: NavEntry[] = [
 
 /** Destinos do menu do usuário (ícone de perfil no cabeçalho). */
 export const userMenuItems = [
-  { id: 'connections', label: 'Conexões', href: routes.connections, icon: Plug },
-  { id: 'settings', label: 'Configurações', href: routes.settings, icon: Settings },
-] as const
+  { id: 'connections', label: 'Conexões', href: routes.connections, icon: Plug, access: 'connections.view' },
+  { id: 'settings', label: 'Configurações', href: routes.settings, icon: Settings, access: 'settings.view' },
+] as const satisfies readonly { id: string; label: string; href: string; icon: unknown; access: Action }[]
 
 /** Abas dentro de Configurações. */
 export const settingsItems: NavEntry[] = [
