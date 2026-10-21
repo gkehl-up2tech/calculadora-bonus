@@ -35,7 +35,7 @@ const upwardRules = layers.map((layer) => ({
 }))
 
 export default tseslint.config(
-  { ignores: ['dist', 'legacy', 'node_modules'] },
+  { ignores: ['dist', 'dist-embedded', 'legacy', 'node_modules'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
