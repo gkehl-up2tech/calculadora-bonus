@@ -333,6 +333,85 @@
   --tone-info-on: var(--color-white);
 }
 
+/* Mesmos valores do bloco acima, para quando nenhum data-theme é definido (ex.: página hospedeira em "sistema").
+   `npm run check:contrast` confere que os dois blocos continuam idênticos. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --shadow-ink: 0 0 0;
+  
+    --bg-canvas: var(--color-neutral-950);
+    --bg-surface: var(--color-neutral-900);
+    --bg-raised: var(--color-neutral-800);
+    --bg-subtle: var(--color-neutral-850);
+    --bg-muted: var(--color-neutral-800);
+    --bg-inverse: var(--color-neutral-50);
+    --bg-overlay: rgb(2 6 14 / 0.7);
+  
+    --fg: var(--color-neutral-50);
+    --fg-muted: var(--color-neutral-300);
+    --fg-subtle: var(--color-neutral-350);
+    --fg-disabled: var(--color-neutral-600);
+    --fg-inverse: var(--color-neutral-900);
+    --fg-link: var(--color-brand-300);
+  
+    --line-subtle: var(--color-neutral-800);
+    --line: var(--color-neutral-700);
+    --line-control: var(--color-neutral-500);
+  
+    --primary: var(--color-brand-600);
+    --primary-hover: var(--color-brand-500);
+    --primary-active: var(--color-brand-700);
+    --on-primary: var(--color-white);
+    --primary-soft: var(--color-brand-900);
+    --primary-soft-hover: var(--color-brand-800);
+    --primary-soft-fg: var(--color-brand-200);
+    --focus: var(--color-brand-300);
+  
+    --danger: var(--color-danger-600);
+    --danger-hover: var(--color-danger-700);
+    --danger-active: var(--color-danger-900);
+    --on-danger: var(--color-white);
+  
+    --tone-neutral-soft: var(--color-neutral-800);
+    --tone-neutral-line: var(--color-neutral-700);
+    --tone-neutral-fg: var(--color-neutral-300);
+    --tone-neutral-solid: var(--color-neutral-600);
+    --tone-neutral-on: var(--color-white);
+  
+    --tone-brand-soft: var(--color-brand-900);
+    --tone-brand-line: var(--color-brand-800);
+    --tone-brand-fg: var(--color-brand-200);
+    --tone-brand-solid: var(--color-brand-600);
+    --tone-brand-on: var(--color-white);
+  
+    --tone-success-soft: var(--color-success-900);
+    --tone-success-line: var(--color-success-700);
+    --tone-success-fg: var(--color-success-300);
+    --tone-success-solid: var(--color-success-600);
+    --tone-success-on: var(--color-white);
+  
+    --tone-warning-soft: var(--color-warning-900);
+    --tone-warning-line: var(--color-warning-700);
+    --tone-warning-fg: var(--color-warning-300);
+    --tone-warning-solid: var(--color-warning-500);
+    --tone-warning-on: var(--color-neutral-900);
+  
+    --tone-danger-soft: var(--color-danger-900);
+    --tone-danger-line: var(--color-danger-700);
+    --tone-danger-fg: var(--color-danger-300);
+    --tone-danger-solid: var(--color-danger-600);
+    --tone-danger-on: var(--color-white);
+  
+    --tone-info-soft: var(--color-info-900);
+    --tone-info-line: var(--color-info-700);
+    --tone-info-fg: var(--color-info-300);
+    --tone-info-solid: var(--color-info-600);
+    --tone-info-on: var(--color-white);
+  
+  }
+}
+
 /* ───────────────────────── 3. UTILITÁRIOS ───────────────────────── */
 @theme inline {
   /* bg-canvas, bg-surface, bg-raised, bg-subtle, bg-muted, bg-inverse, bg-overlay */

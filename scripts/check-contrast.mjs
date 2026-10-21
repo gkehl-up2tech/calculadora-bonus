@@ -25,7 +25,18 @@ const decls = (text) => Object.fromEntries([...text.matchAll(/(--[\w-]+)\s*:\s*(
 
 const primitives = decls(block('@theme static {'))
 const light = { ...primitives, ...decls(block(':root {')) }
-const dark = { ...light, ...decls(block(":root[data-theme='dark'] {")) }
+const darkOverrides = decls(block(":root[data-theme='dark'] {"))
+const dark = { ...light, ...darkOverrides }
+
+// O tema escuro existe em dois blocos (atributo e prefers-color-scheme). Se divergirem, o app muda de cara
+// conforme o modo em que o tema é escolhido.
+const mediaOverrides = decls(block(":root:not([data-theme='light']) {"))
+const same = JSON.stringify(Object.entries(darkOverrides).sort()) === JSON.stringify(Object.entries(mediaOverrides).sort())
+if (!same) {
+  const diff = [...new Set([...Object.keys(darkOverrides), ...Object.keys(mediaOverrides)])].filter((k) => darkOverrides[k] !== mediaOverrides[k])
+  console.error(`✗ Os blocos escuros de tokens.css divergem em: ${diff.join(', ')}`)
+  process.exit(1)
+}
 
 function resolve(vars, value, depth = 0) {
   if (depth > 10) throw new Error(`Referência circular: ${value}`)
