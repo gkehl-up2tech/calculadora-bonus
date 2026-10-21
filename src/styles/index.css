@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+@import './tokens.css';
+@import './base.css';
+
+/* Tailwind v4 varre src/ automaticamente; a documentação do DS usa as mesmas classes. */

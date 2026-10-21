@@ -1,0 +1,117 @@
+/*
+ * BASE — reset de plataforma e comportamentos globais.
+ * Aplica o "baseline" de interfaces móveis: sem flash de toque, sem zoom em inputs,
+ * alvos de toque sem atraso, seleção de texto só em conteúdo (nunca em controles).
+ */
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    background: var(--bg-canvas);
+    scrollbar-color: var(--line) transparent;
+    /* Foco e âncoras nunca ficam escondidos atrás do cabeçalho e da barra de seções (WCAG 2.4.11). */
+    scroll-padding-top: 8rem;
+    scroll-padding-bottom: 5rem;
+  }
+
+  body {
+    min-height: 100dvh;
+    background: var(--bg-canvas);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Foco visível: 2px, contraste ≥ 3:1 (WCAG 2.4.13). Componentes podem refinar com ring-*. */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--primary-soft-hover);
+    color: var(--fg);
+  }
+
+  /* Controles não selecionam texto no toque longo; conteúdo continua selecionável. */
+  button,
+  [role='button'],
+  [role='tab'],
+  [role='menuitem'],
+  [role='option'],
+  summary {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Sem atraso de clique/zoom por duplo toque. */
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  label,
+  summary,
+  [role='button'],
+  [role='tab'],
+  [role='menuitem'],
+  [role='option'] {
+    touch-action: manipulation;
+  }
+
+  /* iOS dá zoom em inputs < 16px. Em telas de toque o mínimo é 16px. */
+  @media (pointer: coarse) {
+    input,
+    textarea,
+    select {
+      font-size: 16px;
+    }
+  }
+
+  /* Números tabulares: valores monetários e códigos alinham em colunas. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Rolagem interna nunca encadeia para a página atrás (menus, sheets, listas). */
+  [data-radix-scroll-area-viewport],
+  [cmdk-list] {
+    overscroll-behavior: contain;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  /*
+   * Coluna padrão de todo grid: pode encolher. Sem isso a coluna implícita (auto) cresce até o
+   * conteúdo mais largo (tabelas, código) e estoura a página. grid-cols-* continua sobrescrevendo.
+   */
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Reduced motion: menos e mais suave — sem deslocamento/escala, mantém opacidade. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ds-pop-from: 1;
+    --ds-slide: 0%;
+  }
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Âncoras da documentação rolam suavemente — exceto para quem pede menos movimento. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

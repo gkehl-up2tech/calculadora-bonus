@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Bônus · UP2Tech</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--navy:#1B3A6B;--blue:#2E7BC4;--light:#5BA3D9;--bg:#D6E9F8;--bg2:#EBF4FC;--muted:#4A6FA5;}
+body{font-family:'Montserrat',Arial,sans-serif;background:linear-gradient(135deg,#D6E9F8 0%,#EBF4FC 50%,#f4f9fd 100%);min-height:100vh;padding:16px;}
+#login-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1B3A6B 0%,#1e4a8a 60%,#2E7BC4 100%);}
+.wm-login{position:absolute;inset:0;overflow:hidden;opacity:.07;display:flex;flex-direction:column;justify-content:space-around;font-weight:800;font-size:12px;color:#fff;letter-spacing:.02em;text-transform:uppercase;line-height:2.4;pointer-events:none;}
+.wm-row{white-space:nowrap;}
+.login-box{position:relative;z-index:2;background:#fff;border-radius:16px;padding:36px 40px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.28);}
+.login-logo{text-align:center;margin-bottom:24px;}
+.lm{font-size:30px;font-weight:900;color:#1B3A6B;letter-spacing:-.5px;}
+.lm span{color:#5BA3D9;}
+.ls{font-size:9px;font-weight:700;color:#4A6FA5;letter-spacing:.18em;margin-top:3px;}
+.login-title{font-size:12px;font-weight:700;color:#4A6FA5;text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;}
+.login-field{margin-bottom:14px;}
+.login-field label{font-size:10px;font-weight:700;color:#4A6FA5;display:block;margin-bottom:4px;letter-spacing:.08em;text-transform:uppercase;}
+.login-field input{width:100%;font-size:14px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:8px;padding:9px 13px;color:#1B3A6B;font-weight:600;outline:none;}
+.login-err{font-size:11px;font-weight:700;color:#A32D2D;background:#FEECEC;border-radius:6px;padding:8px 12px;margin-bottom:12px;display:none;text-align:center;}
+.login-btn{width:100%;padding:11px;font-size:12px;font-weight:800;font-family:'Montserrat',Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:8px;border:none;background:linear-gradient(135deg,#1B3A6B,#2E7BC4);color:#fff;margin-top:4px;}
+.login-footer{text-align:center;font-size:9px;font-weight:600;color:#4A6FA5;margin-top:18px;letter-spacing:.06em;text-transform:uppercase;}
+.shell{max-width:860px;margin:0 auto;border-radius:14px;overflow:hidden;box-shadow:0 6px 32px rgba(27,58,107,.16);border:1px solid #B8D4EE;position:relative;}
+.wm{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-around;pointer-events:none;overflow:hidden;opacity:.05;z-index:0;font-family:'Montserrat',Arial,sans-serif;font-weight:800;font-size:12px;color:var(--navy);letter-spacing:.02em;text-transform:uppercase;line-height:2.4;}
+.hd{background:linear-gradient(135deg,#1B3A6B 0%,#1e4a8a 100%);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;}
+.logo-main{font-size:24px;font-weight:900;color:#fff;letter-spacing:-.5px;line-height:1;}
+.logo-main span{color:var(--light);}
+.logo-sub{font-size:8px;font-weight:700;color:#7AB8E8;letter-spacing:.18em;margin-top:2px;}
+.hd-right{text-align:right;}
+.hd-right .t1{font-size:13px;font-weight:700;color:#fff;letter-spacing:.05em;text-transform:uppercase;}
+.hd-right .t2{font-size:9px;color:#7AB8E8;font-weight:500;margin-top:2px;}
+.tabs{background:var(--bg);display:flex;border-bottom:2.5px solid var(--blue);position:relative;z-index:2;}
+.tab{padding:10px 20px;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border:none;background:transparent;border-bottom:2.5px solid transparent;margin-bottom:-2.5px;transition:all .15s;font-family:'Montserrat',Arial,sans-serif;}
+.tab.active{color:var(--navy);border-bottom-color:var(--navy);background:rgba(255,255,255,.5);}
+.tab:hover:not(.active){color:var(--navy);background:rgba(255,255,255,.3);}
+.body{background:linear-gradient(180deg,#F4F9FD 0%,#fff 100%);padding:20px 24px;position:relative;z-index:1;min-height:440px;}
+.panel{display:none;}.panel.active{display:block;}
+.sec{font-size:10px;font-weight:700;color:var(--blue);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px;margin-top:18px;}
+.sec:first-child{margin-top:0;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+label{font-size:10px;font-weight:700;color:var(--muted);display:block;margin-bottom:3px;letter-spacing:.05em;text-transform:uppercase;}
+.fw{position:relative;}
+.fw .pfx{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--muted);pointer-events:none;}
+.fw .sfx{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--muted);pointer-events:none;}
+.fw input{width:100%;font-size:12px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:6px;padding:7px 10px;background:#fff;color:var(--navy);font-weight:600;outline:none;transition:border-color .15s;}
+.fw.p input{padding-left:28px;}.fw.s input{padding-right:28px;}
+.fw input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(46,123,196,.1);}
+.fw input[readonly]{background:var(--bg2);color:var(--muted);}
+select{width:100%;font-size:12px;font-family:'Montserrat',Arial,sans-serif;border:1.5px solid #B8D4EE;border-radius:6px;padding:7px 10px;background:#fff;color:var(--navy);font-weight:600;outline:none;}
+.ind{background:#fff;border:1.5px solid #B8D4EE;border-left:5px solid var(--blue);border-radius:8px;padding:12px 16px;margin-bottom:10px;}
+.ind-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.ind-name{font-size:12px;font-weight:700;color:var(--navy);}
+.ind-pct{font-size:15px;font-weight:800;color:var(--blue);}
+.ind-in{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.prog{background:var(--bg);border-radius:99px;height:5px;margin-top:8px;overflow:hidden;}
+.prog-fill{height:5px;border-radius:99px;transition:width .4s ease;}
+.res-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:16px;}
+.rc{border-radius:8px;padding:14px 16px;}
+.rc-label{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;}
+.rc-value{font-size:20px;font-weight:800;}
+.rc-sub{font-size:10px;margin-top:3px;font-weight:500;}
+.rc-navy{background:var(--navy);}.rc-navy .rc-label{color:#7AB8E8;}.rc-navy .rc-value,.rc-navy .rc-sub{color:#fff;}
+.rc-blue{background:var(--blue);}.rc-blue .rc-label{color:#B8D9F5;}.rc-blue .rc-value,.rc-blue .rc-sub{color:#fff;}
+.alert{border-radius:6px;padding:9px 12px;font-size:11px;font-weight:600;margin-bottom:10px;border-left:4px solid;}
+.a-info{background:#EBF4FC;color:var(--blue);border-color:var(--blue);}
+.a-red{background:#FEECEC;color:#A32D2D;border-color:#E24B4A;}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.04em;}
+.b-green{background:#EAF3DE;color:#3B6D11;}.b-amber{background:#FAEEDA;color:#854F0B;}.b-red{background:#FEECEC;color:#A32D2D;}.b-navy{background:var(--navy);color:#fff;}
+.ft{background:var(--blue);padding:7px 24px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;}
+.ft span{font-size:8px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.1em;text-transform:uppercase;}
+.eq-card{background:#fff;border:1.5px solid #B8D4EE;border-radius:8px;padding:12px 16px;margin-bottom:10px;}
+.eq-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.gl-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bg);}
+.gl-item:last-child{border-bottom:none;}
+.gl-term{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.gl-def{font-size:11px;color:var(--muted);line-height:1.6;font-weight:500;}
+.gl-ex{font-size:10px;color:var(--blue);background:#EBF4FC;border-radius:5px;padding:7px 11px;margin-top:6px;font-weight:600;}
+.up-table{width:100%;border-collapse:collapse;font-size:11px;}
+.up-table th{text-align:left;padding:7px 10px;font-size:9px;font-weight:700;color:#fff;background:var(--navy);letter-spacing:.07em;text-transform:uppercase;}
+.up-table th:first-child{border-radius:5px 0 0 0;}.up-table th:last-child{border-radius:0 5px 0 0;}
+.up-table td{padding:7px 10px;border-bottom:1px solid var(--bg);color:var(--navy);font-weight:500;}
+.up-table tr:last-child td{border-bottom:none;}.up-table tr:hover td{background:var(--bg2);}
+.add-btn{font-size:10px;font-weight:700;cursor:pointer;padding:7px 16px;border:1.5px solid var(--blue);border-radius:6px;background:transparent;color:var(--blue);font-family:'Montserrat',Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;margin-top:4px;transition:all .15s;}
+.add-btn:hover{background:var(--blue);color:#fff;}
+.sync-bar{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1.5px solid #B8D4EE;border-radius:8px;padding:9px 14px;margin-bottom:14px;gap:10px;}
+.sync-status{font-size:10px;font-weight:600;color:var(--muted);}
+.sync-status span{font-weight:700;}
+.sync-btn{font-size:10px;font-weight:800;cursor:pointer;padding:6px 14px;border:none;border-radius:6px;background:var(--navy);color:#fff;font-family:'Montserrat',Arial,sans-serif;letter-spacing:.07em;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
+.sync-btn:hover{background:var(--blue);}.sync-btn.loading{opacity:.6;pointer-events:none;}
+.sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0;margin-right:6px;}
+.sync-dot.idle{background:#B8D4EE;}.sync-dot.ok{background:#64C97A;}.sync-dot.err{background:#E24B4A;}
+input.synced{background:#EBF4FC;border-color:#5BA3D9;}
+.breakdown{background:var(--bg2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:11px;color:var(--muted);}
+.breakdown strong{color:var(--navy);}
+@media(max-width:600px){.row2,.row3,.res-grid{grid-template-columns:1fr;}.ind-in{grid-template-columns:1fr;}.hd{flex-direction:column;gap:10px;}.hd-right{text-align:center;}body{padding:8px;}}
+</style>
+</head>
+<body>
+
+<div id="login-overlay">
+  <div class="wm-login" aria-hidden="true">
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+  </div>
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="lm">UP<span>2</span>TECH<span style="font-size:16px;color:#7AB8E8;margin-left:3px">&#174;</span></div>
+      <div class="ls">Connecting Businesses</div>
+    </div>
+    <div class="login-title">Calculadora de B&#244;nus</div>
+    <div class="login-err" id="login-err">Usu&#225;rio ou senha incorretos.</div>
+    <div class="login-field"><label>Usu&#225;rio</label><input type="text" id="login-user" placeholder="Digite seu usu&#225;rio" autocomplete="username"></div>
+    <div class="login-field"><label>Senha</label><input type="password" id="login-pass" placeholder="Digite sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="login-btn" onclick="doLogin()">Entrar</button>
+    <div class="login-footer">Acesso restrito &middot; UP2Tech 2026</div>
+  </div>
+</div>
+
+<div class="shell">
+  <div class="wm" aria-hidden="true">
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+    <div class="wm-row">WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR &nbsp;&nbsp; WWW.UP2TECH.COM.BR</div>
+  </div>
+  <div class="hd">
+    <div>
+      <div class="logo-main">UP<span>2</span>TECH<span style="font-size:13px;color:#7AB8E8;margin-left:4px">&#174;</span></div>
+      <div class="logo-sub">Connecting Businesses</div>
+    </div>
+    <div class="hd-right">
+      <div class="t1">Calculadora de B&#244;nus</div>
+      <div class="t2">Marketplace &middot; VP Guilherme Matiello</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('individual')">Individual</button>
+    <button class="tab" onclick="switchTab('equipe')">Equipe</button>
+  </div>
+  <div class="body">
+
+    <div id="panel-individual" class="panel active">
+      <div class="sec">Dados do colaborador</div>
+      <div class="row2">
+        <div><label>Nome</label><div class="fw"><input type="text" id="nome" value="Colaborador Exemplo"></div></div>
+        <div><label>Cargo</label><select id="cargo" onchange="updateCargo()"><option>Especialista</option><option>Coordenador</option><option>Comprador</option><option>Gerente</option><option>Diretor</option><option>VP</option></select></div>
+      </div>
+      <div class="row3">
+        <div><label>Sal&#225;rio base</label><div class="fw p"><span class="pfx">R$</span><input type="text" id="salario" value="8.000" oninput="onMoney(this)" onblur="onMoneyBlur(this)"></div></div>
+        <div><label>Trimestres base</label><div class="fw"><input type="number" id="trimestres" value="1" min="1" max="4" oninput="calcular()"></div></div>
+        <div><label>B&#244;nus alvo (sal&#225;rios)</label><div class="fw"><input type="number" id="bonus_alvo" value="1" step="0.5" readonly></div></div>
+      </div>
+      <div class="sec">Indicadores de desempenho</div>
+      <div class="sync-bar">
+        <div style="display:flex;align-items:center">
+          <div class="sync-dot idle" id="sync-dot"></div>
+          <div class="sync-status" id="sync-status">N&#227;o sincronizado &nbsp;&middot;&nbsp; <span>Base Calculadora B&#244;nus</span></div>
+        </div>
+        <button class="sync-btn" id="sync-btn" onclick="syncSheets()">&#8635; Sincronizar Sheets</button>
+      </div>
+      <div class="alert a-info">Pesos: <strong>Vendas 40% &middot; Margem 40% &middot; Estoque 20%</strong> &mdash; Atingimento ponderado = atingimentos relativos &times; pesos</div>
+      <div class="ind">
+        <div class="ind-hd"><span class="ind-name">Vendas <span class="badge b-navy" style="margin-left:6px;font-size:9px">40%</span></span><span class="ind-pct" id="pct-vendas">&#8212;</span></div>
+        <div class="ind-in">
+          <div><label>Meta</label><div class="fw p"><span class="pfx">R$</span><input type="text" id="meta-vendas" value="100.000" oninput="onMoney(this)" onblur="onMoneyBlur(this)"></div></div>
+          <div><label>Realizado</label><div class="fw p"><span class="pfx">R$</span><input type="text" id="real-vendas" value="92.000" oninput="onMoney(this)" onblur="onMoneyBlur(this)"></div></div>
+        </div>
+        <div class="prog"><div class="prog-fill" id="bar-vendas" style="width:0%;background:#1B3A6B"></div></div>
+      </div>
+      <div class="ind" style="border-left-color:#5BA3D9">
+        <div class="ind-hd"><span class="ind-name">Margem comercial <span class="badge b-navy" style="margin-left:6px;font-size:9px">40%</span></span><span class="ind-pct" id="pct-margem">&#8212;</span></div>
+        <div class="ind-in">
+          <div><label>Meta</label><div class="fw s"><input type="text" id="meta-margem" value="19,0" oninput="onPct(this)" onblur="onPctBlur(this)"><span class="sfx">%</span></div></div>
+          <div><label>Realizado</label><div class="fw s"><input type="text" id="real-margem" value="18,0" oninput="onPct(this)" onblur="onPctBlur(this)"><span class="sfx">%</span></div></div>
+        </div>
+        <div class="prog"><div class="prog-fill" id="bar-margem" style="width:0%;background:#5BA3D9"></div></div>
+      </div>
+      <div class="ind" style="border-left-color:#2E7BC4">
+        <div class="ind-hd"><span class="ind-name">Dias de estoque (DOH) <span class="badge b-navy" style="margin-left:6px;font-size:9px">20%</span></span><span class="ind-pct" id="pct-estoque">&#8212;</span></div>
+        <div class="ind-in">
+          <div><label>Meta (dias)</label><div class="fw s"><input type="number" id="meta-estoque" value="45" oninput="calcular()"><span class="sfx" style="font-size:10px">d</span></div></div>
+          <div><label>Realizado (dias)</label><div class="fw s"><input type="number" id="real-estoque" value="38" oninput="calcular()"><span class="sfx" style="font-size:10px">d</span></div></div>
+        </div>
+        <div class="prog"><div class="prog-fill" id="bar-estoque" style="width:0%;background:#2E7BC4"></div></div>
+      </div>
+      <div id="alert-venda" class="alert a-red" style="display:none;margin-top:10px">&#9888; Meta de vendas abaixo de 70% &#8212; b&#244;nus zerado.</div>
+      <div class="res-grid">
+        <div class="rc rc-navy"><div class="rc-label">Atingimento ponderado</div><div class="rc-value" id="res-ating">&#8212;</div></div>
+        <div class="rc rc-navy"><div class="rc-label">B&#244;nus % aplicado</div><div class="rc-value" id="res-pct">&#8212;</div></div>
+        <div class="rc rc-blue"><div class="rc-label">B&#244;nus estimado</div><div class="rc-value" id="res-valor">&#8212;</div><div class="rc-sub" id="res-formula">&#8212;</div></div>
+      </div>
+      <div class="breakdown" id="breakdown">&#8212;</div>
+    </div>
+
+    <div id="panel-equipe" class="panel">
+      <div class="sec">Comparativo da equipe</div>
+      <div class="alert a-info">Cada colaborador calcula b&#244;nus conforme seu cargo. At&#233; 8 pessoas.</div>
+      <div id="equipe-list"></div>
+      <button class="add-btn" onclick="addMembro()">+ Adicionar colaborador</button>
+      <div class="sec" style="margin-top:20px">Resumo do time</div>
+      <div class="res-grid">
+        <div class="rc rc-navy"><div class="rc-label">M&#233;dia b&#244;nus %</div><div class="rc-value" id="eq-media-pct">&#8212;</div></div>
+        <div class="rc rc-navy"><div class="rc-label">M&#233;dia b&#244;nus R$</div><div class="rc-value" id="eq-media-val">&#8212;</div></div>
+        <div class="rc rc-blue"><div class="rc-label">Maior b&#244;nus</div><div class="rc-value" id="eq-top">&#8212;</div><div class="rc-sub" id="eq-top-nome">&#8212;</div></div>
+      </div>
+      <div id="eq-table" style="margin-top:14px;overflow-x:auto"></div>
+    </div>
+
+  </div>
+  <div class="ft">
+    <span>Confidencial &#8212; UP2Tech &#8212; 2026</span>
+    <span>Calculadora de B&#244;nus &middot; Marketplace</span>
+  </div>
+</div>
+
+<script>
+const BALVO={Especialista:1,Coordenador:1,Comprador:1,Gerente:1.5,Diretor:2,VP:3};
+const TOL=.24;
+const SHEETS_CSV='https://docs.google.com/spreadsheets/d/e/2PACX-1vSgaPxax63qi38s8qXTMmsqNvwELqeuXkafVogB0yEYy05kKdAibXHJO8k-DomKLj5sQFiCUo7eYJuU/pub?gid=881184393&single=true&output=csv';
+
+function parseMoney(s){return parseFloat(String(s).replace(/\./g,'').replace(',','.'))||0;}
+function parsePct(s){return parseFloat(String(s).replace(',','.'))||0;}
+function onMoney(el){let r=el.value.replace(/\D/g,'');if(!r){el.value='';calcular();return;}el.value=parseInt(r,10).toLocaleString('pt-BR');calcular();}
+function onMoneyBlur(el){let v=parseMoney(el.value);el.value=v?v.toLocaleString('pt-BR'):'';calcular();}
+function onPct(el){el.value=el.value.replace(/[^\d,\.]/g,'');calcular();}
+function onPctBlur(el){let v=parsePct(el.value);el.value=v?v.toFixed(1).replace('.',','):'';calcular();}
+function fp(v){return(v*100).toFixed(1)+'%';}
+function fr(v){return'R$ '+Math.round(v).toLocaleString('pt-BR');}
+
+function switchTab(t){document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.panel').forEach(e=>e.classList.remove('active'));document.querySelector('[onclick="switchTab(\''+t+'\')"]').classList.add('active');document.getElementById('panel-'+t).classList.add('active');if(t==='equipe')calcEquipe();}
+function updateCargo(){const c=document.getElementById('cargo').value;document.getElementById('bonus_alvo').value=BALVO[c]||1;calcular();}
+
+function atVendas(m,r){return m?r/m:0;}
+// Margem: lookup pelo valor absoluto realizado (%)
+function atMargem(mm,rm){
+  if(rm<17.5) return 0;
+  if(rm<18.0) return 0.70;
+  if(rm<18.5) return 0.80;
+  if(rm<19.0) return 0.90;
+  if(rm<19.5) return 1.00;
+  if(rm<20.0) return 1.10;
+  if(rm<20.5) return 1.20;
+  if(rm<21.0) return 1.30;
+  if(rm<21.5) return 1.40;
+  if(rm<22.0) return 1.50;
+  return 1.60; // >= 22% -> teto 160%
+}
+// DOH: lookup pelos dias realizados (ranges fixos)
+function atDOH(m,r){
+  if(r>=65) return 0;
+  if(r>=57) return 0.70;
+  if(r>=51) return 0.80;
+  if(r>=46) return 0.90;
+  if(r>=43) return 1.00;
+  if(r>=38) return 1.10;
+  return 1.20; // <= 37 dias -> teto 120%
+}
+function calcPonderado(av,am,ae){return av*0.4+am*0.4+ae*0.2;}
+function bonusFinal(p){if(p<0.7)return 0;if(p<0.8)return 0.7;if(p<0.9)return 0.8;if(p<1.0)return 0.9;return p;}
+
+function calcular(){
+  const cargo=document.getElementById('cargo').value;
+  const sal=parseMoney(document.getElementById('salario').value);
+  const ba=BALVO[cargo]||1;
+  document.getElementById('bonus_alvo').value=ba;
+  const mv=parseMoney(document.getElementById('meta-vendas').value);
+  const rv=parseMoney(document.getElementById('real-vendas').value);
+  const mmPct=parsePct(document.getElementById('meta-margem').value);
+  const rmPct=parsePct(document.getElementById('real-margem').value);
+  const me=+document.getElementById('meta-estoque').value||0;
+  const re=+document.getElementById('real-estoque').value||0;
+  const av=atVendas(mv,rv),am=atMargem(mmPct,rmPct),ae=atDOH(me,re);
+  const p=calcPonderado(av,am,ae),f=bonusFinal(p),val=sal*ba*f;
+  document.getElementById('pct-vendas').textContent=fp(av);
+  document.getElementById('pct-margem').textContent=fp(am);
+  document.getElementById('pct-estoque').textContent=fp(ae);
+  document.getElementById('bar-vendas').style.width=Math.min(av*100,100)+'%';
+  document.getElementById('bar-margem').style.width=Math.min(am*100,100)+'%';
+  document.getElementById('bar-estoque').style.width=Math.min(ae*100,100)+'%';
+  document.getElementById('alert-venda').style.display=av<0.7?'block':'none';
+  document.getElementById('res-ating').textContent=fp(p);
+  document.getElementById('res-pct').textContent=fp(f);
+  document.getElementById('res-valor').textContent=fr(val);
+  document.getElementById('res-formula').textContent=fr(sal)+' \xd7 '+ba+' \xd7 '+fp(f);
+  document.getElementById('breakdown').innerHTML=
+    '<strong>Detalhamento:</strong> &nbsp; Vendas '+fp(av)+' \xd7 40% = <strong>'+fp(av*0.4)+'</strong> &nbsp;+&nbsp; Margem '+fp(am)+' \xd7 40% = <strong>'+fp(am*0.4)+'</strong> &nbsp;+&nbsp; DOH '+fp(ae)+' \xd7 20% = <strong>'+fp(ae*0.2)+'</strong> &nbsp;\u2192&nbsp; Ponderado = <strong>'+fp(p)+'</strong> \u2192 B\xf4nus = <strong>'+fp(f)+'</strong> &nbsp;\u2192&nbsp; '+fr(sal)+' \xd7 '+ba+' sal. \xd7 '+fp(f)+' = <strong>'+fr(val)+'</strong>';
+}
+
+let equipe=[
+  {nome:'Ana',cargo:'Especialista',salario:7000,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
+  {nome:'Bruno',cargo:'Coordenador',salario:9000,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
+  {nome:'Diego',cargo:'Gerente',salario:13000,mv:100000,rv:92000,mmPct:19,rmPct:18,me:45,re:38},
+];
+function addMembro(){if(equipe.length>=8)return;equipe.push({nome:'Colaborador',cargo:'Especialista',salario:8000,mv:100000,rv:100000,mmPct:19,rmPct:19,me:45,re:45});renderEquipe();}
+function remM(i){equipe.splice(i,1);renderEquipe();}
+function upM(i,f,v){if(['salario','mv','rv'].includes(f))equipe[i][f]=parseMoney(v);else if(['mmPct','rmPct'].includes(f))equipe[i][f]=parsePct(v);else equipe[i][f]=isNaN(parseFloat(v))?v:(parseFloat(v)||v);calcEquipe();}
+
+function calcEquipe(){
+  const R=equipe.map(m=>{const ba=BALVO[m.cargo]||1,av=atVendas(m.mv,m.rv),am=atMargem(m.mmPct,m.rmPct),ae=atDOH(m.me,m.re),p=calcPonderado(av,am,ae),f=bonusFinal(p),val=m.salario*ba*f;return{nome:m.nome,cargo:m.cargo,p,f,val};});
+  if(!R.length)return;
+  const mp=R.reduce((s,r)=>s+r.f,0)/R.length,mv2=R.reduce((s,r)=>s+r.val,0)/R.length,top=R.reduce((a,b)=>b.val>a.val?b:a);
+  document.getElementById('eq-media-pct').textContent=fp(mp);
+  document.getElementById('eq-media-val').textContent=fr(mv2);
+  document.getElementById('eq-top').textContent=fr(top.val);
+  document.getElementById('eq-top-nome').textContent=top.nome;
+  document.getElementById('eq-table').innerHTML='<table class="up-table"><tr><th>Nome</th><th>Cargo</th><th>Ating. pond.</th><th>B\xf4nus %</th><th>B\xf4nus R$</th></tr>'+R.map(r=>'<tr><td>'+r.nome+'</td><td>'+r.cargo+'</td><td>'+fp(r.p)+'</td><td><span class="badge '+(r.f>=1?'b-green':r.f>0?'b-amber':'b-red')+'">'+fp(r.f)+'</span></td><td style="font-weight:700">'+fr(r.val)+'</td></tr>').join('')+'</table>';
+}
+
+function renderEquipe(){
+  const cargos=['Especialista','Coordenador','Comprador','Gerente','Diretor','VP'];
+  const minp=(val,cb,pfx,sfx)=>`<div style="position:relative">${pfx?`<span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#4A6FA5">${pfx}</span>`:''}<input type="text" value="${val}" onchange="${cb}" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px ${sfx?'22px':'8px'} 6px ${pfx?'26px':'8px'};font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;">${sfx?`<span style="position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:700;color:#4A6FA5">${sfx}</span>`:''}</div>`;
+  document.getElementById('equipe-list').innerHTML=equipe.map((m,i)=>`
+    <div class="eq-card">
+      <div class="eq-hd"><input value="${m.nome}" onchange="upM(${i},'nome',this.value)" style="font-weight:700;font-size:13px;border:none;background:transparent;color:#1B3A6B;padding:0;width:200px;font-family:Montserrat,Arial,sans-serif;outline:none;"><button onclick="remM(${i})" style="background:none;border:none;cursor:pointer;color:#4A6FA5;font-size:15px;">&times;</button></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:7px">
+        <div><label>Cargo</label><select onchange="upM(${i},'cargo',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;">${cargos.map(c=>`<option ${c===m.cargo?'selected':''}>${c}</option>`).join('')}</select></div>
+        <div><label>Sal&aacute;rio</label>${minp(m.salario.toLocaleString('pt-BR'),`upM(${i},'salario',this.value)`,'R$','')}</div>
+        <div><label>Meta vendas</label>${minp(m.mv.toLocaleString('pt-BR'),`upM(${i},'mv',this.value)`,'R$','')}</div>
+        <div><label>Real. vendas</label>${minp(m.rv.toLocaleString('pt-BR'),`upM(${i},'rv',this.value)`,'R$','')}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">
+        <div><label>Meta margem</label>${minp(m.mmPct.toFixed(1).replace('.',','),`upM(${i},'mmPct',this.value)`,'','%')}</div>
+        <div><label>Real. margem</label>${minp(m.rmPct.toFixed(1).replace('.',','),`upM(${i},'rmPct',this.value)`,'','%')}</div>
+        <div><label>Meta estoque</label><input type="number" value="${m.me}" onchange="upM(${i},'me',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;"></div>
+        <div><label>Real. estoque</label><input type="number" value="${m.re}" onchange="upM(${i},'re',this.value)" style="font-size:11px;width:100%;border:1.5px solid #B8D4EE;border-radius:6px;padding:6px 8px;font-family:Montserrat,Arial,sans-serif;font-weight:600;color:#1B3A6B;outline:none;"></div>
+      </div>
+    </div>`).join('');
+  calcEquipe();
+}
+
+async function syncSheets(){
+  const btn=document.getElementById('sync-btn'),dot=document.getElementById('sync-dot'),status=document.getElementById('sync-status');
+  btn.classList.add('loading');btn.textContent='Sincronizando...';dot.className='sync-dot idle';
+  try{
+    const res=await fetch(SHEETS_CSV+'&t='+Date.now());if(!res.ok)throw new Error('HTTP '+res.status);
+    const text=await res.text();
+    const rows=text.trim().split('\n').map(r=>r.split(',').map(c=>c.trim().replace(/^"|"$/g,'')));
+    if(rows.length<2)throw new Error('Sem dados');
+    const d=rows[1];
+    const mv=parseFloat(d[0])||0,rv=parseFloat(d[1])||0;
+    const mmRaw=parseFloat(d[2])||0,rmRaw=parseFloat(d[3])||0;
+    const mmPct=mmRaw<1?mmRaw*100:mmRaw,rmPct=rmRaw<1?rmRaw*100:rmRaw;
+    const me=parseFloat(d[4])||0,re=parseFloat(d[5])||0;
+    document.getElementById('meta-vendas').value=mv.toLocaleString('pt-BR');
+    document.getElementById('real-vendas').value=rv.toLocaleString('pt-BR');
+    document.getElementById('meta-margem').value=mmPct.toFixed(1).replace('.',',');
+    document.getElementById('real-margem').value=rmPct.toFixed(1).replace('.',',');
+    document.getElementById('meta-estoque').value=me;document.getElementById('real-estoque').value=re;
+    ['meta-vendas','real-vendas','meta-margem','real-margem','meta-estoque','real-estoque'].forEach(id=>{const el=document.getElementById(id);el.classList.add('synced');el.readOnly=true;});
+    equipe.forEach(m=>{m.mv=mv;m.rv=rv;m.mmPct=mmPct;m.rmPct=rmPct;m.me=me;m.re=re;});
+    renderEquipe();calcular();
+    const now=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    dot.className='sync-dot ok';
+    status.innerHTML='Sincronizado \xe0s <span>'+now+'</span> \xb7 <span>Base Calculadora B\xf4nus</span> <span style="color:#3B6D11"> \u2713</span>';
+    btn.classList.remove('loading');btn.textContent='\u21bb Atualizar';
+  }catch(e){dot.className='sync-dot err';status.innerHTML='<span style="color:#A32D2D">Erro ao sincronizar</span>';btn.classList.remove('loading');btn.textContent='\u21bb Tentar novamente';}
+}
+
+function doLogin(){
+  const u=document.getElementById('login-user').value.trim(),p=document.getElementById('login-pass').value;
+  if(u==='admin'&&p==='admin'){const ov=document.getElementById('login-overlay');ov.style.transition='opacity .4s ease';ov.style.opacity='0';setTimeout(()=>ov.style.display='none',400);}
+  else{document.getElementById('login-err').style.display='block';document.getElementById('login-pass').value='';document.getElementById('login-pass').focus();}
+}
+
+updateCargo();renderEquipe();
+</script>
+</body>
+</html>
