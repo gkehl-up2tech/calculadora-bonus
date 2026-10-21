@@ -11,7 +11,7 @@ import { formatBRL, formatNumber } from '@/lib/format'
 function topWithOthers<T extends { id: string; label: string; count: number }>(items: T[], n: number) {
   if (items.length <= n + 1) return items
   const rest = items.slice(n)
-  return [...items.slice(0, n), { id: 'others', label: `Outras (${rest.length} categorias)`, count: rest.reduce((s, i) => s + i.count, 0) }]
+  return [...items.slice(0, n), { id: 'others', label: `Outros (${rest.length} departamentos)`, count: rest.reduce((s, i) => s + i.count, 0) }]
 }
 
 const pct = (part: number, total: number) => (total > 0 ? Math.round((part / total) * 100) : 0)
@@ -109,15 +109,15 @@ export function ProductsDashboard() {
           <Card>
             <CardHeader>
               <div>
-                <CardTitle>Produtos por categoria</CardTitle>
+                <CardTitle>Produtos por departamento</CardTitle>
                 <CardDescription>Da maior para a menor.</CardDescription>
               </div>
             </CardHeader>
             <CardContent>
               <BarList
-                aria-label="Produtos por categoria"
+                aria-label="Produtos por departamento"
                 total={m.total}
-                items={topWithOthers(m.byCategory, 6).map((c) => ({ id: c.id, label: c.label, value: c.count }))}
+                items={topWithOthers(m.byDepartment, 6).map((c) => ({ id: c.id, label: c.label, value: c.count }))}
               />
             </CardContent>
           </Card>

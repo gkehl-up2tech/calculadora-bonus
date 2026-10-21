@@ -169,8 +169,9 @@ export function DataTable<T>({
         </div>
       ) : null}
 
-      {/* tabIndex: quem usa só o teclado precisa focar a região para rolar a tabela. */}
-      <div role="region" tabIndex={0} aria-label={`${caption} (rolável)`} className="overflow-auto overscroll-x-contain" style={{ maxHeight }}>
+      {/* tabIndex: quem usa só o teclado precisa focar a região para rolar a tabela.
+          relative: elementos absolutos (ex.: texto sr-only das células) ficam contidos na rolagem em vez de esticar a página. */}
+      <div role="region" tabIndex={0} aria-label={`${caption} (rolável)`} className="relative overflow-auto overscroll-x-contain" style={{ maxHeight }}>
         <table className="w-full min-w-max border-collapse text-sm" aria-label={caption} aria-busy={loading || undefined}>
           <thead className="sticky top-0 z-sticky bg-subtle">
             {table.getHeaderGroups().map((hg) => (

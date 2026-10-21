@@ -9,9 +9,11 @@ Sistema de cadastro de produtos (fiscal + vendas) da UP2Tech. Interface em **por
 ## Navegação e páginas
 - **Sem menu lateral e sem menu no cabeçalho.** A navegação principal é o toggle `SegmentedNav` (links com aparência de toggle, **sem ícones**) logo **acima do `PageHeader`**, renderizado pelo `AppShell` em toda página. Rotas e menus ficam em `src/app/navigation.ts`.
 - O `AppHeader` tem só: marca em texto (sem a imagem do logo), botão **Buscar produtos** centralizado (só texto), tema e usuário.
-- Toggle: Início e Todos os produtos. **Conexões** e **Configurações** só pelo menu do usuário (ícone de perfil).
+- Toggle: Início e Produtos. **Conexões** e **Configurações** só pelo menu do usuário (ícone de perfil).
 - **Página do produto** (`/produtos/:produtoId`) não tem item de menu: só pela lista de produtos, pela busca global ou pelo botão *Novo produto* (`/produtos/novo`). Nunca a coloque em menus.
 - Páginas novas começam em branco (`<h1 className="sr-only">` + `usePageTitle`) e são construídas uma a uma, sob instrução.
+- **Produtos** (pronta): `PageHeader` + `DataTable` com foto (`Thumbnail`), SKU, título, NCM, EAN e departamento; busca e filtro por departamento na toolbar; o título é um link e a linha inteira abre `/produtos/:id` (única entrada na página do produto, além da busca global).
+- **Vocabulário do produto:** use **título** (não "nome") e **departamento** (não "categoria"), em código e interface.
 - **Início** (pronta): `PageHeader` com `hideTitle` só com o botão *Novo produto* (leva a `/produtos/novo`) + dashboard (`src/pages/home`, métricas em `src/app/dashboard/metrics.ts`).
 - Gráficos: `StatCard` (um `hero` por tela), `BarList` (uma cor para categorias nominais) e `DistributionBar` (parte-do-todo com legenda). Todo valor aparece também em texto; cores de marcas gráficas vêm dos tons `solid` (validados a ≥ 3:1 por `check:contrast`).
 - A busca global (`CommandPalette`) usa `searchProducts` (`src/app/products/search.ts`) sobre dados de exemplo **temporários**.

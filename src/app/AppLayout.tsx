@@ -25,7 +25,7 @@ export function AppLayout() {
     const products = q.length >= MIN_QUERY ? searchProducts(query) : []
     const pages = match([
       { id: 'go-home', label: 'Início', icon: Home, onSelect: () => navigate(routes.home) },
-      { id: 'go-products', label: 'Todos os produtos', icon: Package, keywords: ['catálogo', 'lista'], onSelect: () => navigate(routes.products) },
+      { id: 'go-products', label: 'Produtos', icon: Package, keywords: ['catálogo', 'lista', 'todos os produtos'], onSelect: () => navigate(routes.products) },
       { id: 'go-connections', label: 'Conexões', icon: Plug, keywords: ['integrações'], onSelect: () => navigate(routes.connections) },
       { id: 'go-settings', label: 'Configurações', icon: Settings, onSelect: () => navigate(routes.settings) },
       { id: 'go-ds', label: 'Design System', icon: Palette, keywords: ['componentes', 'tokens', 'cores'], onSelect: () => navigate(routes.designSystem) },
@@ -43,7 +43,7 @@ export function AppLayout() {
             heading: 'Produtos',
             items: products.map<CommandItem>((p) => ({
               id: p.id,
-              label: p.name,
+              label: p.title,
               hint: `${p.sku} · ${p.ncm}`,
               icon: Package,
               onSelect: () => navigate(routes.product(p.id)),

@@ -2,7 +2,7 @@
  * DADOS ILUSTRATIVOS para os exemplos do Design System.
  * Produtos vêm do módulo de exemplo do app; códigos fiscais (NCM, CEST, CFOP, CST) são apenas amostras de formato.
  */
-export { CATEGORIES, PRODUCTS, STATUS_LABEL, STATUS_TONE } from '@/app/products/sample-products'
+export { DEPARTMENTS, PRODUCTS, STATUS_LABEL, STATUS_TONE } from '@/app/products/sample-products'
 export type { Product, ProductStatus } from '@/app/products/sample-products'
 
 export const NCM_OPTIONS = [

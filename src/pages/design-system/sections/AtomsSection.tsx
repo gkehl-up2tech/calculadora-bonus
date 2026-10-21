@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { ArrowRight, Download, Package, Plus, Trash2 } from 'lucide-react'
 import {
   Avatar, Badge, Button, Checkbox, Divider, Heading, Icon, Input, Kbd, Label, Link, Logo, NativeSelect, ProgressBar,
-  Radio, RadioGroup, Skeleton, Spinner, Switch, Text, Textarea, TONES, toneLabel, type CheckedState,
+  Radio, RadioGroup, Skeleton, Spinner, Switch, Text, Textarea, Thumbnail, TONES, toneLabel, type CheckedState,
 } from '@/design-system'
+import { PRODUCT_PHOTOS } from '@/app/products/photos'
 import { DocSection, SubSection } from '../docs/DocSection'
 import { Specimen } from '../docs/Specimen'
 import { PropsTable } from '../docs/PropsTable'
@@ -139,7 +140,7 @@ export function AtomsSection() {
       <SubSection title="Indicadores">
         <Specimen
           title="Badge"
-          description="Rótulos curtos de estado ou categoria. Seis tons × três aparências. O texto sempre diz o significado."
+          description="Rótulos curtos de estado ou classificação. Seis tons × três aparências. O texto sempre diz o significado."
           code={`<Badge tone="success">Ativo</Badge>
 <Badge tone="danger" appearance="solid">Bloqueado</Badge>
 <Badge tone="info" appearance="outline" size="sm">Novo</Badge>`}
@@ -160,6 +161,22 @@ export function AtomsSection() {
           <Avatar name="Maria da Silva" size="lg" />
           <Avatar name="Carlos" />
           <Avatar name="João Pedro de Albuquerque Santos" />
+        </Specimen>
+        <Specimen
+          title="Thumbnail"
+          description="Miniatura quadrada de foto. Sem imagem ou com falha ao carregar, mostra um ícone e o layout não quebra. Carrega sob demanda (lazy), próprio para tabelas longas. Use alt vazio quando o texto ao lado já descreve o item."
+          code={`<Thumbnail src={product.photo} alt="" size="lg" />   // título ao lado: foto decorativa
+<Thumbnail src={product.photo} alt="Parafuso sextavado M8" size="xl" />
+<Thumbnail alt="Sem foto" />                         // ícone no lugar`}
+        >
+          {(['sm', 'md', 'lg', 'xl'] as const).map((s, i) => (
+            <div key={s} className="grid justify-items-center gap-1.5">
+              <Thumbnail src={PRODUCT_PHOTOS[[0, 2, 5, 10][i]!]} alt="" size={s} />
+              <Text variant="caption">{s}</Text>
+            </div>
+          ))}
+          <div className="grid justify-items-center gap-1.5"><Thumbnail alt="Sem foto" size="lg" /><Text variant="caption">sem foto</Text></div>
+          <div className="grid justify-items-center gap-1.5"><Thumbnail src="data:image/png;base64,invalida" alt="Imagem com falha" size="lg" /><Text variant="caption">falha</Text></div>
         </Specimen>
         <Specimen
           title="Spinner, Skeleton e ProgressBar"

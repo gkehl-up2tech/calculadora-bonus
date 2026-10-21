@@ -3,7 +3,7 @@ import type { NavEntry } from '@/design-system'
 
 /**
  * Rotas do sistema. A página do produto (/produtos/:produtoId) NÃO aparece em nenhum menu:
- * só se chega a ela pela lista "Todos os produtos" ou pela busca global.
+ * só se chega a ela pela lista "Produtos" ou pela busca global.
  */
 export const routes = {
   home: '/',
@@ -19,7 +19,7 @@ export const routes = {
 export const mainNav: NavEntry[] = [
   { id: 'home', label: 'Início', href: routes.home, end: true },
   // end: na página do produto (/produtos/:id) nenhum item do menu fica marcado como "página atual".
-  { id: 'products', label: 'Todos os produtos', href: routes.products, end: true },
+  { id: 'products', label: 'Produtos', href: routes.products, end: true },
 ]
 
 /** Destinos do menu do usuário (ícone de perfil no cabeçalho). */

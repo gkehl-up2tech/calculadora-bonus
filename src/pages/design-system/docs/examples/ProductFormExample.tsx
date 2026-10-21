@@ -5,13 +5,13 @@ import {
   Select, SwitchField, Textarea, toast,
 } from '@/design-system'
 import { isValidGtin } from '@/lib/masks'
-import { CATEGORIES, CFOP_OPTIONS, CSOSN_OPTIONS, NCM_OPTIONS, ORIGEM_OPTIONS, UNIT_OPTIONS } from '../sample-data'
+import { DEPARTMENTS, CFOP_OPTIONS, CSOSN_OPTIONS, NCM_OPTIONS, ORIGEM_OPTIONS, UNIT_OPTIONS } from '../sample-data'
 
 interface FormState {
-  name: string
+  title: string
   sku: string
   gtin: string
-  category: string
+  department: string
   description: string
   cost: number | null
   price: number | null
@@ -27,7 +27,7 @@ interface FormState {
 }
 
 const initial: FormState = {
-  name: '', sku: '', gtin: '', category: '', description: '', cost: null, price: null, unit: 'UN', minStock: '',
+  title: '', sku: '', gtin: '', department: '', description: '', cost: null, price: null, unit: 'UN', minStock: '',
   active: true, trackStock: true, ncm: null, cest: '', origem: '', cfop: null, csosn: '',
 }
 
@@ -35,7 +35,7 @@ type Errors = Partial<Record<keyof FormState, string>>
 
 function validate(f: FormState): Errors {
   const e: Errors = {}
-  if (!f.name.trim()) e.name = 'Informe o nome do produto.'
+  if (!f.title.trim()) e.title = 'Informe o título do produto.'
   if (!f.sku.trim()) e.sku = 'Informe o SKU.'
   if (f.gtin && !isValidGtin(f.gtin)) e.gtin = 'GTIN inválido: confira o dígito verificador.'
   if (!f.price) e.price = 'Informe o preço de venda.'
@@ -96,8 +96,8 @@ export function ProductFormExample() {
 
       <FormSection headingLevel={6} title="Identificação" description="Como o produto é reconhecido no catálogo e na nota fiscal.">
         <FormGrid>
-          <FormField label="Nome do produto" required error={errors.name} className="sm:col-span-2">
-            {(c) => <Input {...c} value={f.name} onChange={(e) => set('name', e.target.value)} placeholder="Ex.: Parafuso sextavado M8" />}
+          <FormField label="Título do produto" required error={errors.title} className="sm:col-span-2">
+            {(c) => <Input {...c} value={f.title} onChange={(e) => set('title', e.target.value)} placeholder="Ex.: Parafuso sextavado M8" />}
           </FormField>
           <FormField label="SKU" required error={errors.sku}>
             {(c) => <Input {...c} value={f.sku} onChange={(e) => set('sku', e.target.value.toUpperCase())} placeholder="UP-1000" autoCapitalize="characters" />}
@@ -105,8 +105,8 @@ export function ProductFormExample() {
           <FormField label="GTIN / EAN" optional error={errors.gtin} hint="8, 12, 13 ou 14 dígitos.">
             {(c) => <MaskedInput {...c} mask="99999999999999" value={f.gtin} onValueChange={(v) => set('gtin', v)} placeholder="7891000100103" />}
           </FormField>
-          <FormField label="Categoria" optional className="sm:col-span-2">
-            {(c) => <Select {...c} options={CATEGORIES.map((x) => ({ value: x, label: x }))} value={f.category} onValueChange={(v) => set('category', v)} />}
+          <FormField label="Departamento" optional className="sm:col-span-2">
+            {(c) => <Select {...c} options={DEPARTMENTS.map((x) => ({ value: x, label: x }))} value={f.department} onValueChange={(v) => set('department', v)} />}
           </FormField>
           <FormField label="Descrição" optional className="sm:col-span-2">
             {(c) => <Textarea {...c} value={f.description} onChange={(e) => set('description', e.target.value)} />}

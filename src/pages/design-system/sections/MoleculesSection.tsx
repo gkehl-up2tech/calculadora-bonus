@@ -318,7 +318,7 @@ toast('Produto excluído', { action: { label: 'Desfazer', onClick: undo } })`}
           <Sheet>
             <SheetTrigger asChild><Button variant="secondary">Gaveta inferior</Button></SheetTrigger>
             <SheetContent title="Filtros" side="bottom" footer={<Button className="w-full">Ver resultados</Button>}>
-              <div className="grid gap-4 p-4"><FormField label="Categoria">{(c) => <Input {...c} />}</FormField></div>
+              <div className="grid gap-4 p-4"><FormField label="Departamento">{(c) => <Input {...c} />}</FormField></div>
             </SheetContent>
           </Sheet>
         </Specimen>
@@ -363,14 +363,14 @@ toast('Produto excluído', { action: { label: 'Desfazer', onClick: undo } })`}
           composedOf={['Link', 'estilo de toggle']}
           description="A navegação principal do sistema: parece um toggle, mas é feita de links — cada opção leva a uma página. Fica logo acima do PageHeader. O item atual usa aria-current=page; em páginas fora do menu (Conexões, Configurações, produto) nenhuma opção fica marcada. Sem ícones."
           code={`<SegmentedNav
-  items={[{ id: 'home', label: 'Início', href: '/', end: true }, { id: 'products', label: 'Todos os produtos', href: '/produtos', end: true }]}
+  items={[{ id: 'home', label: 'Início', href: '/', end: true }, { id: 'products', label: 'Produtos', href: '/produtos', end: true }]}
   linkAs={NavLink} hrefProp="to"
 />`}
           previewClassName="!grid gap-4"
         >
-          <SegmentedNav label="Exemplo: Início selecionado" currentPath="#moleculas" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Todos os produtos', href: '#moleculas-b', end: true }]} />
-          <SegmentedNav label="Exemplo: segundo item selecionado" currentPath="#moleculas-b" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Todos os produtos', href: '#moleculas-b', end: true }]} />
-          <SegmentedNav label="Exemplo: fora do menu" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Todos os produtos', href: '#moleculas-b', end: true }]} />
+          <SegmentedNav label="Exemplo: Início selecionado" currentPath="#moleculas" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Produtos', href: '#moleculas-b', end: true }]} />
+          <SegmentedNav label="Exemplo: segundo item selecionado" currentPath="#moleculas-b" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Produtos', href: '#moleculas-b', end: true }]} />
+          <SegmentedNav label="Exemplo: fora do menu" items={[{ id: 'a', label: 'Início', href: '#moleculas', end: true }, { id: 'b', label: 'Produtos', href: '#moleculas-b', end: true }]} />
         </Specimen>
       </SubSection>
 
@@ -397,11 +397,11 @@ toast('Produto excluído', { action: { label: 'Desfazer', onClick: undo } })`}
           title="BarList"
           composedOf={['Text', 'barra fina']}
           description="Ranking em barras horizontais. A lista de texto (rótulo, valor e %) é a leitura principal; as barras só reforçam (aria-hidden). Categorias nominais usam UMA cor, sem rampa de valor. Barra de 8 px, ponta arredondada e base reta."
-          code={`<BarList aria-label="Produtos por categoria" total={57} items={[{ id: 'e', label: 'Eletrônicos', value: 17 }, …]} />
+          code={`<BarList aria-label="Produtos por departamento" total={57} items={[{ id: 'e', label: 'Eletrônicos', value: 17 }, …]} />
 <BarList tone="warning" aria-label="Pendências" items={…} />`}
           previewClassName="!grid gap-8 md:grid-cols-2"
         >
-          <BarList aria-label="Exemplo: produtos por categoria" items={[{ id: 'a', label: 'Eletrônicos', value: 17 }, { id: 'b', label: 'Ferragens', value: 9 }, { id: 'c', label: 'Informática', value: 6 }, { id: 'd', label: 'Vestuário', value: 4 }, { id: 'e', label: 'Cosméticos', value: 0 }]} />
+          <BarList aria-label="Exemplo: produtos por departamento" items={[{ id: 'a', label: 'Eletrônicos', value: 17 }, { id: 'b', label: 'Ferragens', value: 9 }, { id: 'c', label: 'Informática', value: 6 }, { id: 'd', label: 'Vestuário', value: 4 }, { id: 'e', label: 'Cosméticos', value: 0 }]} />
           <BarList aria-label="Exemplo: pendências" tone="warning" items={[{ id: 'a', label: 'Sem dados fiscais', value: 8 }, { id: 'b', label: 'Sem GTIN', value: 5 }, { id: 'c', label: 'Sem descrição', value: 2 }]} />
         </Specimen>
         <Specimen

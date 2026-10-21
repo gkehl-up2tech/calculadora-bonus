@@ -6,7 +6,7 @@ import {
   DropdownMenuTrigger, FilterBar, IconButton, ListPage, Select, StatusBadge, Text, toast, type ActiveFilter,
 } from '@/design-system'
 import { formatBRL, formatNumber } from '@/lib/format'
-import { CATEGORIES, PRODUCTS, STATUS_LABEL, STATUS_TONE, type Product, type ProductStatus } from '../sample-data'
+import { DEPARTMENTS, PRODUCTS, STATUS_LABEL, STATUS_TONE, type Product, type ProductStatus } from '../sample-data'
 
 const ALL = 'all'
 
@@ -14,7 +14,7 @@ const ALL = 'all'
 export function ProductListExample({ page = false, caption = 'Produtos' }: { page?: boolean; caption?: string }) {
   const [rows, setRows] = useState<Product[]>(PRODUCTS)
   const [search, setSearch] = useState('')
-  const [category, setCategory] = useState(ALL)
+  const [department, setDepartment] = useState(ALL)
   const [status, setStatus] = useState<string>(ALL)
   const [loading, setLoading] = useState(false)
   const [toDelete, setToDelete] = useState<Product[] | null>(null)
@@ -30,21 +30,21 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
     const q = search.trim().toLowerCase()
     return rows.filter(
       (p) =>
-        (category === ALL || p.category === category) &&
+        (department === ALL || p.department === department) &&
         (status === ALL || p.status === status) &&
-        (!q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.ncm.includes(q)),
+        (!q || p.title.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.ncm.includes(q)),
     )
-  }, [rows, search, category, status])
+  }, [rows, search, department, status])
 
   const columns = useMemo<ColumnDef<Product, any>[]>( // eslint-disable-line @typescript-eslint/no-explicit-any
     () => [
       {
-        accessorKey: 'name',
+        accessorKey: 'title',
         header: 'Produto',
         meta: { className: 'min-w-52' },
         cell: ({ row }) => (
           <div className="min-w-0 py-1">
-            <Text weight="semibold" truncate className="max-w-72">{row.original.name}</Text>
+            <Text weight="semibold" truncate className="max-w-72">{row.original.title}</Text>
             <Text variant="caption" truncate>{row.original.sku}</Text>
           </div>
         ),
@@ -57,7 +57,7 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
           return <StatusBadge tone={STATUS_TONE[s]}>{STATUS_LABEL[s]}</StatusBadge>
         },
       },
-      { accessorKey: 'category', header: 'Categoria' },
+      { accessorKey: 'department', header: 'Departamento' },
       { accessorKey: 'ncm', header: 'NCM', cell: ({ getValue }) => <Text as="span" variant="code">{getValue<string>()}</Text> },
       { accessorKey: 'price', header: 'Preço', meta: { align: 'right' }, cell: ({ getValue }) => formatBRL(getValue<number>()) },
       {
@@ -77,7 +77,7 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
         cell: ({ row }) => (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <IconButton icon={MoreHorizontal} label={`Ações de ${row.original.name}`} size="sm" onClick={(e) => e.stopPropagation()} />
+              <IconButton icon={MoreHorizontal} label={`Ações de ${row.original.title}`} size="sm" onClick={(e) => e.stopPropagation()} />
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem icon={Pencil} onSelect={() => toast.info(`Editar ${row.original.sku}`)}>Editar</DropdownMenuItem>
@@ -93,12 +93,12 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
   )
 
   const activeFilters: ActiveFilter[] = [
-    ...(category !== ALL ? [{ id: 'category', label: `Categoria: ${category}` }] : []),
+    ...(department !== ALL ? [{ id: 'department', label: `Departamento: ${department}` }] : []),
     ...(status !== ALL ? [{ id: 'status', label: `Status: ${STATUS_LABEL[status as ProductStatus]}` }] : []),
   ]
   const clearAll = () => {
     setSearch('')
-    setCategory(ALL)
+    setDepartment(ALL)
     setStatus(ALL)
   }
 
@@ -108,16 +108,16 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
       onSearchChange={setSearch}
       searchPlaceholder="Buscar por nome, SKU ou NCM"
       activeFilters={activeFilters}
-      onRemoveFilter={(id) => (id === 'category' ? setCategory(ALL) : setStatus(ALL))}
+      onRemoveFilter={(id) => (id === 'department' ? setDepartment(ALL) : setStatus(ALL))}
       onClearAll={clearAll}
       filters={
         <>
           <Select
-            aria-label="Categoria"
+            aria-label="Departamento"
             className="sm:w-48"
-            value={category}
-            onValueChange={setCategory}
-            options={[{ value: ALL, label: 'Todas as categorias' }, ...CATEGORIES.map((c) => ({ value: c, label: c }))]}
+            value={department}
+            onValueChange={setDepartment}
+            options={[{ value: ALL, label: 'Todos os departamentos' }, ...DEPARTMENTS.map((c) => ({ value: c, label: c }))]}
           />
           <Select
             aria-label="Status"
@@ -152,7 +152,7 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
             <Button variant="danger-ghost" size="sm" leadingIcon={<Trash2 aria-hidden />} onClick={() => setToDelete(selected)}>Excluir</Button>
           </>
         )}
-        onRowClick={(p) => toast.info(`Abrir ${p.name}`)}
+        onRowClick={(p) => toast.info(`Abrir ${p.title}`)}
       />
       <ConfirmDialog
         open={toDelete !== null}

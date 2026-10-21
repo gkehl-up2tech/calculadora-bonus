@@ -3,7 +3,7 @@ import { usePageTitle } from '@/lib/usePageTitle'
 
 /**
  * Página do produto — em branco (a construir). Rota /produtos/:produtoId.
- * Sem item de menu: o acesso é pela lista "Todos os produtos", pela busca global ou, para cadastrar,
+ * Sem item de menu: o acesso é pela lista "Produtos", pela busca global ou, para cadastrar,
  * pelo botão "Novo produto" do Início (/produtos/novo, a mesma página em modo de criação).
  */
 export function ProductPage({ isNew = false }: { isNew?: boolean }) {

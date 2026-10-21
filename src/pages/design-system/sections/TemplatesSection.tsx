@@ -55,11 +55,11 @@ export function TemplatesSection() {
         </Frame>
       </SubSection>
 
-      <SubSection title="Páginas reais do sistema" description="O sistema é construído página a página. Início já está pronta; as demais existem em branco.">
+      <SubSection title="Páginas reais do sistema" description="O sistema é construído página a página. Início e Produtos já estão prontas; as demais existem em branco.">
         <div className="grid gap-4 sm:grid-cols-2">
           {[
             { to: '/', title: 'Início', text: 'Botão “Novo produto” e o dashboard de indicadores do catálogo.' },
-            { to: '/produtos', title: 'Todos os produtos', text: 'Lista de produtos, em branco. É daqui, ou da busca, que se chega ao produto.' },
+            { to: '/produtos', title: 'Produtos', text: 'Tabela do catálogo com foto, SKU, título, NCM, EAN e departamento. É daqui, ou da busca, que se chega ao produto.' },
             { to: '/produtos/p1', title: 'Página do produto', text: 'Sem item de menu: acessada pela lista ou pela busca global. Em branco.' },
             { to: '/conexoes', title: 'Conexões', text: 'Em branco. Acessível pelo menu do usuário (ícone de perfil).' },
             { to: '/configuracoes', title: 'Configurações', text: 'Em branco, com abas (Geral e Design System). Acessível pelo menu do usuário.' },

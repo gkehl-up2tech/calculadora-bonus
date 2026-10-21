@@ -2,22 +2,22 @@
 
 Sistema de cadastro de produtos — dados **fiscais** e de **vendas**. Esta é a base do novo sistema (substitui a antiga calculadora de bônus, preservada em [`legacy/`](legacy/index.html)).
 
-**Estado atual:** moldura da aplicação e as páginas abaixo, construídas uma a uma. **Início** está pronta (botão *Novo produto* + dashboard); as demais estão **em branco**. **Configurações › Design System** documenta e demonstra todos os componentes.
+**Estado atual:** moldura da aplicação e as páginas abaixo, construídas uma a uma. **Início** (botão *Novo produto* + dashboard) e **Produtos** (tabela do catálogo) estão prontas; as demais estão **em branco**. **Configurações › Design System** documenta e demonstra todos os componentes.
 
 ## Mapa de páginas
 
-Não há menu lateral. A navegação principal é um **toggle** (Início | Todos os produtos), sem ícones, logo **acima do `PageHeader`** de toda página. O cabeçalho tem só a marca (texto), o botão **Buscar produtos** centralizado, o tema e o usuário.
+Não há menu lateral. A navegação principal é um **toggle** (Início | Produtos), sem ícones, logo **acima do `PageHeader`** de toda página. O cabeçalho tem só a marca (texto), o botão **Buscar produtos** centralizado, o tema e o usuário.
 
 | Página | Rota | Como se chega |
 | --- | --- | --- |
 | Início | `/` | Toggle de navegação. Botão **Novo produto** e dashboard de indicadores |
-| Todos os produtos | `/produtos` | Toggle de navegação |
+| Produtos | `/produtos` | Toggle de navegação. Tabela do catálogo: foto, SKU, título, NCM, EAN e departamento; clicar numa linha abre o produto |
 | Página do produto | `/produtos/:produtoId` | **Somente** pela lista de produtos ou pela busca global (Ctrl/⌘ + K). Sem item de menu |
 | Novo produto | `/produtos/novo` | Botão *Novo produto* do Início (mesma página do produto, em modo de criação). Em branco |
 | Conexões | `/conexoes` | **Somente** pelo menu do usuário (ícone de perfil) |
 | Configurações | `/configuracoes` (abas: Geral, Design System) | **Somente** pelo menu do usuário |
 
-A busca global encontra produtos por nome, SKU, NCM ou categoria e abre a página do produto. Hoje ela consulta dados de exemplo (`src/app/products/sample-products.ts`, **temporários**); ao ligar uma fonte real, troque `searchProducts` em `src/app/products/search.ts`.
+A busca global encontra produtos por título, SKU, NCM, EAN ou departamento e abre a página do produto. Hoje ela consulta dados de exemplo (`src/app/products/sample-products.ts` e `photos.ts`, **temporários**; as fotos são ilustrações em SVG embutido); ao ligar uma fonte real, troque `searchProducts` em `src/app/products/search.ts`.
 
 ## Começando
 
@@ -50,7 +50,7 @@ src/
 ├─ styles/base.css       reset, foco, toque, movimento reduzido
 ├─ lib/                  cn, tema, máscaras (NCM/CEST/CNPJ…), validadores (GTIN, CNPJ), formatação
 ├─ design-system/        ATOMIC DESIGN
-│  ├─ atoms/             Button, Input, Badge, Checkbox…                     (20)
+│  ├─ atoms/             Button, Input, Badge, Thumbnail, Checkbox…          (21)
 │  ├─ cells/             IconButton, CheckboxField, InputGroup, StatusBadge… (15)
 │  ├─ molecules/         FormField, Select, Combobox, StatCard, SegmentedNav… (26)
 │  ├─ organisms/         DataTable, AppHeader, FilterBar, FormSection…       (9)

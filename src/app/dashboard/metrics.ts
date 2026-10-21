@@ -12,7 +12,7 @@ export interface DashboardMetrics {
   incomplete: number
   complete: number
   pendencias: { id: Pendencia; label: string; count: number }[]
-  byCategory: { id: string; label: string; count: number }[]
+  byDepartment: { id: string; label: string; count: number }[]
   stock: { out: number; low: number; healthy: number }
   /** Soma dos saldos (unidades). */
   units: number
@@ -32,9 +32,9 @@ export function computeDashboardMetrics(products: Product[]): DashboardMetrics {
     .map((id) => ({ id, label: PENDENCIA_LABEL[id], count: count((p) => p.pendencias.includes(id)) }))
     .sort((a, b) => b.count - a.count)
 
-  const categories = new Map<string, number>()
-  for (const p of products) categories.set(p.category, (categories.get(p.category) ?? 0) + 1)
-  const byCategory = [...categories]
+  const departments = new Map<string, number>()
+  for (const p of products) departments.set(p.department, (departments.get(p.department) ?? 0) + 1)
+  const byDepartment = [...departments]
     .map(([label, n]) => ({ id: label, label, count: n }))
     .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label, 'pt-BR'))
 
@@ -46,7 +46,7 @@ export function computeDashboardMetrics(products: Product[]): DashboardMetrics {
     incomplete,
     complete: products.length - incomplete,
     pendencias,
-    byCategory,
+    byDepartment,
     stock: {
       out: count((p) => p.stock === 0),
       low: count((p) => p.stock > 0 && p.stock < LOW_STOCK_LIMIT),
