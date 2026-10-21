@@ -237,8 +237,8 @@
   --control-sm: 2rem;
   --control-md: 2.5rem;
   --control-lg: 3rem;
-  --header-h: 3.5rem;
-  --sidebar-w: 16rem;
+  /* Cabeçalho: 1 linha (56px) a partir de md; no celular a navegação desce para uma 2ª linha (+44px). */
+  --header-h: 6.25rem;
   --content-max: 80rem;
 
   /* Camadas */
@@ -249,6 +249,12 @@
   --z-popover: 80;
   --z-toast: 90;
   --z-tooltip: 100;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-h: 3.5rem;
+  }
 }
 
 @media (pointer: coarse) {
@@ -488,7 +494,6 @@
   --spacing-control-md: var(--control-md);
   --spacing-control-lg: var(--control-lg);
   --spacing-header: var(--header-h);
-  --spacing-sidebar: var(--sidebar-w);
 }
 
 @utility z-sticky { z-index: var(--z-sticky); }

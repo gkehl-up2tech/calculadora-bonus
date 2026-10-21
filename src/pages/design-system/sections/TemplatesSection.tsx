@@ -20,12 +20,12 @@ export function TemplatesSection() {
     >
       <SubSection title="Templates" description="Quatro estruturas cobrem as telas previstas do sistema. Eles não conhecem dados — só layout, responsividade e acessibilidade (por exemplo, o link “Pular para o conteúdo” do AppShell).">
         <div className="grid gap-8 lg:grid-cols-2">
-          <Specimen title="AppShell" composedOf={['AppHeader', 'SidebarNav', 'Sheet', 'CommandPalette']} description="Moldura global. Menu lateral fixo a partir de 1024 px; abaixo disso, vira gaveta." code={`<AppShell navGroups={groups} user={user} linkAs={NavLink} hrefProp="to" commands={cmds}>
+          <Specimen title="AppShell" composedOf={['AppHeader', 'CommandPalette']} description="Moldura global, sem menu lateral: a navegação fica no cabeçalho (desce para uma 2ª linha no celular) e a busca global abre com Ctrl/⌘ + K." code={`<AppShell nav={mainNav} user={user} userMenu={…} search={{ groups, onSearchChange }} linkAs={NavLink} hrefProp="to">
   <Outlet />
 </AppShell>`} previewClassName="!justify-center bg-canvas">
             <Wireframe kind="app-shell" />
           </Specimen>
-          <Specimen title="SettingsLayout" composedOf={['PageHeader', 'NavItem']} description="Navegação secundária à esquerda; no celular rola na horizontal." code={`<SettingsLayout items={settingsItems} linkAs={NavLink} hrefProp="to">
+          <Specimen title="SettingsLayout" composedOf={['PageHeader', 'NavItem']} description="Título e abas horizontais de seções (rolam no celular). Sem menu lateral." code={`<SettingsLayout items={settingsItems} linkAs={NavLink} hrefProp="to">
   <Outlet />
 </SettingsLayout>`} previewClassName="!justify-center bg-canvas">
             <Wireframe kind="settings" />
@@ -55,11 +55,14 @@ export function TemplatesSection() {
         </Frame>
       </SubSection>
 
-      <SubSection title="Páginas reais do sistema" description="Por enquanto o sistema tem apenas a moldura. As páginas abaixo existem e estão intencionalmente vazias — o próximo passo é preenchê-las com os módulos.">
+      <SubSection title="Páginas reais do sistema" description="Por enquanto o sistema tem apenas a moldura. As páginas abaixo existem e estão intencionalmente em branco; serão construídas uma a uma.">
         <div className="grid gap-4 sm:grid-cols-2">
           {[
-            { to: '/', title: 'Início', text: 'Página inicial, dentro do AppShell. Sem conteúdo.' },
-            { to: '/configuracoes', title: 'Configurações', text: 'SettingsLayout com a navegação secundária (Geral e Design System).' },
+            { to: '/', title: 'Início', text: 'Página inicial, em branco.' },
+            { to: '/produtos', title: 'Todos os produtos', text: 'Lista de produtos, em branco. É daqui, ou da busca, que se chega ao produto.' },
+            { to: '/produtos/p1', title: 'Página do produto', text: 'Sem item de menu: acessada pela lista ou pela busca global. Em branco.' },
+            { to: '/conexoes', title: 'Conexões', text: 'Em branco. Acessível pelo menu do usuário (ícone de perfil).' },
+            { to: '/configuracoes', title: 'Configurações', text: 'Em branco, com abas (Geral e Design System). Acessível pelo menu do usuário.' },
           ].map((p) => (
             <Card key={p.to}>
               <CardContent className="grid gap-2">

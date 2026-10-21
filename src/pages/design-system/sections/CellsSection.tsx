@@ -192,12 +192,12 @@ export function CellsSection() {
         <Specimen
           title="NavItem"
           composedOf={['Icon', 'Text', 'Badge']}
-          description="Item de menu. O estado ativo vem de aria-current=page — com o NavLink do React Router isso é automático. Aceita qualquer componente de link via as."
+          description="Item de navegação (usado no cabeçalho e nas abas de Configurações). O estado ativo vem de aria-current=page — com o NavLink do React Router isso é automático. Aceita qualquer componente de link via as."
           code={`<NavItem as={NavLink} to="/" icon={Home} end>Início</NavItem>
 <NavItem href="#" icon={Package} trailing={<Badge size="sm">12</Badge>}>Produtos</NavItem>`}
           previewClassName="!block"
         >
-          <ul className="grid max-w-xs gap-0.5">
+          <ul className="flex flex-wrap gap-1">
             <li><NavItem href="#celulas" icon={Home} active>Início</NavItem></li>
             <li><NavItem href="#celulas" icon={Package} trailing={<Badge tone="brand" size="sm">12</Badge>}>Produtos</NavItem></li>
             <li><NavItem href="#celulas" icon={Settings}>Configurações</NavItem></li>

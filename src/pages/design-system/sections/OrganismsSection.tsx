@@ -1,18 +1,17 @@
 import { useState } from 'react'
-import { BookOpen, Boxes, Home, Package, Plus, Settings, Tags } from 'lucide-react'
+import { Home, Package, Plug, Plus, Settings } from 'lucide-react'
 import {
   AppHeader, Button, CheckboxField, CommandPalette, ConfirmDialog, DropdownMenuItem, FormField, FormGrid, FormSection, Input, Logo,
-  PageHeader, SidebarNav, StickyActionBar, Wizard, toast, type NavGroup,
+  PageHeader, StickyActionBar, Wizard, toast, type NavEntry,
 } from '@/design-system'
 import { DocSection, SubSection } from '../docs/DocSection'
 import { Frame } from '../docs/Frame'
 import { Specimen } from '../docs/Specimen'
 import { ProductListExample } from '../docs/examples/ProductListExample'
 
-const demoNav: NavGroup[] = [
-  { id: 'a', items: [{ id: 'home', label: 'Início', href: '#organismos', icon: Home, end: true }, { id: 'products', label: 'Produtos', href: '#organismos-produtos', icon: Package }, { id: 'cats', label: 'Categorias', href: '#organismos-cat', icon: Tags }] },
-  { id: 'b', label: 'Fiscal', items: [{ id: 'tax', label: 'Tributação', href: '#organismos-trib', icon: BookOpen }, { id: 'ncm', label: 'NCM e CEST', href: '#organismos-ncm', icon: Boxes }] },
-  { id: 'c', label: 'Sistema', items: [{ id: 'cfg', label: 'Configurações', href: '#organismos-cfg', icon: Settings }] },
+const demoNav: NavEntry[] = [
+  { id: 'home', label: 'Início', href: '#organismos', icon: Home, end: true },
+  { id: 'products', label: 'Todos os produtos', href: '#organismos-produtos', icon: Package },
 ]
 
 function WizardDemo() {
@@ -67,8 +66,8 @@ function PaletteDemo() {
         shortcut={false}
         groups={[
           { id: 'g', heading: 'Ações', items: [
+            { id: 'p1', label: 'Parafuso sextavado M8', hint: 'UP-1000 · 7318.15.00', icon: Package, onSelect: () => toast.info('Abre a página do produto') },
             { id: 'new', label: 'Novo produto', icon: Plus, shortcut: ['N'], keywords: ['cadastrar', 'criar'], onSelect: () => toast.info('Novo produto') },
-            { id: 'prod', label: 'Ir para Produtos', icon: Package, onSelect: () => toast.info('Produtos') },
           ] },
         ]}
       />
@@ -87,22 +86,21 @@ export function OrganismsSection() {
     >
       <SubSection title="Estrutura da aplicação">
         <Specimen
-          title="AppHeader e SidebarNav"
-          composedOf={['Logo', 'ThemeToggle', 'DropdownMenu', 'Persona', 'NavItem']}
-          description="Cabeçalho fixo (menu no celular, busca global, tema, usuário) e menu lateral agrupado. A navegação marca a página atual com aria-current e aceita o NavLink do roteador."
-          code={`<AppHeader logo={<Logo />} user={{ name, email }} onMenuClick={…} onSearchClick={…} userMenu={<DropdownMenuItem>Sair</DropdownMenuItem>} />
-
-<SidebarNav groups={groups} linkAs={NavLink} hrefProp="to" />`}
+          title="AppHeader"
+          composedOf={['Logo', 'NavItem', 'ThemeToggle', 'DropdownMenu', 'Persona', 'Kbd']}
+          description="O único menu do sistema — não há menu lateral. Logotipo, navegação principal, busca global de produtos, tema e usuário. Destinos secundários (Conexões, Configurações) ficam no menu do usuário. A página atual é marcada com aria-current, e o NavLink do roteador é aceito. No celular a navegação desce para uma segunda linha."
+          code={`<AppHeader
+  logo={<NavLink to="/"><Logo /></NavLink>}
+  nav={[{ id: 'home', label: 'Início', href: '/', icon: Home, end: true }, …]}
+  linkAs={NavLink} hrefProp="to"
+  user={{ name, email }}
+  userMenu={<DropdownMenuItem icon={Plug}>Conexões</DropdownMenuItem>}
+  onSearchClick={openSearch}
+/>`}
           previewClassName="!block !p-0"
         >
-          <Frame label="AppHeader + SidebarNav" className="rounded-none border-0">
-            <div className="relative">
-              <AppHeaderPreview />
-              <div className="grid gap-0 sm:grid-cols-[16rem_minmax(0,1fr)]">
-                <div className="border-r border-line-subtle bg-surface p-3"><SidebarNav label="Exemplo de menu lateral" groups={demoNav} currentPath="#organismos-produtos" /></div>
-                <div className="hidden bg-canvas p-6 text-sm text-fg-muted sm:block">Área de conteúdo</div>
-              </div>
-            </div>
+          <Frame label="AppHeader" className="rounded-none border-0">
+            <AppHeaderPreview />
           </Frame>
         </Specimen>
         <Specimen
@@ -212,8 +210,10 @@ export function OrganismsSection() {
         <Specimen
           title="CommandPalette"
           composedOf={['Dialog', 'cmdk', 'ShortcutHint']}
-          description="Ctrl/⌘ + K em qualquer tela (tente agora). Abre e fecha sem animação, de propósito: é usada por teclado dezenas de vezes por dia. Ligue o atalho global em apenas uma instância."
-          code={`<CommandPalette open={open} onOpenChange={setOpen} groups={[{ id: 'go', heading: 'Ir para', items: [{ id: 'p', label: 'Produtos', icon: Package, onSelect: () => navigate('/produtos') }] }]} />`}
+          description="É a busca global do sistema: encontra produtos (e leva à página do produto) e páginas. Ctrl/⌘ + K em qualquer tela (tente agora). Abre e fecha sem animação, de propósito: é usada por teclado dezenas de vezes por dia. Ligue o atalho global em apenas uma instância."
+          code={`// Busca no servidor: onSearchChange desliga o filtro local; os grupos já chegam filtrados.
+<CommandPalette open={open} onOpenChange={setOpen} onSearchChange={setQuery} loading={loading}
+  groups={[{ id: 'products', heading: 'Produtos', items: hits.map((p) => ({ id: p.id, label: p.name, hint: p.sku, onSelect: () => navigate('/produtos/' + p.id) })) }]} />`}
         >
           <PaletteDemo />
         </Specimen>
@@ -224,13 +224,20 @@ export function OrganismsSection() {
 
 function AppHeaderPreview() {
   return (
-    <div className="[&>header]:static [&_header]:!pt-0">
+    <div className="[&>header]:static">
       <AppHeader
         logo={<Logo />}
+        nav={demoNav}
+        navLabel="Exemplo de navegação principal"
+        currentPath="#organismos-produtos"
         user={{ name: 'Usuário UP2Tech', email: 'usuario@up2tech.com.br' }}
-        userMenu={<DropdownMenuItem icon={Settings}>Configurações</DropdownMenuItem>}
-        onMenuClick={() => toast.info('Abre o menu lateral no celular')}
-        onSearchClick={() => toast.info('Abre a paleta de comandos')}
+        userMenu={
+          <>
+            <DropdownMenuItem icon={Plug}>Conexões</DropdownMenuItem>
+            <DropdownMenuItem icon={Settings}>Configurações</DropdownMenuItem>
+          </>
+        }
+        onSearchClick={() => toast.info('Abre a busca global de produtos')}
       />
     </div>
   )

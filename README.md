@@ -2,7 +2,21 @@
 
 Sistema de cadastro de produtos — dados **fiscais** e de **vendas**. Esta é a base do novo sistema (substitui a antiga calculadora de bônus, preservada em [`legacy/`](legacy/index.html)).
 
-**Estado atual:** moldura da aplicação, página **Início** (vazia), **Configurações** (vazia) e a página **Configurações › Design System**, que documenta e demonstra todos os componentes.
+**Estado atual:** moldura da aplicação (cabeçalho com navegação e busca global) e as páginas abaixo, todas **em branco** — serão construídas uma a uma. A exceção é **Configurações › Design System**, que documenta e demonstra todos os componentes.
+
+## Mapa de páginas
+
+Não há menu lateral: a navegação principal fica no **cabeçalho** (no celular desce para uma segunda linha).
+
+| Página | Rota | Como se chega |
+| --- | --- | --- |
+| Início | `/` | Navegação principal |
+| Todos os produtos | `/produtos` | Navegação principal |
+| Página do produto | `/produtos/:produtoId` | **Somente** pela lista de produtos ou pela busca global (Ctrl/⌘ + K). Sem item de menu |
+| Conexões | `/conexoes` | **Somente** pelo menu do usuário (ícone de perfil) |
+| Configurações | `/configuracoes` (abas: Geral, Design System) | **Somente** pelo menu do usuário |
+
+A busca global encontra produtos por nome, SKU, NCM ou categoria e abre a página do produto. Hoje ela consulta dados de exemplo (`src/app/products/sample-products.ts`, **temporários**); ao ligar uma fonte real, troque `searchProducts` em `src/app/products/search.ts`.
 
 ## Começando
 
@@ -21,6 +35,8 @@ npm run build        # gera dist/ (com 404.html para SPA)
 
 Para publicar em um subcaminho (ex.: GitHub Pages em `/calculadora-bonus/`): `BASE_PATH=/calculadora-bonus/ npm run build`.
 
+Para gerar um arquivo HTML único (página hospedada, ex.: Artifact do claude.ai): `npm run build:embedded` — usa roteador em memória e acompanha o tema da página hospedeira.
+
 ## Stack
 
 Vite · React 19 · TypeScript · Tailwind CSS v4 · Radix UI (acessibilidade) · cmdk · Sonner · TanStack Table · Lucide · React Router · fonte Montserrat.
@@ -36,9 +52,9 @@ src/
 │  ├─ atoms/             Button, Input, Badge, Checkbox…                     (20)
 │  ├─ cells/             IconButton, CheckboxField, InputGroup, StatusBadge… (15)
 │  ├─ molecules/         FormField, Select, Combobox, Dialog, Pagination…    (22)
-│  ├─ organisms/         DataTable, AppHeader, FilterBar, FormSection…       (10)
+│  ├─ organisms/         DataTable, AppHeader, FilterBar, FormSection…       (9)
 │  └─ templates/         AppShell, ListPage, FormPage, SettingsLayout        (4)
-├─ app/                  rotas, navegação, layout da aplicação
+├─ app/                  rotas e navegação (navigation.ts), layout, busca de produtos
 └─ pages/                páginas (dados e regras de negócio)
 ```
 
@@ -50,7 +66,7 @@ src/
 
 ## Como construir uma tela
 
-1. Escolha um **template** (`ListPage`, `FormPage`, `SettingsLayout`).
+1. Escolha um **template** (`ListPage`, `FormPage`, `SettingsLayout`; o `AppShell` já envolve todas as páginas).
 2. Monte com componentes existentes. Campos sempre dentro de `FormField`.
 3. Use **apenas tokens semânticos** (`bg-surface`, `text-fg-muted`, `border-line-control`…). Nada de hex, `px` soltos ou `z-index` numérico.
 4. Trate estados: vazio, carregando, erro, desabilitado e dados extremos.

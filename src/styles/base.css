@@ -11,7 +11,7 @@
     background: var(--bg-canvas);
     scrollbar-color: var(--line) transparent;
     /* Foco e âncoras nunca ficam escondidos atrás do cabeçalho e da barra de seções (WCAG 2.4.11). */
-    scroll-padding-top: 8rem;
+    scroll-padding-top: calc(var(--header-h) + 4.5rem);
     scroll-padding-bottom: 5rem;
   }
 

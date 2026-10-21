@@ -2,12 +2,14 @@ import { useEffect } from 'react'
 import { Command } from 'cmdk'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import { Search, type LucideIcon } from 'lucide-react'
-import { Icon } from '../atoms'
+import { Icon, Spinner } from '../atoms'
 import { ShortcutHint } from '../cells'
 
 export interface CommandItem {
   id: string
   label: string
+  /** Texto secundário à direita (ex.: SKU · NCM). */
+  hint?: string
   icon?: LucideIcon
   shortcut?: string[]
   /** Palavras extras para a busca (sinônimos). */
@@ -28,13 +30,20 @@ export interface CommandPaletteProps {
   placeholder?: string
   /** Liga o atalho global Ctrl/⌘ + K. Deixe true em apenas UMA instância por tela. */
   shortcut?: boolean
+  /**
+   * Busca controlada pelo chamador (ex.: no servidor). Desliga o filtro local: os grupos recebidos
+   * já devem refletir o texto digitado.
+   */
+  onSearchChange?: (query: string) => void
+  loading?: boolean
+  emptyText?: string
 }
 
 /**
  * Paleta de comandos (Ctrl/⌘ + K). É usada dezenas de vezes ao dia por teclado,
  * então abre e fecha SEM animação — de propósito.
  */
-export function CommandPalette({ open, onOpenChange, groups, placeholder = 'Digite uma página ou ação…', shortcut = true }: CommandPaletteProps) {
+export function CommandPalette({ open, onOpenChange, groups, placeholder = 'Digite uma página ou ação…', shortcut = true, onSearchChange, loading, emptyText = 'Nada encontrado.' }: CommandPaletteProps) {
   useEffect(() => {
     if (!shortcut) return
     const onKey = (e: KeyboardEvent) => {
@@ -57,13 +66,14 @@ export function CommandPalette({ open, onOpenChange, groups, placeholder = 'Digi
           className="fixed top-[12dvh] left-1/2 z-modal w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 overflow-hidden rounded-xl bg-raised text-fg shadow-popover outline-none"
         >
           <DialogPrimitive.Title className="sr-only">Paleta de comandos</DialogPrimitive.Title>
-          <Command loop>
+          <Command loop shouldFilter={!onSearchChange}>
             <div className="flex items-center gap-3 border-b border-line-subtle px-4">
               <Icon icon={Search} size="md" className="text-fg-subtle" />
-              <Command.Input placeholder={placeholder} className="h-14 w-full bg-transparent text-base outline-none placeholder:text-fg-subtle" />
+              <Command.Input placeholder={placeholder} onValueChange={onSearchChange} className="h-14 w-full bg-transparent text-base outline-none placeholder:text-fg-subtle" />
+              {loading ? <Spinner size="sm" label="Buscando" /> : null}
             </div>
             <Command.List className="max-h-[min(24rem,60dvh)] overflow-y-auto p-2">
-              <Command.Empty className="px-3 py-8 text-center text-sm text-fg-muted">Nada encontrado.</Command.Empty>
+              <Command.Empty className="px-3 py-8 text-center text-sm text-fg-muted">{emptyText}</Command.Empty>
               {groups.map((group) => (
                 <Command.Group
                   key={group.id}
@@ -82,6 +92,7 @@ export function CommandPalette({ open, onOpenChange, groups, placeholder = 'Digi
                     >
                       {item.icon ? <Icon icon={item.icon} size="md" /> : null}
                       <span className="flex-1 truncate">{item.label}</span>
+                      {item.hint ? <span className="shrink-0 font-mono text-xs text-fg-muted">{item.hint}</span> : null}
                       {item.shortcut ? <ShortcutHint keys={item.shortcut} /> : null}
                     </Command.Item>
                   ))}

@@ -1,6 +1,9 @@
 import { createBrowserRouter, createMemoryRouter, RouterProvider, type RouteObject } from 'react-router'
 import { Toaster, TooltipProvider } from '@/design-system'
+import { ConnectionsPage } from '@/pages/ConnectionsPage'
 import { HomePage } from '@/pages/HomePage'
+import { ProductPage } from '@/pages/products/ProductPage'
+import { ProductsPage } from '@/pages/products/ProductsPage'
 import { DesignSystemPage } from '@/pages/design-system/DesignSystemPage'
 import { SettingsGeneralPage } from '@/pages/settings/SettingsGeneralPage'
 import { SettingsRoute } from '@/pages/settings/SettingsRoute'
@@ -12,6 +15,10 @@ const routes: RouteObject[] = [
     element: <AppLayout />,
     children: [
       { index: true, element: <HomePage /> },
+      { path: 'produtos', element: <ProductsPage /> },
+      // Sem item de menu: só pela lista de produtos ou pela busca global.
+      { path: 'produtos/:produtoId', element: <ProductPage /> },
+      { path: 'conexoes', element: <ConnectionsPage /> },
       {
         path: 'configuracoes',
         element: <SettingsRoute />,
@@ -25,8 +32,8 @@ const routes: RouteObject[] = [
 ]
 
 const router = EMBEDDED
-  ? // Página hospedada: a URL não muda, então a navegação fica em memória. Abre direto no Design System.
-    createMemoryRouter(routes, { initialEntries: ['/configuracoes/design-system'] })
+  ? // Página hospedada: a URL não muda, então a navegação fica em memória.
+    createMemoryRouter(routes, { initialEntries: ['/'] })
   : // BASE_URL permite publicar em subcaminho (ex.: GitHub Pages).
     createBrowserRouter(routes, { basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/' })
 

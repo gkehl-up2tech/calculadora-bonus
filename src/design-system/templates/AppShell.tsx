@@ -1,27 +1,26 @@
 import { useState, type ElementType, type ReactNode } from 'react'
-import { Sheet, SheetContent } from '../molecules'
-import { AppHeader, CommandPalette, SidebarNav, type CommandGroup, type NavGroup } from '../organisms'
-import { Logo } from '../atoms'
+import { AppHeader, CommandPalette, type CommandPaletteProps, type NavEntry } from '../organisms'
 
 export interface AppShellProps {
-  navGroups: NavGroup[]
+  nav: NavEntry[]
   user: { name: string; email?: string }
+  /** Destinos do menu do usuário (ex.: Conexões, Configurações). */
   userMenu?: ReactNode
-  commands?: CommandGroup[]
+  /** Configuração da busca global (Ctrl/⌘ + K). Sem ela, a busca não aparece. */
+  search?: Omit<CommandPaletteProps, 'open' | 'onOpenChange' | 'shortcut'>
   linkAs?: ElementType
   hrefProp?: 'href' | 'to'
   currentPath?: string
-  /** Link do logotipo (por padrão, uma âncora para "/"). */
+  /** Logotipo já embrulhado no link para a página inicial. */
   logo?: ReactNode
   children: ReactNode
 }
 
 /**
- * Estrutura global: link "pular para o conteúdo", cabeçalho fixo, menu lateral (desktop) ou gaveta (celular),
- * paleta de comandos e a área principal.
+ * Estrutura global: link "pular para o conteúdo", cabeçalho fixo com a navegação (sem menu lateral),
+ * busca global e a área principal.
  */
-export function AppShell({ navGroups, user, userMenu, commands = [], linkAs, hrefProp, currentPath, logo, children }: AppShellProps) {
-  const [menuOpen, setMenuOpen] = useState(false)
+export function AppShell({ nav, user, userMenu, search, linkAs, hrefProp, currentPath, logo, children }: AppShellProps) {
   const [paletteOpen, setPaletteOpen] = useState(false)
 
   return (
@@ -34,33 +33,31 @@ export function AppShell({ navGroups, user, userMenu, commands = [], linkAs, hre
       </a>
 
       <AppHeader
-        logo={logo ?? <Logo />}
+        logo={logo}
+        nav={nav}
+        linkAs={linkAs}
+        hrefProp={hrefProp}
+        currentPath={currentPath}
         user={user}
         userMenu={userMenu}
-        onMenuClick={() => setMenuOpen(true)}
-        onSearchClick={() => setPaletteOpen(true)}
+        onSearchClick={search ? () => setPaletteOpen(true) : undefined}
       />
 
-      <div className="lg:grid lg:grid-cols-[var(--sidebar-w)_minmax(0,1fr)]">
-        <aside className="sticky top-header hidden h-[calc(100dvh-var(--header-h))] overflow-y-auto overscroll-contain border-r border-line-subtle bg-surface p-3 lg:block">
-          <SidebarNav groups={navGroups} linkAs={linkAs} hrefProp={hrefProp} currentPath={currentPath} />
-        </aside>
+      <main id="conteudo" tabIndex={-1} className="px-4 py-6 outline-none sm:px-6 lg:px-8 lg:py-8">
+        <div className="mx-auto max-w-(--content-max)">{children}</div>
+      </main>
 
-        <main id="conteudo" tabIndex={-1} className="min-w-0 px-4 py-6 outline-none sm:px-6 lg:px-8 lg:py-8">
-          <div className="mx-auto max-w-(--content-max)">{children}</div>
-        </main>
-      </div>
-
-      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-        <SheetContent title="Menu" side="left" hideTitle>
-          <div className="px-3 pb-3">
-            <div className="px-3 pb-4"><Logo /></div>
-            <SidebarNav groups={navGroups} linkAs={linkAs} hrefProp={hrefProp} currentPath={currentPath} onNavigate={() => setMenuOpen(false)} />
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} groups={commands} />
+      {search ? (
+        <CommandPalette
+          {...search}
+          open={paletteOpen}
+          onOpenChange={(open) => {
+            setPaletteOpen(open)
+            // Ao fechar, zera a busca para a próxima abertura começar limpa.
+            if (!open) search.onSearchChange?.('')
+          }}
+        />
+      ) : null}
     </div>
   )
 }

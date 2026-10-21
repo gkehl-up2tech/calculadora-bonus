@@ -5,7 +5,7 @@ import { extendTailwindMerge } from 'tailwind-merge'
 const twMerge = extendTailwindMerge({
   extend: {
     theme: {
-      spacing: ['control-sm', 'control-md', 'control-lg', 'header', 'sidebar'],
+      spacing: ['control-sm', 'control-md', 'control-lg', 'header'],
       shadow: ['border', 'xs', 'sm', 'md', 'lg', 'card', 'popover'],
     },
     classGroups: {

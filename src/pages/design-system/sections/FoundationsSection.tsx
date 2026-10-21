@@ -392,7 +392,7 @@ className="transition-[background-color,transform] duration-150 ease-out active:
             ))}
           </ul>
           <ul className="grid gap-1.5 text-sm">
-            {[['sm', 640, 'Celular grande'], ['md', 768, 'Tablet'], ['lg', 1024, 'Menu lateral fixo'], ['xl', 1280, 'Desktop'], ['2xl', 1536, 'Telas largas']].map(([n, v, d]) => (
+            {[['sm', 640, 'Celular grande'], ['md', 768, 'Tablet'], ['lg', 1024, 'Espaçamentos maiores'], ['xl', 1280, 'Desktop'], ['2xl', 1536, 'Telas largas']].map(([n, v, d]) => (
               <li key={n} className="flex items-baseline gap-3"><code className="w-12 shrink-0 font-mono text-[0.8125rem] font-semibold">{n}:</code><span className="w-12 text-fg-muted tabular-nums">{v}px</span><span className="text-fg-muted">{d}</span></li>
             ))}
             <li className="pt-2 text-xs text-fg-muted">Capacidades, não aparelhos: <code className="font-mono">pointer-coarse:</code>, <code className="font-mono">pointer-fine:</code> e <code className="font-mono">hover:</code> (que só vale onde há mouse).</li>

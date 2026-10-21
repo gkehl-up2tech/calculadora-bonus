@@ -6,6 +6,13 @@ Sistema de cadastro de produtos (fiscal + vendas) da UP2Tech. Interface em **por
 - `npm run dev` · `npm run check` (tipos + lint + contraste) · `npm run build`
 - Rode `npm run check` antes de concluir qualquer mudança.
 
+## Navegação e páginas
+- **Sem menu lateral.** A navegação principal fica no `AppHeader` (cabeçalho); no celular desce para uma 2ª linha. Rotas e menus ficam em `src/app/navigation.ts`.
+- Menu principal: Início e Todos os produtos. **Conexões** e **Configurações** só pelo menu do usuário (ícone de perfil).
+- **Página do produto** (`/produtos/:produtoId`) não tem item de menu: só pela lista de produtos ou pela busca global. Nunca a coloque em menus.
+- Páginas novas começam em branco (`<h1 className="sr-only">` + `usePageTitle`) e são construídas uma a uma, sob instrução.
+- A busca global (`CommandPalette`) usa `searchProducts` (`src/app/products/search.ts`) sobre dados de exemplo **temporários**.
+
 ## Design System (src/design-system) — Atomic Design
 - Camadas: `atoms → cells → molecules → organisms → templates`. **Só importe de camadas abaixo** (o ESLint falha caso contrário).
 - Onde fica um componente novo: átomo = elemento único; célula = 2–3 átomos sem estado/lógica própria; molécula = comportamento próprio para uma tarefa; organismo = seção da tela; template = estrutura com slots. Guia completo em Configurações › Design System › Introdução.
