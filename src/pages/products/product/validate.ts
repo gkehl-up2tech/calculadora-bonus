@@ -28,15 +28,6 @@ export function validate(values: Values, productId: string): Errors {
   const sku = str(values.sku).trim().toLowerCase()
   if (sku && PRODUCTS.some((p) => p.id !== productId && p.sku.toLowerCase() === sku)) e.sku = 'Já existe outro produto com este SKU.'
 
-  const [preco, promo] = [num(values.preco), num(values.precoPromo)]
-  if (promo !== null && preco !== null && promo >= preco) e.precoPromo = 'A promoção deve ser menor que o preço de venda.'
-  if (promo !== null && (isEmpty(values.promoInicio) || isEmpty(values.promoFim))) {
-    if (isEmpty(values.promoInicio)) e.promoInicio = 'Informe o início da promoção.'
-    if (isEmpty(values.promoFim)) e.promoFim = 'Informe o fim da promoção.'
-  }
-  if (!isEmpty(values.promoInicio) && !isEmpty(values.promoFim) && str(values.promoFim) < str(values.promoInicio)) e.promoFim = 'O fim vem depois do início.'
-  const [min, max] = [num(values.estoqueMin), num(values.estoqueMax)]
-  if (min !== null && max !== null && min > max) e.estoqueMin = 'O mínimo não pode passar do máximo.'
   const [liq, bruto] = [num(values.pesoLiquido), num(values.pesoBruto)]
   if (liq !== null && bruto !== null && liq > bruto) e.pesoLiquido = 'O peso líquido não pode passar do bruto.'
   return e

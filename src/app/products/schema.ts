@@ -9,7 +9,7 @@
  */
 import type { OptionSetKey } from './options'
 
-export type TabId = 'principal' | 'fiscal' | 'comercial' | 'operacional' | 'marketing' | 'imagens' | 'especificacoes' | 'variacoes' | 'historico'
+export type TabId = 'principal' | 'fiscal' | 'operacional' | 'marketing' | 'imagens' | 'especificacoes' | 'variacoes' | 'historico'
 
 export type FieldKind =
   | 'text'
@@ -86,8 +86,7 @@ export interface TabDef {
 export const TABS: TabDef[] = [
   { id: 'principal', label: 'Principal', description: 'Identificação, códigos de barras, classificação e descrição.' },
   { id: 'fiscal', label: 'Fiscal', description: 'Classificação e tributação usadas na emissão da nota fiscal.' },
-  { id: 'comercial', label: 'Comercial', description: 'Custos, preços e condições de venda.' },
-  { id: 'operacional', label: 'Operacional', description: 'Estoque, compras e logística.' },
+  { id: 'operacional', label: 'Operacional', description: 'Peso, dimensões e embalagem, que definem o frete.' },
   { id: 'marketing', label: 'Marketing', description: 'Textos de venda, busca e publicação nos canais.' },
   { id: 'imagens', label: 'Imagens', description: 'Fotos do produto e checagem de qualidade.' },
   { id: 'especificacoes', label: 'Especificações', description: 'Características técnicas, dimensões, garantia e conformidade.' },
@@ -102,7 +101,7 @@ export const SECTIONS: SectionDef[] = [
   { id: 'classificacao', tab: 'principal', title: 'Classificação', description: 'Onde o produto fica no catálogo.' },
   { id: 'descricao', tab: 'principal', title: 'Descrição', description: 'Resumo interno do produto.' },
   // Fiscal
-  { id: 'fiscal-class', tab: 'fiscal', title: 'Classificação fiscal', description: 'Define quais regras tributárias se aplicam.' },
+  { id: 'fiscal-class', tab: 'fiscal', title: 'Classificação fiscal' },
   { id: 'fiscal-unid', tab: 'fiscal', title: 'Unidade tributável', description: 'Quando a unidade de tributação difere da de venda.' },
   { id: 'fiscal-op', tab: 'fiscal', title: 'Operação', description: 'CFOP padrão e informações adicionais da nota.' },
   { id: 'icms', tab: 'fiscal', title: 'ICMS' },
@@ -111,21 +110,11 @@ export const SECTIONS: SectionDef[] = [
   { id: 'reforma', tab: 'fiscal', title: 'Reforma tributária (IBS, CBS e IS)', description: 'Campos da transição. Confira a tabela vigente do Informe Técnico 2025.002.' },
   { id: 'fiscal-ctrl', tab: 'fiscal', title: 'Controles específicos', description: 'Só para produtos que exigem (importados, medicamentos, combustíveis).' },
   // Comercial
-  { id: 'custos', tab: 'comercial', title: 'Custos' },
-  { id: 'preco', tab: 'comercial', title: 'Preço de venda' },
-  { id: 'condicoes', tab: 'comercial', title: 'Condições de venda' },
-  { id: 'tabelas-preco', tab: 'comercial', title: 'Tabelas de preço', description: 'Preço por tabela (varejo, atacado, canais).', custom: true },
   // Operacional
-  { id: 'estoque', tab: 'operacional', title: 'Estoque' },
-  { id: 'depositos', tab: 'operacional', title: 'Saldo por depósito', custom: true },
-  { id: 'compras', tab: 'operacional', title: 'Compras', description: 'Como o produto é reposto.' },
-  { id: 'fornecedores', tab: 'operacional', title: 'Fornecedores', custom: true },
   { id: 'logistica', tab: 'operacional', title: 'Logística', description: 'Peso e dimensões COM embalagem (afetam o frete).' },
   // Marketing
   { id: 'texto-venda', tab: 'marketing', title: 'Texto de venda', description: 'O que o cliente lê no anúncio e na loja.' },
   { id: 'busca-seo', tab: 'marketing', title: 'Busca e SEO' },
-  { id: 'video', tab: 'marketing', title: 'Vídeo' },
-  { id: 'canais', tab: 'marketing', title: 'Publicação nos canais', description: 'Onde o produto está anunciado (vem das Conexões).', custom: true },
   // Imagens
   { id: 'galeria', tab: 'imagens', title: 'Galeria', custom: true },
   { id: 'qualidade-imagens', tab: 'imagens', title: 'Qualidade das imagens', description: 'Requisitos usuais de marketplaces.', custom: true },
@@ -211,42 +200,8 @@ export const FIELDS: FieldDef[] = [
   { id: 'anvisa', section: 'fiscal-ctrl', label: 'Registro ANVISA / MS', kind: 'text', maxLength: 13 },
   { id: 'anp', section: 'fiscal-ctrl', label: 'Código ANP', kind: 'text', maxLength: 9, hint: 'Combustíveis e derivados.' },
 
-  // ───────────────────────── Comercial › Custos
-  { id: 'custo', section: 'custos', label: 'Preço de custo', kind: 'money', importance: 'recommended' },
-  { id: 'custoAdicional', section: 'custos', label: 'Frete e despesas de compra', kind: 'money' },
-  { id: 'custoMedio', section: 'custos', label: 'Custo médio', kind: 'money', readOnly: true, hint: 'Calculado a partir das entradas de estoque.' },
-  // Comercial › Preço
-  { id: 'preco', section: 'preco', label: 'Preço de venda', kind: 'money', importance: 'required' },
-  { id: 'margem', section: 'preco', label: 'Margem', kind: 'computed', hint: '(preço − custo) ÷ preço.', compute: (v) => ratio(v, 'preco', 'custo', 'margem') },
-  { id: 'markup', section: 'preco', label: 'Markup', kind: 'computed', hint: '(preço − custo) ÷ custo.', compute: (v) => ratio(v, 'preco', 'custo', 'markup') },
-  { id: 'precoPromo', section: 'preco', label: 'Preço promocional', kind: 'money' },
-  { id: 'promoInicio', section: 'preco', label: 'Início da promoção', kind: 'date' },
-  { id: 'promoFim', section: 'preco', label: 'Fim da promoção', kind: 'date' },
-  { id: 'precoMinimo', section: 'preco', label: 'Preço mínimo', kind: 'money', hint: 'Abaixo disso a venda precisa de aprovação.' },
-  { id: 'descontoMax', section: 'preco', label: 'Desconto máximo', kind: 'percent' },
-  { id: 'comissao', section: 'preco', label: 'Comissão de venda', kind: 'percent' },
-  // Comercial › Condições
-  { id: 'qtdMinima', section: 'condicoes', label: 'Quantidade mínima de venda', kind: 'integer' },
-  { id: 'multiplo', section: 'condicoes', label: 'Múltiplo de venda', kind: 'integer', hint: 'Só vende em múltiplos deste número.' },
-  { id: 'vendeSemEstoque', section: 'condicoes', label: 'Vender sem estoque', kind: 'boolean' },
-  { id: 'fraciona', section: 'condicoes', label: 'Permite vender fração', kind: 'boolean' },
 
-  // ───────────────────────── Operacional › Estoque
-  { id: 'controlaEstoque', section: 'estoque', label: 'Controlar estoque', kind: 'boolean' },
-  { id: 'saldoTotal', section: 'estoque', label: 'Saldo total', kind: 'integer', unit: 'un', readOnly: true, hint: 'Soma dos depósitos.' },
-  { id: 'estoqueMin', section: 'estoque', label: 'Estoque mínimo', kind: 'integer', unit: 'un' },
-  { id: 'estoqueMax', section: 'estoque', label: 'Estoque máximo', kind: 'integer', unit: 'un' },
-  { id: 'pontoReposicao', section: 'estoque', label: 'Ponto de reposição', kind: 'integer', unit: 'un' },
-  { id: 'localizacao', section: 'estoque', label: 'Localização', kind: 'text', maxLength: 40, hint: 'Ex.: corredor B, prateleira 3.' },
-  { id: 'estoqueNegativo', section: 'estoque', label: 'Permitir estoque negativo', kind: 'boolean' },
-  { id: 'rastreio', section: 'estoque', label: 'Rastreabilidade', kind: 'select', options: 'rastreio' },
-  { id: 'diasValidade', section: 'estoque', label: 'Validade', kind: 'integer', unit: 'dias' },
-  // Operacional › Compras
-  { id: 'fornecedorPadrao', section: 'compras', label: 'Fornecedor padrão', kind: 'text', maxLength: 80 },
-  { id: 'codFornecedor', section: 'compras', label: 'Código no fornecedor', kind: 'text', maxLength: 40 },
-  { id: 'leadTime', section: 'compras', label: 'Prazo de reposição', kind: 'integer', unit: 'dias' },
-  { id: 'loteCompra', section: 'compras', label: 'Lote mínimo de compra', kind: 'integer', unit: 'un' },
-  // Operacional › Logística
+  // ───────────────────────── Operacional › Logística
   { id: 'pesoBruto', section: 'logistica', label: 'Peso bruto', kind: 'decimal', unit: 'kg', importance: 'recommended' },
   { id: 'pesoLiquido', section: 'logistica', label: 'Peso líquido', kind: 'decimal', unit: 'kg' },
   { id: 'alturaEmb', section: 'logistica', label: 'Altura da embalagem', kind: 'decimal', unit: 'cm', importance: 'recommended' },
@@ -268,7 +223,6 @@ export const FIELDS: FieldDef[] = [
   { id: 'seoTitulo', section: 'busca-seo', label: 'Título para busca (SEO)', kind: 'text', maxLength: 70, wide: true },
   { id: 'seoDescricao', section: 'busca-seo', label: 'Descrição para busca (SEO)', kind: 'textarea', maxLength: 160, wide: true },
   { id: 'slug', section: 'busca-seo', label: 'Endereço (slug)', kind: 'text', maxLength: 80, wide: true },
-  { id: 'videoUrl', section: 'video', label: 'Vídeo do produto', kind: 'url', wide: true, hint: 'Link do YouTube ou Vimeo.' },
 
   // ───────────────────────── Especificações
   { id: 'alturaProd', section: 'dim-produto', label: 'Altura', kind: 'decimal', unit: 'cm' },
@@ -293,16 +247,6 @@ export const FIELDS: FieldDef[] = [
 // ───────────────────────── Cálculos
 
 const num = (v: FieldValue | undefined) => (typeof v === 'number' ? v : null)
-
-function ratio(v: Values, a: string, b: string, kind: 'margem' | 'markup') {
-  const price = num(v[a])
-  const cost = num(v[b])
-  if (!price || cost === null) return '—'
-  const base = kind === 'margem' ? price : cost
-  if (!base) return '—'
-  const pct = ((price - cost) / base) * 100
-  return `${pct.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%`
-}
 
 function cubagem(v: Values) {
   const [h, w, l] = [num(v.alturaEmb), num(v.larguraEmb), num(v.comprimentoEmb)]
@@ -346,7 +290,7 @@ export function pendingFields(values: Values): Record<TabId, FieldDef[]> {
   return out
 }
 
-export type Pendencia = 'fiscal' | 'preco' | 'gtin' | 'descricao'
+export type Pendencia = 'fiscal' | 'gtin' | 'descricao'
 
 /**
  * Pendências no vocabulário do dashboard, derivadas do esquema. Garante que a lista de produtos e o
@@ -356,7 +300,6 @@ export function derivePendencias(values: Values): Pendencia[] {
   const missing = pendingFields(values)
   const out: Pendencia[] = []
   if (missing.fiscal.length) out.push('fiscal')
-  if (missing.comercial.some((f) => f.id === 'preco')) out.push('preco')
   if (missing.principal.some((f) => f.id === 'ean')) out.push('gtin')
   if (missing.principal.some((f) => f.id === 'descricaoCurta')) out.push('descricao')
   return out

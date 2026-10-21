@@ -2,7 +2,7 @@
 
 > Gerado por `npm run docs:produto` a partir de `src/app/products/schema.ts`. **Não edite à mão**: mude o esquema e gere de novo.
 
-119 campos em 9 abas. **Obrigatório** e *recomendado* ausentes viram pendência (selo na aba e alerta na página). Só obrigatório bloqueia o salvamento.
+89 campos em 8 abas. **Obrigatório** e *recomendado* ausentes viram pendência (selo na aba e alerta na página). Só obrigatório bloqueia o salvamento.
 
 Os valores fiscais de exemplo (CST, alíquotas, cClassTrib) e as listas de opções são ilustrativos e parciais: confirme nas tabelas oficiais vigentes antes de emitir documentos fiscais.
 
@@ -62,8 +62,6 @@ Resumo interno do produto.
 Classificação e tributação usadas na emissão da nota fiscal.
 
 ### Classificação fiscal
-
-Define quais regras tributárias se aplicam.
 
 | Campo | Tipo | Importância | Observação |
 |---|---|---|---|
@@ -145,83 +143,9 @@ Só para produtos que exigem (importados, medicamentos, combustíveis).
 | Registro ANVISA / MS | texto | opcional | até 13 caracteres |
 | Código ANP | texto | opcional | Combustíveis e derivados. · até 9 caracteres |
 
-## Comercial
-
-Custos, preços e condições de venda.
-
-### Custos
-
-| Campo | Tipo | Importância | Observação |
-|---|---|---|---|
-| Preço de custo | R$ | recomendado |  |
-| Frete e despesas de compra | R$ | opcional |  |
-| Custo médio | R$ | opcional | Calculado a partir das entradas de estoque. · somente leitura |
-
-### Preço de venda
-
-| Campo | Tipo | Importância | Observação |
-|---|---|---|---|
-| Preço de venda | R$ | **obrigatório** |  |
-| Margem | calculado | opcional | (preço − custo) ÷ preço. |
-| Markup | calculado | opcional | (preço − custo) ÷ custo. |
-| Preço promocional | R$ | opcional |  |
-| Início da promoção | data | opcional |  |
-| Fim da promoção | data | opcional |  |
-| Preço mínimo | R$ | opcional | Abaixo disso a venda precisa de aprovação. |
-| Desconto máximo | % | opcional |  |
-| Comissão de venda | % | opcional |  |
-
-### Condições de venda
-
-| Campo | Tipo | Importância | Observação |
-|---|---|---|---|
-| Quantidade mínima de venda | inteiro | opcional |  |
-| Múltiplo de venda | inteiro | opcional | Só vende em múltiplos deste número. |
-| Vender sem estoque | sim/não | opcional |  |
-| Permite vender fração | sim/não | opcional |  |
-
-### Tabelas de preço
-
-Preço por tabela (varejo, atacado, canais).
-
-_Tabela/lista própria (não são campos do esquema)._
-
 ## Operacional
 
-Estoque, compras e logística.
-
-### Estoque
-
-| Campo | Tipo | Importância | Observação |
-|---|---|---|---|
-| Controlar estoque | sim/não | opcional |  |
-| Saldo total | inteiro | opcional | Soma dos depósitos. · unidade: un · somente leitura |
-| Estoque mínimo | inteiro | opcional | unidade: un |
-| Estoque máximo | inteiro | opcional | unidade: un |
-| Ponto de reposição | inteiro | opcional | unidade: un |
-| Localização | texto | opcional | Ex.: corredor B, prateleira 3. · até 40 caracteres |
-| Permitir estoque negativo | sim/não | opcional |  |
-| Rastreabilidade | lista | opcional |  |
-| Validade | inteiro | opcional | unidade: dias |
-
-### Saldo por depósito
-
-_Tabela/lista própria (não são campos do esquema)._
-
-### Compras
-
-Como o produto é reposto.
-
-| Campo | Tipo | Importância | Observação |
-|---|---|---|---|
-| Fornecedor padrão | texto | opcional | até 80 caracteres |
-| Código no fornecedor | texto | opcional | até 40 caracteres |
-| Prazo de reposição | inteiro | opcional | unidade: dias |
-| Lote mínimo de compra | inteiro | opcional | unidade: un |
-
-### Fornecedores
-
-_Tabela/lista própria (não são campos do esquema)._
+Peso, dimensões e embalagem, que definem o frete.
 
 ### Logística
 
@@ -264,18 +188,6 @@ O que o cliente lê no anúncio e na loja.
 | Título para busca (SEO) | texto | opcional | até 70 caracteres |
 | Descrição para busca (SEO) | texto longo | opcional | até 160 caracteres |
 | Endereço (slug) | texto | opcional | até 80 caracteres |
-
-### Vídeo
-
-| Campo | Tipo | Importância | Observação |
-|---|---|---|---|
-| Vídeo do produto | link | opcional | Link do YouTube ou Vimeo. |
-
-### Publicação nos canais
-
-Onde o produto está anunciado (vem das Conexões).
-
-_Tabela/lista própria (não são campos do esquema)._
 
 ## Imagens
 

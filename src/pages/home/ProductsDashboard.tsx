@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import { CircleCheck, CirclePause, PackageX, TriangleAlert } from 'lucide-react'
+import { CircleCheck, CirclePause, TriangleAlert } from 'lucide-react'
 import {
   BarList, Card, CardContent, CardDescription, CardHeader, CardTitle, DistributionBar, ProgressField, StatCard, Text,
 } from '@/design-system'
-import { computeDashboardMetrics, LOW_STOCK_LIMIT } from '@/app/dashboard/metrics'
+import { computeDashboardMetrics } from '@/app/dashboard/metrics'
 import { PRODUCTS } from '@/app/products/sample-products'
-import { formatBRL, formatNumber } from '@/lib/format'
+import { formatNumber } from '@/lib/format'
 
 /** Mantém os N maiores e junta o resto em "Outras" (gráficos de barra ficam legíveis com poucas linhas). */
 function topWithOthers<T extends { id: string; label: string; count: number }>(items: T[], n: number) {
@@ -15,7 +15,6 @@ function topWithOthers<T extends { id: string; label: string; count: number }>(i
 }
 
 const pct = (part: number, total: number) => (total > 0 ? Math.round((part / total) * 100) : 0)
-const compactBRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', notation: 'compact', maximumFractionDigits: 1 })
 
 /** Indicadores do catálogo de produtos. Os dados são de exemplo (temporários) até existir a fonte real. */
 export function ProductsDashboard() {
@@ -25,12 +24,11 @@ export function ProductsDashboard() {
     <div className="grid gap-4">
       <section aria-labelledby="kpis-titulo" className="grid gap-3">
         <h2 id="kpis-titulo" className="sr-only">Indicadores principais</h2>
-        <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-6">
+        <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
           <StatCard hero label="Produtos cadastrados" value={formatNumber(m.total)} helper="Total do catálogo" className="col-span-2" />
           <StatCard label="Produtos ativos" value={formatNumber(m.active)} helper={`${pct(m.active, m.total)}% do cadastro`} icon={CircleCheck} tone="success" />
           <StatCard label="Produtos incompletos" value={formatNumber(m.incomplete)} helper={`${pct(m.incomplete, m.total)}% com pendências`} icon={TriangleAlert} tone="warning" />
-          <StatCard label="Produtos inativos" value={formatNumber(m.inactive)} helper={`${pct(m.inactive, m.total)}% do cadastro`} icon={CirclePause} tone="neutral" />
-          <StatCard label="Sem estoque" value={formatNumber(m.stock.out)} helper="Saldo zerado" icon={PackageX} tone="danger" />
+          <StatCard label="Produtos inativos" value={formatNumber(m.inactive)} helper={`${pct(m.inactive, m.total)}% do cadastro`} icon={CirclePause} tone="neutral" className="max-lg:col-span-2" />
         </dl>
       </section>
 
@@ -59,36 +57,6 @@ export function ProductsDashboard() {
               </div>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <div>
-                <CardTitle>Estoque</CardTitle>
-                <CardDescription>Saldo por produto. Baixo = menos de {LOW_STOCK_LIMIT} unidades.</CardDescription>
-              </div>
-            </CardHeader>
-            <CardContent className="grid gap-5">
-              <DistributionBar
-                segments={[
-                  { id: 'healthy', label: 'Estoque saudável', value: m.stock.healthy, tone: 'success' },
-                  { id: 'low', label: 'Estoque baixo', value: m.stock.low, tone: 'warning' },
-                  { id: 'out', label: 'Sem estoque', value: m.stock.out, tone: 'danger' },
-                ]}
-              />
-              <dl className="grid grid-cols-2 gap-4 border-t border-line-subtle pt-4">
-                <div>
-                  <dt className="text-sm text-fg-muted">Unidades em estoque</dt>
-                  <dd className="mt-1 text-xl font-semibold tracking-tight text-fg">{formatNumber(m.units)}</dd>
-                </div>
-                <div>
-                  <dt className="text-sm text-fg-muted">Valor, a preço de venda</dt>
-                  <dd className="mt-1 text-xl font-semibold tracking-tight text-fg" title={formatBRL(m.stockValue)}>{compactBRL.format(m.stockValue)}</dd>
-                </div>
-              </dl>
-            </CardContent>
-          </Card>
-        </div>
-        <div className="grid gap-4">
           <Card>
             <CardHeader>
               <div>
@@ -105,7 +73,8 @@ export function ProductsDashboard() {
               />
             </CardContent>
           </Card>
-
+        </div>
+        <div className="grid gap-4">
           <Card>
             <CardHeader>
               <div>

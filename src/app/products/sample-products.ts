@@ -8,11 +8,10 @@ import { PRODUCT_PHOTOS } from './photos'
 export type ProductStatus = 'active' | 'inactive' | 'draft'
 
 /** Dado que falta para o cadastro ficar completo. */
-export type Pendencia = 'fiscal' | 'preco' | 'gtin' | 'descricao'
+export type Pendencia = 'fiscal' | 'gtin' | 'descricao'
 
 export const PENDENCIA_LABEL: Record<Pendencia, string> = {
   fiscal: 'Sem dados fiscais',
-  preco: 'Sem preço de venda',
   gtin: 'Sem GTIN',
   descricao: 'Sem descrição',
 }
@@ -27,26 +26,24 @@ export interface Product {
   ean: string
   /** Foto do produto (URL ou data URI). */
   photo: string
-  price: number
-  stock: number
   status: ProductStatus
   /** Vazio = cadastro completo. */
   pendencias: Pendencia[]
 }
 
 const bases = [
-  { title: 'Parafuso sextavado M8', department: 'Ferragens', ncm: '7318.15.00', price: 0.85 },
-  { title: 'Cabo de energia 3x2,5 mm', department: 'Elétrica', ncm: '8544.42.00', price: 6.9 },
-  { title: 'Smartphone 128 GB', department: 'Eletrônicos', ncm: '8517.13.00', price: 1899 },
-  { title: 'Organizador plástico', department: 'Utilidades', ncm: '3926.90.90', price: 24.9 },
-  { title: 'Mesa de escritório', department: 'Móveis', ncm: '9403.30.00', price: 649 },
-  { title: 'Notebook 14 pol.', department: 'Informática', ncm: '8471.30.19', price: 3799 },
-  { title: 'Camiseta algodão', department: 'Vestuário', ncm: '6109.10.00', price: 49.9 },
-  { title: 'Carregador USB-C 20 W', department: 'Eletrônicos', ncm: '8504.40.90', price: 89.9 },
-  { title: 'Creme hidratante 200 ml', department: 'Cosméticos', ncm: '3304.99.90', price: 32.5 },
-  { title: 'Smart TV 50 pol.', department: 'Eletrônicos', ncm: '8528.72.00', price: 2599 },
-  { title: 'Tênis esportivo', department: 'Calçados', ncm: '6403.99.90', price: 279.9 },
-  { title: 'Cabo HDMI 2 m', department: 'Eletrônicos', ncm: '8544.42.00', price: 39.9 },
+  { title: 'Parafuso sextavado M8', department: 'Ferragens', ncm: '7318.15.00' },
+  { title: 'Cabo de energia 3x2,5 mm', department: 'Elétrica', ncm: '8544.42.00' },
+  { title: 'Smartphone 128 GB', department: 'Eletrônicos', ncm: '8517.13.00' },
+  { title: 'Organizador plástico', department: 'Utilidades', ncm: '3926.90.90' },
+  { title: 'Mesa de escritório', department: 'Móveis', ncm: '9403.30.00' },
+  { title: 'Notebook 14 pol.', department: 'Informática', ncm: '8471.30.19' },
+  { title: 'Camiseta algodão', department: 'Vestuário', ncm: '6109.10.00' },
+  { title: 'Carregador USB-C 20 W', department: 'Eletrônicos', ncm: '8504.40.90' },
+  { title: 'Creme hidratante 200 ml', department: 'Cosméticos', ncm: '3304.99.90' },
+  { title: 'Smart TV 50 pol.', department: 'Eletrônicos', ncm: '8528.72.00' },
+  { title: 'Tênis esportivo', department: 'Calçados', ncm: '6403.99.90' },
+  { title: 'Cabo HDMI 2 m', department: 'Eletrônicos', ncm: '8544.42.00' },
 ]
 const variants = ['', ' · Pequeno', ' · Médio', ' · Grande', ' · Premium']
 const statuses: ProductStatus[] = ['active', 'active', 'active', 'inactive', 'active', 'draft', 'active']
@@ -66,7 +63,6 @@ export const PRODUCTS: Product[] = Array.from({ length: 57 }, (_, i) => {
   const pendencias: Pendencia[] = []
   if (status === 'draft') {
     pendencias.push('fiscal')
-    if (i % 2 === 0) pendencias.push('preco')
   }
   if (i % 9 === 0) pendencias.push('gtin')
   if (i % 11 === 3) pendencias.push('descricao')
@@ -79,8 +75,6 @@ export const PRODUCTS: Product[] = Array.from({ length: 57 }, (_, i) => {
     // Coerente com a pendência: sem GTIN cadastrado = sem EAN.
     ean: pendencias.includes('gtin') ? '' : ean13(i),
     photo: PRODUCT_PHOTOS[i % bases.length]!,
-    price: Math.round(base.price * (1 + (i % 5) * 0.15) * 100) / 100,
-    stock: (i * 37) % 420,
     status,
     pendencias,
   }

@@ -9,7 +9,6 @@ import { routes } from '@/app/navigation'
 import { findProduct, saveProductValues, useProductDetail } from '@/app/products/detail'
 import { STATUS_LABEL, STATUS_TONE, type Product } from '@/app/products/sample-products'
 import { TABS, pendingFields, sectionsOf, visibleTabs, type FieldValue, type TabId, type Values } from '@/app/products/schema'
-import { formatBRL, formatNumber } from '@/lib/format'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 import { usePageTitle } from '@/lib/usePageTitle'
 import { CustomSection } from './product/CustomSections'
@@ -146,7 +145,6 @@ function ProductDetailPage({ product }: { product: Product }) {
   }
 
   const onChange = (id: string, value: FieldValue) => setDraft((d) => ({ ...d, [id]: value }))
-  const price = typeof shown.preco === 'number' ? shown.preco : null
   const status = String(saved.status) as Product['status']
 
   return (
@@ -179,12 +177,11 @@ function ProductDetailPage({ product }: { product: Product }) {
       <Card className="p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <Thumbnail src={product.photo} alt={`Foto de ${saved.title}`} size="xl" className="size-20 sm:size-24" />
-          <dl className="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-6">
+          <dl className="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-5">
             <KeyValue label="Departamento">{String(saved.departamento)}</KeyValue>
+            <KeyValue label="Marca">{String(saved.marca)}</KeyValue>
             <KeyValue label="NCM" mono>{String(saved.ncm)}</KeyValue>
             <KeyValue label="EAN" mono>{String(saved.ean)}</KeyValue>
-            <KeyValue label="Preço de venda">{typeof saved.preco === 'number' ? formatBRL(saved.preco) : ''}</KeyValue>
-            <KeyValue label="Estoque">{`${formatNumber(Number(saved.saldoTotal ?? 0))} un`}</KeyValue>
             <KeyValue label="Tipo">{{ simples: 'Simples', variacoes: 'Com variações', kit: 'Kit' }[String(saved.tipo)] ?? ''}</KeyValue>
           </dl>
         </div>
@@ -234,7 +231,7 @@ function ProductDetailPage({ product }: { product: Product }) {
               if (s.id === 'variacoes-lista' && shown.tipo !== 'variacoes') return null
               if (s.id === 'kit-composicao' && shown.tipo !== 'kit') return null
               return s.custom ? (
-                <CustomSection key={s.id} section={s} detail={detail} editing={editing} price={price} />
+                <CustomSection key={s.id} section={s} detail={detail} editing={editing} />
               ) : (
                 <FieldsSection key={s.id} section={s} values={shown} editing={editing} errors={errors} onChange={onChange} />
               )

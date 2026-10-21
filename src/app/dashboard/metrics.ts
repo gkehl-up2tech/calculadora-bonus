@@ -1,8 +1,5 @@
 import { PENDENCIA_LABEL, type Pendencia, type Product } from '../products/sample-products'
 
-/** Abaixo deste saldo (unidades) o produto conta como "estoque baixo". */
-export const LOW_STOCK_LIMIT = 20
-
 export interface DashboardMetrics {
   total: number
   active: number
@@ -13,11 +10,6 @@ export interface DashboardMetrics {
   complete: number
   pendencias: { id: Pendencia; label: string; count: number }[]
   byDepartment: { id: string; label: string; count: number }[]
-  stock: { out: number; low: number; healthy: number }
-  /** Soma dos saldos (unidades). */
-  units: number
-  /** Valor do estoque a preço de venda (soma de preço × saldo). */
-  stockValue: number
 }
 
 /**
@@ -47,12 +39,5 @@ export function computeDashboardMetrics(products: Product[]): DashboardMetrics {
     complete: products.length - incomplete,
     pendencias,
     byDepartment,
-    stock: {
-      out: count((p) => p.stock === 0),
-      low: count((p) => p.stock > 0 && p.stock < LOW_STOCK_LIMIT),
-      healthy: count((p) => p.stock >= LOW_STOCK_LIMIT),
-    },
-    units: products.reduce((sum, p) => sum + p.stock, 0),
-    stockValue: products.reduce((sum, p) => sum + p.price * p.stock, 0),
   }
 }

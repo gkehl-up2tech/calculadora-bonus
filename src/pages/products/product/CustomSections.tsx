@@ -1,19 +1,11 @@
 import type { ReactNode } from 'react'
 import { CheckCircle2, TriangleAlert } from 'lucide-react'
-import { Badge, FormSection, Icon, SimpleTable, StatusBadge, Text, Thumbnail } from '@/design-system'
-import type { Channel, ChannelStatus, ImageKind, ProductDetail, ProductImage } from '@/app/products/detail'
+import { Badge, FormSection, Icon, SimpleTable, Text, Thumbnail } from '@/design-system'
+import type { ImageKind, ProductDetail, ProductImage } from '@/app/products/detail'
 import type { SectionDef } from '@/app/products/schema'
-import { formatBRL, formatNumber } from '@/lib/format'
 
 const dateTime = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Sao_Paulo' })
 const when = (iso: string) => dateTime.format(new Date(iso))
-const money = (n: number) => (n > 0 ? formatBRL(n) : '—')
-
-const CHANNEL: Record<ChannelStatus, { label: string; tone: 'success' | 'neutral' | 'danger' }> = {
-  published: { label: 'Publicado', tone: 'success' },
-  paused: { label: 'Pausado', tone: 'neutral' },
-  error: { label: 'Com erro', tone: 'danger' },
-}
 
 const IMAGE_KIND: Record<ImageKind, string> = {
   principal: 'Principal',
@@ -46,86 +38,13 @@ export interface CustomSectionProps {
   section: SectionDef
   detail: ProductDetail
   editing: boolean
-  /** Preço de venda atual (rascunho ou salvo): as tabelas de preço derivam dele. */
-  price: number | null
 }
 
 /** Seções cujo conteúdo não são campos do esquema: tabelas e galeria. */
-export function CustomSection({ section, detail, editing, price }: CustomSectionProps) {
+export function CustomSection({ section, detail, editing }: CustomSectionProps) {
   const { extras } = detail
   const block = (children: ReactNode) => <Block section={section} editing={editing}>{children}</Block>
   switch (section.id) {
-    case 'tabelas-preco':
-      return block(
-        <SimpleTable
-          caption="Tabelas de preço"
-          rows={price === null ? [] : extras.priceTables.map((t) => ({ ...t, price: t.id === 't1' ? price : Math.round(price * (t.id === 't2' ? 0.9 : 1.1) * 100) / 100 }))}
-          getRowId={(r) => r.id}
-          empty="Defina o preço de venda para gerar as tabelas de preço."
-          columns={[
-            { key: 'n', header: 'Tabela', cell: (r) => r.name },
-            { key: 'p', header: 'Preço', align: 'right', cell: (r) => formatBRL(r.price) },
-            { key: 'v', header: 'Vigência', cell: (r) => r.validity },
-          ]}
-        />,
-      )
-    case 'depositos': {
-      const total = extras.deposits.reduce((a, d) => a + d.balance, 0)
-      const reserved = extras.deposits.reduce((a, d) => a + d.reserved, 0)
-      return block(
-        <SimpleTable
-          caption="Saldo por depósito"
-          rows={extras.deposits}
-          getRowId={(r) => r.id}
-          columns={[
-            { key: 'n', header: 'Depósito', cell: (r) => r.name, footer: 'Total' },
-            { key: 's', header: 'Saldo', align: 'right', cell: (r) => formatNumber(r.balance), footer: formatNumber(total) },
-            { key: 'r', header: 'Reservado', align: 'right', cell: (r) => formatNumber(r.reserved), footer: formatNumber(reserved) },
-            { key: 'd', header: 'Disponível', align: 'right', cell: (r) => formatNumber(r.balance - r.reserved), footer: formatNumber(total - reserved) },
-          ]}
-        />,
-      )
-    }
-    case 'fornecedores':
-      return block(
-        <SimpleTable
-          caption="Fornecedores"
-          rows={extras.suppliers}
-          getRowId={(r) => r.id}
-          columns={[
-            { key: 'n', header: 'Fornecedor', cell: (r) => r.name },
-            { key: 'c', header: 'Código', cell: (r) => <span className="font-mono text-sm">{r.code}</span> },
-            { key: 'u', header: 'Último custo', align: 'right', cell: (r) => money(r.lastCost) },
-            { key: 'l', header: 'Prazo', align: 'right', cell: (r) => `${r.leadTime} dias` },
-          ]}
-        />,
-      )
-    case 'canais':
-      return block(
-        <SimpleTable<Channel>
-          caption="Publicação nos canais"
-          rows={extras.channels}
-          getRowId={(r) => r.id}
-          empty="O produto ainda não está publicado em nenhum canal. Ative o produto e conecte um canal em Conexões."
-          columns={[
-            { key: 'n', header: 'Canal', cell: (r) => r.name },
-            {
-              key: 's',
-              header: 'Situação',
-              cell: (r) => (
-                <div className="grid justify-items-start gap-1">
-                  <StatusBadge tone={CHANNEL[r.status].tone}>{CHANNEL[r.status].label}</StatusBadge>
-                  {r.note ? <span className="max-w-56 text-xs text-fg-muted">{r.note}</span> : null}
-                </div>
-              ),
-            },
-            { key: 'a', header: 'Anúncio', cell: (r) => <span className="font-mono text-sm">{r.adId}</span> },
-            { key: 'p', header: 'Preço', align: 'right', cell: (r) => money(r.price) },
-            { key: 'e', header: 'Estoque', align: 'right', cell: (r) => formatNumber(r.stock) },
-            { key: 'u', header: 'Sincronizado', cell: (r) => when(r.syncedAt) },
-          ]}
-        />,
-      )
     case 'galeria':
       return block(
         extras.images.length === 0 ? (
@@ -170,8 +89,6 @@ export function CustomSection({ section, detail, editing, price }: CustomSection
             { key: 'n', header: 'Variação', cell: (r) => r.label },
             { key: 's', header: 'SKU', cell: (r) => <span className="font-mono text-sm">{r.sku}</span> },
             { key: 'e', header: 'EAN', cell: (r) => (r.ean ? <span className="font-mono text-sm">{r.ean}</span> : '—') },
-            { key: 'p', header: 'Preço', align: 'right', cell: (r) => money(r.price) },
-            { key: 'q', header: 'Estoque', align: 'right', cell: (r) => formatNumber(r.stock) },
           ]}
         />,
       )

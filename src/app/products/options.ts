@@ -126,7 +126,6 @@ export const STATUS_OPTIONS: Option[] = [o('active', 'Ativo'), o('inactive', 'In
 export const TIPO_OPTIONS: Option[] = [o('simples', 'Simples'), o('variacoes', 'Com variações'), o('kit', 'Kit'), o('fabricado', 'Fabricado'), o('materia-prima', 'Matéria-prima')]
 export const CONDICAO_OPTIONS: Option[] = [o('novo', 'Novo'), o('usado', 'Usado'), o('recondicionado', 'Recondicionado')]
 export const ESCALA_OPTIONS: Option[] = [o('S', 'Sim, escala relevante'), o('N', 'Não, escala não relevante')]
-export const RASTREIO_OPTIONS: Option[] = [o('nenhum', 'Sem rastreio'), o('lote', 'Por lote'), o('serie', 'Por número de série'), o('validade', 'Por lote e validade')]
 export const EMBALAGEM_OPTIONS: Option[] = [o('caixa', 'Caixa'), o('saco', 'Saco'), o('blister', 'Blister'), o('envelope', 'Envelope'), o('pallet', 'Pallet'), o('granel', 'A granel')]
 export const GARANTIA_OPTIONS: Option[] = [o('fabricante', 'Do fabricante'), o('loja', 'Da loja'), o('sem', 'Sem garantia')]
 export const VOLTAGEM_OPTIONS: Option[] = [o('127', '127 V'), o('220', '220 V'), o('bivolt', 'Bivolt'), o('bateria', 'Bateria')]
@@ -147,7 +146,6 @@ export const OPTION_SETS = {
   pisCofinsCst: PIS_COFINS_CST_OPTIONS,
   ibsCbsCst: IBS_CBS_CST_OPTIONS,
   cClassTrib: CCLASSTRIB_OPTIONS,
-  rastreio: RASTREIO_OPTIONS,
   embalagem: EMBALAGEM_OPTIONS,
   garantia: GARANTIA_OPTIONS,
   voltagem: VOLTAGEM_OPTIONS,
