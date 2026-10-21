@@ -15,11 +15,10 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primary: 'bg-primary text-on-primary hover:bg-primary-hover active:bg-primary-active',
-        secondary: 'bg-surface text-fg shadow-card hover:bg-subtle active:bg-muted',
-        soft: 'bg-primary-soft text-primary-soft-fg hover:bg-primary-soft-hover',
+        secondary: 'bg-surface text-fg shadow-border hover:bg-subtle active:bg-muted',
         ghost: 'text-fg-muted hover:bg-subtle hover:text-fg active:bg-muted',
-        danger: 'bg-danger text-on-danger hover:bg-danger-hover active:bg-danger-active',
-        'danger-ghost': 'text-tone-danger-fg hover:bg-tone-danger-soft',
+        // Destrutiva: fundo suave na cor de erro (só existe a aparência soft).
+        danger: 'bg-tone-danger-soft text-tone-danger-fg hover:bg-tone-danger-soft-hover active:bg-tone-danger-soft-hover',
       },
       size: {
         sm: 'h-control-sm gap-1.5 px-3 text-sm [&_svg]:size-4',

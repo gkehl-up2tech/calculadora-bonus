@@ -10,7 +10,7 @@ function Box({ children, className }: { children?: ReactNode; className?: string
 }
 
 /** Esquemas dos templates: onde ficam os slots. Puramente ilustrativo (aria-hidden). */
-export function Wireframe({ kind }: { kind: 'app-shell' | 'settings' | 'list' | 'form' }) {
+export function Wireframe({ kind }: { kind: 'app-shell' | 'settings' }) {
   return (
     <div aria-hidden className="h-56 w-full max-w-md">
       {kind === 'app-shell' ? (
@@ -29,23 +29,6 @@ export function Wireframe({ kind }: { kind: 'app-shell' | 'settings' | 'list' | 
             <Box>Abas (NavItem ×n)</Box>
             <Box className="bg-surface">{'{children}'}</Box>
           </div>
-        </div>
-      ) : null}
-      {kind === 'list' ? (
-        <div className="grid h-full grid-rows-[2.5rem_2rem_minmax(0,1fr)] gap-1.5">
-          <Box>PageHeader (título + ações)</Box>
-          <Box>FilterBar</Box>
-          <Box className="bg-surface">DataTable {'{children}'}</Box>
-        </div>
-      ) : null}
-      {kind === 'form' ? (
-        <div className="grid h-full grid-rows-[2.25rem_minmax(0,1fr)_2rem] gap-1.5">
-          <Box>PageHeader</Box>
-          <div className="grid gap-1.5">
-            <Box className="bg-surface">FormSection</Box>
-            <Box className="bg-surface">FormSection</Box>
-          </div>
-          <Box className="bg-primary-soft text-primary-soft-fg">StickyActionBar</Box>
         </div>
       ) : null}
     </div>

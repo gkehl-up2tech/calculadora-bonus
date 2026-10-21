@@ -23,10 +23,6 @@ export const colorScales: Record<string, ColorStep[]> = (() => {
 export const scaleLabels: Record<string, string> = {
   brand: 'Brand — azul UP2Tech',
   neutral: 'Neutral — cinza-azulado',
-  success: 'Success',
-  warning: 'Warning',
-  danger: 'Danger',
-  info: 'Info',
 }
 
 export interface SemanticToken {
@@ -80,9 +76,17 @@ export const semanticGroups: { title: string; description: string; tokens: Seman
       { token: '--primary-hover', util: 'bg-primary-hover', usage: 'Hover do primário.' },
       { token: '--primary-soft', util: 'bg-primary-soft', usage: 'Fundo suave: item ativo, botão soft.' },
       { token: '--primary-soft-fg', util: 'text-primary-soft-fg', usage: 'Texto sobre o fundo suave.', against: '--primary-soft', min: 4.5 },
-      { token: '--danger', util: 'bg-danger', usage: 'Ação destrutiva.', against: '--bg-surface', min: 3 },
+    ],
+  },
+  {
+    title: 'Status',
+    description: 'UMA cor por status e por tema: serve de texto, ícone, marca de gráfico e borda de erro. O fundo suave (bg-tone-*-soft) é derivado dela.',
+    tokens: [
+      { token: '--success', util: 'text-success', usage: 'Sucesso: confirmações, “Ativo”.', against: '--bg-surface', min: 3 },
+      { token: '--warning', util: 'text-warning', usage: 'Atenção: pendências, rascunho.', against: '--bg-surface', min: 3 },
+      { token: '--danger', util: 'text-danger / border-danger', usage: 'Erro e ação destrutiva.', against: '--bg-surface', min: 3 },
     ],
   },
 ]
 
-export const toneNames = ['neutral', 'brand', 'success', 'warning', 'danger', 'info'] as const
+export const toneNames = ['neutral', 'brand', 'success', 'warning', 'danger'] as const

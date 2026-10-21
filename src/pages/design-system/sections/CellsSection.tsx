@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Bell, Home, Package, Pencil, Percent, Search, Settings, Trash2, Weight, X, Calendar, MapPin } from 'lucide-react'
-import { Badge, Button, RadioGroup, Text } from '@/design-system'
+import { Home, Package, Pencil, Percent, Search, Settings, Trash2, Weight, X } from 'lucide-react'
+import { Badge, Button, Text } from '@/design-system'
 import {
-  CheckboxField, Chip, FieldLabel, FieldMessage, IconButton, IconLabel, InputGroup, KeyValue, NavItem, Persona,
-  ProgressField, RadioField, ShortcutHint, StatusBadge, SwitchField, Tooltip,
+  Chip, FieldLabel, FieldMessage, IconButton, InputGroup, KeyValue, NavItem, Persona,
+  ProgressField, ShortcutHint, StatusBadge, SwitchField, Tooltip,
 } from '@/design-system'
 import { DocSection, SubSection } from '../docs/DocSection'
 import { Specimen } from '../docs/Specimen'
@@ -36,15 +36,14 @@ export function CellsSection() {
           code={`<IconButton icon={Pencil} label="Editar produto" />
 
 <Tooltip content="Excluir" shortcut={['Del']}>
-  <IconButton icon={Trash2} label="Excluir produto" variant="danger-ghost" />
+  <IconButton icon={Trash2} label="Excluir produto" variant="danger" />
 </Tooltip>`}
         >
           <IconButton icon={Pencil} label="Editar produto" />
           <IconButton icon={Settings} label="Configurações" variant="secondary" />
-          <IconButton icon={Bell} label="Notificações" variant="soft" />
           <IconButton icon={Search} label="Buscar" variant="primary" size="sm" />
           <IconButton icon={Search} label="Buscar" variant="primary" size="lg" />
-          <Tooltip content="Excluir" shortcut={['Del']}><IconButton icon={Trash2} label="Excluir produto" variant="danger-ghost" /></Tooltip>
+          <Tooltip content="Excluir" shortcut={['Del']}><IconButton icon={Trash2} label="Excluir produto" variant="danger" /></Tooltip>
         </Specimen>
         <Specimen
           title="FieldLabel e FieldMessage"
@@ -72,31 +71,14 @@ export function CellsSection() {
 
       <SubSection title="Opções">
         <Specimen
-          title="CheckboxField, RadioField e SwitchField"
-          composedOf={['Checkbox / Radio / Switch', 'Label', 'Text']}
-          description="O texto inteiro é clicável e a descrição é ligada ao controle (aria-describedby). Switch fica à direita, no padrão de linhas de configuração."
-          code={`<CheckboxField label="Controlar estoque" description="Baixa automática a cada venda." />
-
-<RadioGroup defaultValue="venda">
-  <RadioField value="venda" label="Venda" />
-  <RadioField value="uso" label="Uso e consumo" />
-</RadioGroup>
-
-<SwitchField label="Produto ativo" description="Aparece nas vendas." defaultChecked />`}
-          previewClassName="!grid gap-6 md:grid-cols-3"
+          title="SwitchField"
+          composedOf={['Switch', 'Label', 'Text']}
+          description="O texto inteiro é clicável e a descrição é ligada ao controle (aria-describedby). O Switch fica à direita, no padrão de linhas de configuração."
+          code={`<SwitchField label="Produto ativo" description="Aparece nas vendas." defaultChecked />`}
+          previewClassName="!grid gap-6 md:grid-cols-2"
         >
-          <div className="grid content-start gap-4">
-            <CheckboxField label="Controlar estoque" description="Baixa automática a cada venda." defaultChecked />
-            <CheckboxField label="Permitir estoque negativo" />
-          </div>
-          <RadioGroup defaultValue="venda" aria-label="Finalidade" className="content-start gap-4">
-            <RadioField value="venda" label="Mercadoria para venda" description="Gera crédito fiscal." />
-            <RadioField value="uso" label="Uso e consumo" />
-          </RadioGroup>
-          <div className="grid content-start gap-4">
-            <SwitchField label="Produto ativo" description="Aparece nas vendas." defaultChecked />
-            <SwitchField label="Exibir no catálogo" />
-          </div>
+          <SwitchField label="Produto ativo" description="Aparece nas vendas." defaultChecked />
+          <SwitchField label="Exibir no catálogo" />
         </Specimen>
       </SubSection>
 
@@ -113,7 +95,7 @@ export function CellsSection() {
           <StatusBadge tone="warning">Rascunho</StatusBadge>
           <StatusBadge tone="neutral">Inativo</StatusBadge>
           <StatusBadge tone="danger">Bloqueado fiscalmente</StatusBadge>
-          <StatusBadge tone="info">Em revisão</StatusBadge>
+          <StatusBadge tone="brand">Em revisão</StatusBadge>
         </Specimen>
         <Specimen title="Chip" composedOf={['texto', 'botão remover']} description="Filtros ativos, tags, destinatários. O botão de remover tem alvo de toque ampliado e nome acessível “Remover: …”." code={`<Chip onRemove={() => remove('Ativo')}>Ativo</Chip>`}>
           <ChipsDemo />
@@ -149,12 +131,11 @@ export function CellsSection() {
 
       <SubSection title="Identidade e detalhes">
         <Specimen
-          title="Persona, KeyValue e IconLabel"
+          title="Persona e KeyValue"
           composedOf={['Avatar', 'Text', 'Icon']}
           code={`<Persona name="Maria da Silva" description="Fiscal" />
-<dl><KeyValue label="NCM" mono>7318.15.00</KeyValue></dl>
-<IconLabel icon={MapPin}>São Paulo, SP</IconLabel>`}
-          previewClassName="!grid gap-6 md:grid-cols-3"
+<dl><KeyValue label="NCM" mono>7318.15.00</KeyValue></dl>`}
+          previewClassName="!grid gap-6 md:grid-cols-2"
         >
           <div className="grid content-start gap-3">
             <Persona name="Maria da Silva" description="Analista fiscal" />
@@ -164,13 +145,8 @@ export function CellsSection() {
             <KeyValue label="NCM" mono>7318.15.00</KeyValue>
             <KeyValue label="Origem">0 — Nacional</KeyValue>
             <KeyValue label="CEST">{''}</KeyValue>
-            <KeyValue label="Preço de venda" orientation="horizontal" className="border-t border-line-subtle pt-3">R$ 49,90</KeyValue>
+            <KeyValue label="Unidade" orientation="horizontal" className="border-t border-line-subtle pt-3">UN — Unidade</KeyValue>
           </dl>
-          <div className="grid content-start gap-2">
-            <IconLabel icon={MapPin}>São Paulo, SP</IconLabel>
-            <IconLabel icon={Calendar}>Atualizado há 2 dias</IconLabel>
-            <IconLabel icon={Package}>1.240 unidades em estoque</IconLabel>
-          </div>
         </Specimen>
         <Specimen
           title="ProgressField e ShortcutHint"

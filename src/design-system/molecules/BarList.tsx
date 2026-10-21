@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react'
-import { toneDot, type Tone } from '../foundations'
+import { toneMark, type Tone } from '../foundations'
 import { cn } from '@/lib/cn'
 
 export interface BarListItem {
@@ -47,7 +47,7 @@ export function BarList({ items, tone = 'brand', total, format = defaultFormat, 
               </span>
             </div>
             <div aria-hidden className="h-2 rounded-xs bg-subtle">
-              <div className={cn('h-full rounded-r-xs', toneDot[tone])} style={{ width: `${(item.value / max) * 100}%` }} />
+              <div className={cn('h-full rounded-r-xs', toneMark[tone])} style={{ width: `${(item.value / max) * 100}%` }} />
             </div>
           </li>
         )

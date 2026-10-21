@@ -1,6 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react'
 import { DropdownMenu as MenuPrimitive } from 'radix-ui'
-import { Check, Circle, type LucideIcon } from 'lucide-react'
+import { Circle, type LucideIcon } from 'lucide-react'
 import { Icon } from '../atoms'
 import { ShortcutHint } from '../cells'
 import { menuItem, overlayPanel, popAnimation } from '../foundations'
@@ -8,7 +8,6 @@ import { cn } from '@/lib/cn'
 
 export const DropdownMenu = MenuPrimitive.Root
 export const DropdownMenuTrigger = MenuPrimitive.Trigger
-export const DropdownMenuGroup = MenuPrimitive.Group
 export const DropdownMenuRadioGroup = MenuPrimitive.RadioGroup
 
 export function DropdownMenuContent({ className, align = 'end', sideOffset = 6, ...props }: ComponentProps<typeof MenuPrimitive.Content>) {
@@ -42,17 +41,6 @@ export function DropdownMenuItem({ icon, shortcut, destructive, className, child
       <span className="min-w-0 flex-1 truncate">{children}</span>
       {shortcut ? <ShortcutHint keys={shortcut} className="ml-4" /> : null}
     </MenuPrimitive.Item>
-  )
-}
-
-export function DropdownMenuCheckboxItem({ className, children, ...props }: ComponentProps<typeof MenuPrimitive.CheckboxItem>) {
-  return (
-    <MenuPrimitive.CheckboxItem className={cn(menuItem, 'pl-8', className)} {...props}>
-      <span className="absolute left-2.5 inline-flex">
-        <MenuPrimitive.ItemIndicator><Check aria-hidden className="size-4" /></MenuPrimitive.ItemIndicator>
-      </span>
-      {children}
-    </MenuPrimitive.CheckboxItem>
   )
 }
 

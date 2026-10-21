@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { CircleCheck, Copy, FilePlus2, Info, MoreHorizontal, Package, PackageX, Pencil, Printer, Trash2, TriangleAlert } from 'lucide-react'
 import {
-  Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, BarList, Badge, Breadcrumb, Button, Card, CardContent,
+  Alert, BarList, Badge, Breadcrumb, Button, Card, CardContent,
   CardDescription, CardFooter, CardHeader, CardTitle, Combobox, CurrencyInput, Dialog, DialogClose, DialogContent, DialogTrigger,
   DistributionBar, NumberInput, SegmentedNav, SimpleTable, StatCard,
-  DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
-  DropdownMenuTrigger, EmptyState, FormField, IconButton, Input, MaskedInput, Pagination, Popover, PopoverContent, PopoverTrigger,
-  SearchField, SegmentedControl, Select, Sheet, SheetContent, SheetTrigger, Stepper, Tabs, TabsContent, TabsList, TabsTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
+  DropdownMenuTrigger, EmptyState, FormField, IconButton, Input, MaskedInput, Pagination,
+  SearchField, SegmentedControl, Select, Tabs, TabsContent, TabsList, TabsTrigger,
   Text, ThemeToggle, Tooltip, toast,
 } from '@/design-system'
 import { isValidCnpj, isValidGtin } from '@/lib/masks'
@@ -113,33 +113,14 @@ function PaginationDemo() {
   return <Pagination label="Exemplo de paginação" page={page} pageCount={24} onPageChange={setPage} />
 }
 
-function StepperDemo() {
-  const [i, setI] = useState(1)
-  const steps = [
-    { id: 'id', label: 'Identificação', description: 'Nome, SKU e GTIN' },
-    { id: 'sales', label: 'Vendas', description: 'Preço e estoque' },
-    { id: 'tax', label: 'Fiscal', description: 'NCM, CFOP e CST' },
-    { id: 'review', label: 'Revisão' },
-  ]
-  return (
-    <div className="grid w-full gap-4">
-      <Stepper label="Etapas do exemplo" steps={steps} current={i} onStepClick={setI} />
-      <div className="flex gap-2">
-        <Button size="sm" variant="secondary" disabled={i === 0} onClick={() => setI((n) => n - 1)}>Voltar</Button>
-        <Button size="sm" disabled={i === steps.length - 1} onClick={() => setI((n) => n + 1)}>Avançar</Button>
-      </div>
-    </div>
-  )
-}
-
 function AlertDemo() {
   const [open, setOpen] = useState(true)
   return (
     <div className="grid w-full gap-3">
-      <Alert tone="info" title="Importação em andamento">Você pode continuar usando o sistema. Avisaremos quando terminar.</Alert>
+      <Alert tone="brand" title="Importação em andamento">Você pode continuar usando o sistema. Avisaremos quando terminar.</Alert>
       <Alert tone="success" title="Produto salvo">As alterações já estão disponíveis nas vendas.</Alert>
       <Alert tone="warning" title="NCM sem CEST">Este NCM exige CEST quando há substituição tributária.</Alert>
-      <Alert tone="danger" title="Não foi possível salvar" action={<Button size="sm" variant="danger">Tentar novamente</Button>}>Verifique sua conexão e tente de novo.</Alert>
+      <Alert tone="danger" title="Não foi possível salvar" action={<Button size="sm" variant="secondary">Tentar novamente</Button>}>Verifique sua conexão e tente de novo.</Alert>
       {open ? <Alert tone="neutral" title="Dica" icon={Info} onDismiss={() => setOpen(false)}>Use Ctrl+K para buscar qualquer página.</Alert> : <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>Mostrar dica de novo</Button>}
     </div>
   )
@@ -306,15 +287,15 @@ toast('Produto excluído', { action: { label: 'Desfazer', onClick: undo } })`}
           <Tooltip content="Editar" shortcut={['E']}><IconButton icon={Pencil} label="Editar" variant="secondary" /></Tooltip>
           <Tooltip content="Duplicar" shortcut={['Ctrl', 'D']}><IconButton icon={Copy} label="Duplicar" variant="secondary" /></Tooltip>
           <Tooltip content="Imprimir etiqueta"><IconButton icon={Printer} label="Imprimir etiqueta" variant="secondary" /></Tooltip>
-          <Tooltip content="Excluir"><IconButton icon={Trash2} label="Excluir" variant="danger-ghost" /></Tooltip>
+          <Tooltip content="Excluir"><IconButton icon={Trash2} label="Excluir" variant="danger" /></Tooltip>
         </Specimen>
       </SubSection>
 
       <SubSection title="Sobreposições">
         <Specimen
-          title="DropdownMenu e Popover"
-          composedOf={['Radix DropdownMenu', 'Radix Popover']}
-          description="Menu de ações (setas, digitação e Esc) e painel livre ancorado ao gatilho. Ambos escalam a partir do gatilho, não do centro."
+          title="DropdownMenu e ThemeToggle"
+          composedOf={['Radix DropdownMenu']}
+          description="Menu de ações (setas, digitação e Esc), que escala a partir do gatilho e não do centro. O ThemeToggle é um menu pronto para trocar o tema."
           code={`<DropdownMenu>
   <DropdownMenuTrigger asChild><IconButton icon={MoreHorizontal} label="Mais ações" /></DropdownMenuTrigger>
   <DropdownMenuContent>
@@ -332,83 +313,47 @@ toast('Produto excluído', { action: { label: 'Desfazer', onClick: undo } })`}
               <DropdownMenuItem icon={Copy} shortcut={['Ctrl', 'D']}>Duplicar</DropdownMenuItem>
               <DropdownMenuItem icon={Printer}>Imprimir etiqueta</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuCheckboxItem defaultChecked>Exibir no catálogo</DropdownMenuCheckboxItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem icon={Trash2} destructive>Excluir</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Popover>
-            <PopoverTrigger asChild><Button variant="secondary">Dica fiscal</Button></PopoverTrigger>
-            <PopoverContent>
-              <div className="grid gap-1.5">
-                <Text weight="semibold">NCM e CEST</Text>
-                <Text variant="small" tone="muted">O CEST é obrigatório quando o NCM está sujeito à substituição tributária de ICMS.</Text>
-              </div>
-            </PopoverContent>
-          </Popover>
           <ThemeToggle />
         </Specimen>
         <Specimen
-          title="Dialog e Sheet"
+          title="Dialog"
           composedOf={['Radix Dialog']}
-          description="Dialog para decisões e formulários curtos (foco preso, Esc fecha, origem no centro). Sheet para filtros, detalhes e menu no celular, entrando por um dos lados com a curva de gaveta."
+          description="Decisões e formulários curtos: foco preso, Esc fecha, a animação parte do centro. Para confirmar uma ação use o ConfirmDialog (organismos)."
           code={`<Dialog>
   <DialogTrigger asChild><Button>Abrir</Button></DialogTrigger>
   <DialogContent title="Duplicar produto" description="…" footer={<>…botões…</>}>
     …conteúdo…
   </DialogContent>
-</Dialog>
-
-<Sheet><SheetTrigger asChild>…</SheetTrigger>
-  <SheetContent title="Filtros" side="right">…</SheetContent>
-</Sheet>`}
+</Dialog>`}
         >
           <DialogDemo />
-          <Sheet>
-            <SheetTrigger asChild><Button variant="secondary">Gaveta lateral</Button></SheetTrigger>
-            <SheetContent title="Detalhes do produto" description="Visualização rápida sem sair da lista." footer={<Button>Abrir cadastro</Button>}>
-              <div className="grid gap-3 p-4"><Text>Parafuso sextavado M8</Text><Badge tone="success">Ativo</Badge></div>
-            </SheetContent>
-          </Sheet>
-          <Sheet>
-            <SheetTrigger asChild><Button variant="secondary">Gaveta inferior</Button></SheetTrigger>
-            <SheetContent title="Filtros" side="bottom" footer={<Button className="w-full">Ver resultados</Button>}>
-              <div className="grid gap-4 p-4"><FormField label="Departamento">{(c) => <Input {...c} />}</FormField></div>
-            </SheetContent>
-          </Sheet>
         </Specimen>
       </SubSection>
 
       <SubSection title="Navegação e organização">
-        <Specimen title="Tabs, SegmentedControl e Accordion" composedOf={['Radix Tabs', 'Radix ToggleGroup', 'Radix Accordion']} description="Tabs trocam de painel; SegmentedControl troca o modo de visualização; Accordion esconde seções longas (ex.: dados fiscais avançados)." code={`<Tabs defaultValue="dados"><TabsList><TabsTrigger value="dados">Dados</TabsTrigger>…</TabsList><TabsContent value="dados">…</TabsContent></Tabs>
-<SegmentedControl aria-label="Visualização" value={v} onValueChange={setV} options={[…]} />
-<Accordion type="single" collapsible><AccordionItem value="a"><AccordionTrigger>…</AccordionTrigger><AccordionContent>…</AccordionContent></AccordionItem></Accordion>`} previewClassName="!grid gap-6 lg:grid-cols-2">
+        <Specimen title="Tabs e SegmentedControl" composedOf={['Radix Tabs', 'Radix ToggleGroup']} description="Tabs trocam de painel (a página do produto usa uma aba por tipo de informação); SegmentedControl troca o modo de visualização." code={`<Tabs defaultValue="dados"><TabsList><TabsTrigger value="dados">Dados</TabsTrigger>…</TabsList><TabsContent value="dados">…</TabsContent></Tabs>
+<SegmentedControl aria-label="Visualização" value={v} onValueChange={setV} options={[…]} />`} previewClassName="!grid gap-6 lg:grid-cols-2">
           <Tabs defaultValue="dados">
             <TabsList aria-label="Seções do produto">
               <TabsTrigger value="dados">Dados gerais</TabsTrigger>
               <TabsTrigger value="fiscal">Fiscal</TabsTrigger>
-              <TabsTrigger value="estoque">Estoque</TabsTrigger>
+              <TabsTrigger value="marketing">Marketing</TabsTrigger>
             </TabsList>
-            <TabsContent value="dados"><Text tone="muted">Nome, SKU, GTIN e descrição.</Text></TabsContent>
+            <TabsContent value="dados"><Text tone="muted">Título, SKU, GTIN e descrição.</Text></TabsContent>
             <TabsContent value="fiscal"><Text tone="muted">NCM, CEST, CFOP e tributação.</Text></TabsContent>
-            <TabsContent value="estoque"><Text tone="muted">Saldos, mínimo e depósitos.</Text></TabsContent>
+            <TabsContent value="marketing"><Text tone="muted">Título de venda, descrição e SEO.</Text></TabsContent>
           </Tabs>
           <div className="grid content-start gap-4">
             <SegmentedDemo />
-            <Accordion type="single" collapsible defaultValue="a">
-              <AccordionItem value="a"><AccordionTrigger headingLevel={6}>Tributação ICMS</AccordionTrigger><AccordionContent>CST/CSOSN, alíquota e redução de base de cálculo.</AccordionContent></AccordionItem>
-              <AccordionItem value="b"><AccordionTrigger headingLevel={6}>PIS e COFINS</AccordionTrigger><AccordionContent>CST e alíquotas das contribuições.</AccordionContent></AccordionItem>
-              <AccordionItem value="c"><AccordionTrigger headingLevel={6}>IPI</AccordionTrigger><AccordionContent>Enquadramento e alíquota.</AccordionContent></AccordionItem>
-            </Accordion>
           </div>
         </Specimen>
         <Specimen title="Breadcrumb e Pagination" composedOf={['Link', 'Icon', 'IconButton', 'Button']} description="No celular, a trilha vira um link de volta (“‹ Produtos”) e a paginação vira “Página X de Y”." code={`<Breadcrumb items={[{ label: 'Produtos', href: '/produtos' }, { label: 'Parafuso M8' }]} />
 <Pagination page={page} pageCount={24} onPageChange={setPage} />`} previewClassName="!grid gap-5">
           <Breadcrumb label="Exemplo de trilha" items={[{ label: 'Início', href: '#moleculas' }, { label: 'Produtos', href: '#moleculas' }, { label: 'Parafuso sextavado M8' }]} />
           <PaginationDemo />
-        </Specimen>
-        <Specimen title="Stepper" composedOf={['Icon', 'Text', 'ProgressBar']} description="Indicador de etapas — usado dentro do organismo Wizard. Etapas concluídas voltam ao clicar. No celular vira “Etapa 2 de 4” com barra de progresso (redimensione a janela)." code={`<Stepper steps={steps} current={1} onStepClick={setCurrent} />`} previewClassName="!block">
-          <StepperDemo />
         </Specimen>
       </SubSection>
 
@@ -477,18 +422,18 @@ toast('Produto excluído', { action: { label: 'Desfazer', onClick: undo } })`}
 
       <SubSection title="Contêineres">
         <Specimen title="Card e EmptyState" composedOf={['Heading', 'Text', 'Button', 'Icon']} code={`<Card>
-  <CardHeader><div><CardTitle level={6}>Estoque</CardTitle><CardDescription>Saldo por depósito.</CardDescription></div></CardHeader>
+  <CardHeader><div><CardTitle level={6}>Ferragens</CardTitle><CardDescription>Produtos do departamento.</CardDescription></div></CardHeader>
   <CardContent>…</CardContent>
-  <CardFooter><Button>Ajustar</Button></CardFooter>
+  <CardFooter><Button>Editar</Button></CardFooter>
 </Card>
 <EmptyState headingLevel={6} icon={Package} title="Nenhum produto ainda" description="…" actions={<Button>Cadastrar produto</Button>} />`} previewClassName="!grid gap-5 lg:grid-cols-2">
           <Card>
             <CardHeader>
-              <div><CardTitle level={6}>Estoque</CardTitle><CardDescription>Saldo consolidado de todos os depósitos.</CardDescription></div>
-              <Badge tone="success">Saudável</Badge>
+              <div><CardTitle level={6}>Ferragens</CardTitle><CardDescription>Produtos do departamento no catálogo.</CardDescription></div>
+              <Badge tone="success">Completo</Badge>
             </CardHeader>
-            <CardContent><Text className="text-3xl font-bold tracking-tight" tabular>1.240 un</Text></CardContent>
-            <CardFooter><Button variant="secondary" size="sm">Ver movimentações</Button><Button size="sm">Ajustar</Button></CardFooter>
+            <CardContent><Text className="text-3xl font-bold tracking-tight" tabular>5 produtos</Text></CardContent>
+            <CardFooter><Button variant="secondary" size="sm">Ver produtos</Button><Button size="sm">Editar</Button></CardFooter>
           </Card>
           <Card><EmptyState headingLevel={6} icon={Package} title="Nenhum produto ainda" description="Cadastre o primeiro produto ou importe uma planilha para começar." actions={<><Button leadingIcon={<FilePlus2 aria-hidden />}>Cadastrar produto</Button><Button variant="secondary">Importar</Button></>} /></Card>
         </Specimen>

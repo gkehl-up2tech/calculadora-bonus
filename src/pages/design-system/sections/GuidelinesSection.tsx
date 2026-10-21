@@ -36,10 +36,10 @@ const tree = `src/
 ├─ design-system/
 │  ├─ foundations/        ← mapas de tons e classes de overlays
 │  ├─ atoms/              ← Button, Input, Badge…
-│  ├─ cells/              ← IconButton, CheckboxField, InputGroup…
+│  ├─ cells/              ← IconButton, SwitchField, InputGroup…
 │  ├─ molecules/          ← FormField, Select, Dialog…
-│  ├─ organisms/          ← DataTable, AppHeader, FilterBar…
-│  └─ templates/          ← AppShell, ListPage, FormPage…
+│  ├─ organisms/          ← DataTable, AppHeader, PageHeader…
+│  └─ templates/          ← AppShell, SettingsLayout
 ├─ app/                   ← rotas, navegação, layout da aplicação
 └─ pages/                 ← páginas (regras de negócio e dados)`
 
@@ -77,7 +77,7 @@ export function GuidelinesSection() {
       <SubSection title="Como construir uma tela">
         <ol className="grid gap-3 text-sm">
           {[
-            ['Escolha o template', 'ListPage, FormPage, SettingsLayout… Se nenhum serve, converse antes de criar outro.'],
+            ['Escolha o template', 'AppShell (toda página) e SettingsLayout (abas de configuração). Se nenhum serve, converse antes de criar outro.'],
             ['Monte com o que existe', 'Procure no catálogo acima. Campos sempre dentro de FormField; ações em lote na DataTable; mensagens em Alert ou toast.'],
             ['Use só tokens', 'Cores semânticas (bg-surface, text-fg-muted), espaçamentos da escala, raios e sombras do sistema. Nada de hex, px soltos ou z-index numérico.'],
             ['Cuide dos estados', 'Vazio, carregando, erro, desabilitado e “dados extremos” (nome muito longo, zero itens, milhares de itens).'],
@@ -125,7 +125,7 @@ export function GuidelinesSection() {
       <SubSection title="Fora do escopo desta versão" description="Ficam para quando o primeiro módulo pedir — criar antes disso é adivinhar requisitos.">
         <ul className="flex flex-wrap gap-2">
           {['DatePicker e intervalo de datas', 'Upload de arquivos e galeria de imagens', 'Editor de texto rico', 'Gráficos', 'Árvore de categorias', 'Storybook e testes visuais automatizados', 'Internacionalização (hoje apenas pt-BR)'].map((x) => (
-            <li key={x}><Badge tone="neutral" appearance="outline">{x}</Badge></li>
+            <li key={x}><Badge tone="neutral">{x}</Badge></li>
           ))}
         </ul>
       </SubSection>
@@ -133,7 +133,7 @@ export function GuidelinesSection() {
       <SubSection title="Referências">
         <ul className="grid gap-3 md:grid-cols-2">
           {refs.map(([t, href, d]) => (
-            <li key={href} className="rounded-lg bg-surface p-4 shadow-card">
+            <li key={href} className="rounded-lg bg-surface p-4 shadow-border">
               <Link href={href} target="_blank" rel="noreferrer">{t}</Link>
               <Text variant="small" tone="muted" className="mt-1">{d}</Text>
             </li>

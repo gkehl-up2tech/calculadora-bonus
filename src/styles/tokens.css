@@ -26,13 +26,11 @@
   --color-brand-100: #d6e9f8;
   --color-brand-200: #b8d4ee;
   --color-brand-300: #7ab8e8;
-  --color-brand-400: #5ba3d9;
   --color-brand-500: #2b78c0;
   --color-brand-600: #2568a8;
   --color-brand-700: #1e5488;
   --color-brand-800: #1b3a6b;
   --color-brand-900: #132a50;
-  --color-brand-950: #0c1b36;
 
   /* Neutros (cinza-azulado). 400 é o mínimo de 3:1 para bordas de controles. */
   --color-neutral-50: #f7f9fc;
@@ -49,39 +47,6 @@
   --color-neutral-900: #0f172a;
   --color-neutral-950: #0b1220;
 
-  /* Feedback */
-  --color-success-50: #e8f6ee;
-  --color-success-100: #c9ebd7;
-  --color-success-300: #7bd7a3;
-  --color-success-500: #1f9d55;
-  --color-success-600: #178044;
-  --color-success-700: #126638;
-  --color-success-900: #0f2e1d;
-
-  --color-warning-50: #fff6e0;
-  --color-warning-100: #fde9b4;
-  --color-warning-300: #f5c451;
-  --color-warning-500: #e0a100;
-  --color-warning-600: #b97d00;
-  --color-warning-700: #8a5a00;
-  --color-warning-900: #3a2a06;
-
-  --color-danger-50: #feecec;
-  --color-danger-100: #fcd5d5;
-  --color-danger-300: #f28b8a;
-  --color-danger-500: #e24b4a;
-  --color-danger-600: #c93a39;
-  --color-danger-700: #a32d2d;
-  --color-danger-900: #3b1212;
-
-  --color-info-50: #e7f7fb;
-  --color-info-100: #c5ecf7;
-  --color-info-300: #6fcbe6;
-  --color-info-500: #0e8fb4;
-  --color-info-600: #0b7796;
-  --color-info-700: #095f78;
-  --color-info-900: #0a2f3a;
-
   /* Tipografia — escala 12/14/16/18/20/24/30/36 (padrão Tailwind, documentada). */
   --font-sans: 'Montserrat Variable', 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
@@ -95,14 +60,9 @@
   --radius-xl: 1rem;
   --radius-full: 9999px;
 
-  /* Sombras — o "borda" é um anel translúcido (se mistura a qualquer fundo). */
+  /* Sombras — só duas. O "borda" é um anel translúcido (se mistura a qualquer fundo); o "popover" é para o que flutua. */
   --shadow-*: initial;
   --shadow-border: 0 0 0 1px rgb(var(--shadow-ink) / 0.08);
-  --shadow-xs: 0 1px 2px rgb(var(--shadow-ink) / 0.06);
-  --shadow-sm: 0 1px 3px rgb(var(--shadow-ink) / 0.08), 0 1px 2px rgb(var(--shadow-ink) / 0.04);
-  --shadow-md: 0 4px 12px -2px rgb(var(--shadow-ink) / 0.1), 0 2px 4px -2px rgb(var(--shadow-ink) / 0.06);
-  --shadow-lg: 0 12px 28px -6px rgb(var(--shadow-ink) / 0.16), 0 4px 8px -4px rgb(var(--shadow-ink) / 0.08);
-  --shadow-card: 0 0 0 1px rgb(var(--shadow-ink) / 0.08), 0 1px 2px rgb(var(--shadow-ink) / 0.05);
   --shadow-popover: 0 0 0 1px rgb(var(--shadow-ink) / 0.08), 0 12px 28px -6px rgb(var(--shadow-ink) / 0.18),
     0 4px 8px -4px rgb(var(--shadow-ink) / 0.08);
 
@@ -110,21 +70,12 @@
   --ease-*: initial;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
   /* Animações usadas por overlays (Radix mantém o elemento até o fim da animação de saída). */
   --animate-pop-in: ds-pop-in 180ms var(--ease-out);
   --animate-pop-out: ds-pop-out 120ms var(--ease-out) forwards;
   --animate-fade-in: ds-fade-in 180ms var(--ease-out);
   --animate-fade-out: ds-fade-out 120ms var(--ease-out) forwards;
-  --animate-slide-in-right: ds-slide-in-right 280ms var(--ease-drawer);
-  --animate-slide-out-right: ds-slide-out-right 200ms var(--ease-drawer) forwards;
-  --animate-slide-in-left: ds-slide-in-left 280ms var(--ease-drawer);
-  --animate-slide-out-left: ds-slide-out-left 200ms var(--ease-drawer) forwards;
-  --animate-slide-in-bottom: ds-slide-in-bottom 280ms var(--ease-drawer);
-  --animate-slide-out-bottom: ds-slide-out-bottom 200ms var(--ease-drawer) forwards;
-  --animate-collapsible-down: ds-collapsible-down 200ms var(--ease-out);
-  --animate-collapsible-up: ds-collapsible-up 160ms var(--ease-out);
   --animate-spin: ds-spin 700ms linear infinite;
   --animate-pulse: ds-pulse 1.6s var(--ease-in-out) infinite;
 
@@ -140,14 +91,6 @@
   }
   @keyframes ds-fade-in { from { opacity: 0; } to { opacity: 1; } }
   @keyframes ds-fade-out { from { opacity: 1; } to { opacity: 0; } }
-  @keyframes ds-slide-in-right { from { opacity: 0.6; transform: translateX(var(--ds-slide, 100%)); } to { opacity: 1; transform: translateX(0); } }
-  @keyframes ds-slide-out-right { from { opacity: 1; transform: translateX(0); } to { opacity: 0.6; transform: translateX(var(--ds-slide, 100%)); } }
-  @keyframes ds-slide-in-left { from { opacity: 0.6; transform: translateX(calc(var(--ds-slide, 100%) * -1)); } to { opacity: 1; transform: translateX(0); } }
-  @keyframes ds-slide-out-left { from { opacity: 1; transform: translateX(0); } to { opacity: 0.6; transform: translateX(calc(var(--ds-slide, 100%) * -1)); } }
-  @keyframes ds-slide-in-bottom { from { opacity: 0.6; transform: translateY(var(--ds-slide, 100%)); } to { opacity: 1; transform: translateY(0); } }
-  @keyframes ds-slide-out-bottom { from { opacity: 1; transform: translateY(0); } to { opacity: 0.6; transform: translateY(var(--ds-slide, 100%)); } }
-  @keyframes ds-collapsible-down { from { height: 0; opacity: 0; } to { height: var(--radix-collapsible-content-height); opacity: 1; } }
-  @keyframes ds-collapsible-up { from { height: var(--radix-collapsible-content-height); opacity: 1; } to { height: 0; opacity: 0; } }
   @keyframes ds-spin { to { transform: rotate(360deg); } }
   @keyframes ds-pulse { 50% { opacity: 0.5; } }
 }
@@ -189,49 +132,14 @@
   --primary-soft-fg: var(--color-brand-700);
   --focus: var(--color-brand-500);
 
-  /* Ação destrutiva */
-  --danger: var(--color-danger-600);
-  --danger-hover: var(--color-danger-700);
-  --danger-active: var(--color-danger-900);
-  --on-danger: var(--color-white);
-
-  /* Tons (Badge, Alert, StatusBadge…): soft = fundo, line = borda, fg = texto sobre soft,
-     solid = fundo forte, on = texto sobre solid. */
-  --tone-neutral-soft: var(--color-neutral-100);
-  --tone-neutral-line: var(--color-neutral-300);
-  --tone-neutral-fg: var(--color-neutral-700);
-  --tone-neutral-solid: var(--color-neutral-700);
-  --tone-neutral-on: var(--color-white);
-
-  --tone-brand-soft: var(--color-brand-50);
-  --tone-brand-line: var(--color-brand-200);
-  --tone-brand-fg: var(--color-brand-700);
-  --tone-brand-solid: var(--color-brand-600);
-  --tone-brand-on: var(--color-white);
-
-  --tone-success-soft: var(--color-success-50);
-  --tone-success-line: var(--color-success-100);
-  --tone-success-fg: var(--color-success-700);
-  --tone-success-solid: var(--color-success-600);
-  --tone-success-on: var(--color-white);
-
-  --tone-warning-soft: var(--color-warning-50);
-  --tone-warning-line: var(--color-warning-100);
-  --tone-warning-fg: var(--color-warning-700);
-  --tone-warning-solid: var(--color-warning-600);
-  --tone-warning-on: var(--color-neutral-900);
-
-  --tone-danger-soft: var(--color-danger-50);
-  --tone-danger-line: var(--color-danger-100);
-  --tone-danger-fg: var(--color-danger-700);
-  --tone-danger-solid: var(--color-danger-600);
-  --tone-danger-on: var(--color-white);
-
-  --tone-info-soft: var(--color-info-50);
-  --tone-info-line: var(--color-info-100);
-  --tone-info-fg: var(--color-info-700);
-  --tone-info-solid: var(--color-info-600);
-  --tone-info-on: var(--color-white);
+  /* Status: UMA cor cada (texto, ícone, marca de gráfico e borda de erro). O fundo suave é derivado dela. */
+  --success: #16703a;
+  --warning: #855700;
+  --danger: #a82a2a;
+  --tone-success-soft: color-mix(in srgb, var(--success) 12%, var(--bg-surface));
+  --tone-warning-soft: color-mix(in srgb, var(--warning) 12%, var(--bg-surface));
+  --tone-danger-soft: color-mix(in srgb, var(--danger) 12%, var(--bg-surface));
+  --tone-danger-soft-hover: color-mix(in srgb, var(--danger) 20%, var(--bg-surface));
 
   /* Dimensões de controles (alvo ≥ 24px, WCAG 2.5.8). Em telas de toque crescem. */
   --control-sm: 2rem;
@@ -246,7 +154,6 @@
   --z-overlay: 60;
   --z-modal: 70;
   --z-popover: 80;
-  --z-toast: 90;
   --z-tooltip: 100;
 }
 
@@ -290,46 +197,9 @@
   --primary-soft-fg: var(--color-brand-200);
   --focus: var(--color-brand-300);
 
-  --danger: var(--color-danger-600);
-  --danger-hover: var(--color-danger-700);
-  --danger-active: var(--color-danger-900);
-  --on-danger: var(--color-white);
-
-  --tone-neutral-soft: var(--color-neutral-800);
-  --tone-neutral-line: var(--color-neutral-700);
-  --tone-neutral-fg: var(--color-neutral-300);
-  --tone-neutral-solid: var(--color-neutral-500);
-  --tone-neutral-on: var(--color-white);
-
-  --tone-brand-soft: var(--color-brand-900);
-  --tone-brand-line: var(--color-brand-800);
-  --tone-brand-fg: var(--color-brand-200);
-  --tone-brand-solid: var(--color-brand-600);
-  --tone-brand-on: var(--color-white);
-
-  --tone-success-soft: var(--color-success-900);
-  --tone-success-line: var(--color-success-700);
-  --tone-success-fg: var(--color-success-300);
-  --tone-success-solid: var(--color-success-600);
-  --tone-success-on: var(--color-white);
-
-  --tone-warning-soft: var(--color-warning-900);
-  --tone-warning-line: var(--color-warning-700);
-  --tone-warning-fg: var(--color-warning-300);
-  --tone-warning-solid: var(--color-warning-500);
-  --tone-warning-on: var(--color-neutral-900);
-
-  --tone-danger-soft: var(--color-danger-900);
-  --tone-danger-line: var(--color-danger-700);
-  --tone-danger-fg: var(--color-danger-300);
-  --tone-danger-solid: var(--color-danger-600);
-  --tone-danger-on: var(--color-white);
-
-  --tone-info-soft: var(--color-info-900);
-  --tone-info-line: var(--color-info-700);
-  --tone-info-fg: var(--color-info-300);
-  --tone-info-solid: var(--color-info-600);
-  --tone-info-on: var(--color-white);
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f28b8a;
 }
 
 /* Mesmos valores do bloco acima, para quando nenhum data-theme é definido (ex.: página hospedeira em "sistema").
@@ -367,46 +237,9 @@
     --primary-soft-fg: var(--color-brand-200);
     --focus: var(--color-brand-300);
   
-    --danger: var(--color-danger-600);
-    --danger-hover: var(--color-danger-700);
-    --danger-active: var(--color-danger-900);
-    --on-danger: var(--color-white);
-  
-    --tone-neutral-soft: var(--color-neutral-800);
-    --tone-neutral-line: var(--color-neutral-700);
-    --tone-neutral-fg: var(--color-neutral-300);
-    --tone-neutral-solid: var(--color-neutral-500);
-    --tone-neutral-on: var(--color-white);
-  
-    --tone-brand-soft: var(--color-brand-900);
-    --tone-brand-line: var(--color-brand-800);
-    --tone-brand-fg: var(--color-brand-200);
-    --tone-brand-solid: var(--color-brand-600);
-    --tone-brand-on: var(--color-white);
-  
-    --tone-success-soft: var(--color-success-900);
-    --tone-success-line: var(--color-success-700);
-    --tone-success-fg: var(--color-success-300);
-    --tone-success-solid: var(--color-success-600);
-    --tone-success-on: var(--color-white);
-  
-    --tone-warning-soft: var(--color-warning-900);
-    --tone-warning-line: var(--color-warning-700);
-    --tone-warning-fg: var(--color-warning-300);
-    --tone-warning-solid: var(--color-warning-500);
-    --tone-warning-on: var(--color-neutral-900);
-  
-    --tone-danger-soft: var(--color-danger-900);
-    --tone-danger-line: var(--color-danger-700);
-    --tone-danger-fg: var(--color-danger-300);
-    --tone-danger-solid: var(--color-danger-600);
-    --tone-danger-on: var(--color-white);
-  
-    --tone-info-soft: var(--color-info-900);
-    --tone-info-line: var(--color-info-700);
-    --tone-info-fg: var(--color-info-300);
-    --tone-info-solid: var(--color-info-600);
-    --tone-info-on: var(--color-white);
+    --success: #4ade80;
+    --warning: #fbbf24;
+    --danger: #f28b8a;
   
   }
 }
@@ -445,48 +278,28 @@
   --color-primary-soft-fg: var(--primary-soft-fg);
   --color-focus: var(--focus);
 
+  /* Status: text-success, text-danger, border-danger… */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --color-danger: var(--danger);
-  --color-danger-hover: var(--danger-hover);
-  --color-danger-active: var(--danger-active);
-  --color-on-danger: var(--on-danger);
 
-  /* bg-tone-success-soft, text-tone-success-fg, border-tone-success-line… */
-  --color-tone-neutral-soft: var(--tone-neutral-soft);
-  --color-tone-neutral-line: var(--tone-neutral-line);
-  --color-tone-neutral-fg: var(--tone-neutral-fg);
-  --color-tone-neutral-solid: var(--tone-neutral-solid);
-  --color-tone-neutral-on: var(--tone-neutral-on);
-  --color-tone-brand-soft: var(--tone-brand-soft);
-  --color-tone-brand-line: var(--tone-brand-line);
-  --color-tone-brand-fg: var(--tone-brand-fg);
-  --color-tone-brand-solid: var(--tone-brand-solid);
-  --color-tone-brand-on: var(--tone-brand-on);
+  /* Tons (Badge, Alert, StatusBadge, gráficos): bg-tone-X-soft = fundo, text-tone-X-fg = texto/ícone/marca. */
+  --color-tone-neutral-soft: var(--bg-subtle);
+  --color-tone-neutral-fg: var(--fg-muted);
+  --color-tone-brand-soft: var(--primary-soft);
+  --color-tone-brand-fg: var(--primary-soft-fg);
   --color-tone-success-soft: var(--tone-success-soft);
-  --color-tone-success-line: var(--tone-success-line);
-  --color-tone-success-fg: var(--tone-success-fg);
-  --color-tone-success-solid: var(--tone-success-solid);
-  --color-tone-success-on: var(--tone-success-on);
+  --color-tone-success-fg: var(--success);
   --color-tone-warning-soft: var(--tone-warning-soft);
-  --color-tone-warning-line: var(--tone-warning-line);
-  --color-tone-warning-fg: var(--tone-warning-fg);
-  --color-tone-warning-solid: var(--tone-warning-solid);
-  --color-tone-warning-on: var(--tone-warning-on);
+  --color-tone-warning-fg: var(--warning);
   --color-tone-danger-soft: var(--tone-danger-soft);
-  --color-tone-danger-line: var(--tone-danger-line);
-  --color-tone-danger-fg: var(--tone-danger-fg);
-  --color-tone-danger-solid: var(--tone-danger-solid);
-  --color-tone-danger-on: var(--tone-danger-on);
-  --color-tone-info-soft: var(--tone-info-soft);
-  --color-tone-info-line: var(--tone-info-line);
-  --color-tone-info-fg: var(--tone-info-fg);
-  --color-tone-info-solid: var(--tone-info-solid);
-  --color-tone-info-on: var(--tone-info-on);
+  --color-tone-danger-soft-hover: var(--tone-danger-soft-hover);
+  --color-tone-danger-fg: var(--danger);
 
   /* h-control-sm / h-control-md / h-control-lg (e min-h-, size-…) */
   --spacing-control-sm: var(--control-sm);
   --spacing-control-md: var(--control-md);
   --spacing-control-lg: var(--control-lg);
-  --spacing-header: var(--header-h);
 }
 
 @utility z-sticky { z-index: var(--z-sticky); }
@@ -494,5 +307,4 @@
 @utility z-overlay { z-index: var(--z-overlay); }
 @utility z-modal { z-index: var(--z-modal); }
 @utility z-popover { z-index: var(--z-popover); }
-@utility z-toast { z-index: var(--z-toast); }
 @utility z-tooltip { z-index: var(--z-tooltip); }

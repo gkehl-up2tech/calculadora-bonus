@@ -3,7 +3,7 @@ import {
   Barcode, Building2, Check, DollarSign, Download, Ellipsis, FileText, Filter, Home, Info, Package, Pencil, Percent,
   Plus, RotateCcw, Search, Settings, Tag, Trash2, Upload, Users, X, AlertCircle, ChevronDown, ArrowRight,
 } from 'lucide-react'
-import { Badge, Button, Heading, Icon, Text, Alert, TONES, toneLabel } from '@/design-system'
+import { Badge, Button, Heading, Icon, StatusBadge, Text, Alert, TONES, toneLabel, toneText } from '@/design-system'
 import { DocSection, SubSection } from '../docs/DocSection'
 import { Specimen } from '../docs/Specimen'
 import { colorScales, scaleLabels, semanticGroups } from '../docs/tokens-data'
@@ -64,12 +64,8 @@ const radii = [
   ['rounded-full', '9999px', 'Badges, avatares'],
 ] as const
 const shadows = [
-  ['shadow-border', 'Anel translúcido de 1px'],
-  ['shadow-xs', 'Elevação mínima'],
-  ['shadow-sm', 'Thumb do switch'],
-  ['shadow-card', 'Cards, tabelas'],
-  ['shadow-md', 'Elevação média'],
-  ['shadow-popover', 'Menus, diálogos'],
+  ['shadow-border', 'Anel translúcido de 1px: cards, tabelas, botão secundário, item ativo do toggle'],
+  ['shadow-popover', 'Tudo que flutua: menus, selects, diálogos, paleta de comandos'],
 ] as const
 
 const icons = [
@@ -83,7 +79,6 @@ const icons = [
 const curves = [
   { name: 'ease-out', value: 'cubic-bezier(0.23, 1, 0.32, 1)', css: 'var(--ease-out)', note: 'Padrão. Entradas, saídas e feedback: começa rápido e responde na hora.', good: true },
   { name: 'ease-in-out', value: 'cubic-bezier(0.77, 0, 0.175, 1)', css: 'var(--ease-in-out)', note: 'Elementos que já estão na tela e se movem ou se transformam.', good: true },
-  { name: 'ease-drawer', value: 'cubic-bezier(0.32, 0.72, 0, 1)', css: 'var(--ease-drawer)', note: 'Gavetas e painéis laterais (Sheet).', good: true },
   { name: 'ease-in (evite)', value: 'cubic-bezier(0.42, 0, 1, 1)', css: 'cubic-bezier(0.42, 0, 1, 1)', note: 'Começa devagar: a interface parece travada justamente quando o usuário está olhando.', good: false },
 ]
 
@@ -118,7 +113,7 @@ function EasingDemo() {
             <div className="@container relative h-8 rounded-full bg-subtle">
               <span
                 aria-hidden
-                className={cn('absolute top-1 left-1 size-6 rounded-full motion-reduce:transition-none', c.good ? 'bg-primary' : 'bg-tone-danger-solid')}
+                className={cn('absolute top-1 left-1 size-6 rounded-full motion-reduce:transition-none', c.good ? 'bg-primary' : 'bg-tone-danger-fg')}
                 style={{
                   // 100cqw = largura da trilha; só `transform` anima (compositor, sem layout).
                   transform: run ? 'translateX(calc(100cqw - 2rem))' : 'translateX(0)',
@@ -175,7 +170,7 @@ export function FoundationsSection() {
         </Specimen>
       </SubSection>
 
-      <SubSection id="cores" title="Cores primitivas" description="Escalas lidas diretamente de tokens.css. O 800 do brand é o azul-marinho do logotipo; o 500 foi ajustado em um tom para o texto branco atingir 4,5:1.">
+      <SubSection id="cores" title="Cores primitivas" description="Só duas escalas: brand e neutral, lidas diretamente de tokens.css. O 800 do brand é o azul-marinho do logotipo. As cores de sucesso, atenção e erro não têm escala: cada uma é um único token semântico (abaixo).">
         <div className="grid gap-6">
           {Object.entries(colorScales).map(([family, steps]) => (
             <div key={family} className="grid gap-2">
@@ -212,28 +207,31 @@ export function FoundationsSection() {
         </div>
       </SubSection>
 
-      <SubSection title="Tons de feedback" description="Seis tons × três aparências. Cada tom tem cinco papéis (soft, line, fg, solid, on). A cor nunca é o único sinal: sempre há texto ou ícone junto.">
+      <SubSection title="Tons de feedback" description="Cinco tons, uma única aparência (soft): fundo suave e texto/ícone na cor do tom. Sucesso, atenção e erro têm UMA cor cada (uma por tema); o fundo suave é derivado dela. A cor nunca é o único sinal: sempre há texto ou ícone junto.">
         <Specimen
-          title="Tom × aparência"
+          title="Tons"
           code={`<Badge tone="success">Ativo</Badge>
-<Badge tone="danger" appearance="solid">Bloqueado</Badge>
-<Badge tone="warning" appearance="outline">Pendente</Badge>`}
+<Badge tone="warning">Pendente</Badge>
+<Badge tone="danger">Bloqueado</Badge>
+<StatusBadge tone="success">Ativo</StatusBadge>`}
           previewClassName="!block overflow-x-auto"
         >
           <table className="w-full min-w-md border-collapse text-sm">
             <thead>
               <tr className="text-left text-xs text-fg-muted">
                 <th scope="col" className="pb-2 font-semibold">Tom</th>
-                {['soft', 'solid', 'outline'].map((a) => <th key={a} scope="col" className="pb-2 font-semibold">{a}</th>)}
+                <th scope="col" className="pb-2 font-semibold">Badge</th>
+                <th scope="col" className="pb-2 font-semibold">StatusBadge</th>
+                <th scope="col" className="pb-2 font-semibold">Texto</th>
               </tr>
             </thead>
             <tbody>
               {TONES.map((t) => (
                 <tr key={t} className="border-t border-line-subtle">
                   <th scope="row" className="py-2.5 pr-3 text-left font-medium">{toneLabel[t]}</th>
-                  {(['soft', 'solid', 'outline'] as const).map((a) => (
-                    <td key={a} className="py-2.5 pr-3"><Badge tone={t} appearance={a}>{toneLabel[t]}</Badge></td>
-                  ))}
+                  <td className="py-2.5 pr-3"><Badge tone={t}>{toneLabel[t]}</Badge></td>
+                  <td className="py-2.5 pr-3"><StatusBadge tone={t}>{toneLabel[t]}</StatusBadge></td>
+                  <td className="py-2.5 pr-3"><Text as="span" className={toneText[t]}>{toneLabel[t]}</Text></td>
                 </tr>
               ))}
             </tbody>
@@ -290,7 +288,7 @@ export function FoundationsSection() {
             <div key={n} className="grid grid-cols-[3rem_3.5rem_minmax(0,1fr)] items-center gap-3 text-sm">
               <code className="font-mono text-xs font-semibold">{n}</code>
               <span className="text-xs text-fg-muted tabular-nums">{n * 4}px</span>
-              <span aria-hidden className="h-3 rounded-xs bg-brand-400" style={{ width: `calc(var(--spacing) * ${n})` }} />
+              <span aria-hidden className="h-3 rounded-xs bg-brand-500" style={{ width: `calc(var(--spacing) * ${n})` }} />
             </div>
           ))}
         </Specimen>
@@ -311,7 +309,7 @@ export function FoundationsSection() {
         </Specimen>
       </SubSection>
 
-      <SubSection title="Raios e sombras" description="Bordas de superfícies são anéis translúcidos (shadow-border / shadow-card), que se misturam a qualquer fundo. Bordas sólidas ficam para campos de formulário, onde precisam de 3:1 de contraste.">
+      <SubSection title="Raios e sombras" description="Bordas de superfícies são anéis translúcidos (shadow-border), que se misturam a qualquer fundo. Bordas sólidas ficam para campos de formulário, onde precisam de 3:1 de contraste.">
         <Specimen title="Raios" code={`<div className="rounded-lg" />`} previewClassName="!grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
           {radii.map(([c, px, use]) => (
             <div key={c} className="grid gap-2">
@@ -320,7 +318,7 @@ export function FoundationsSection() {
             </div>
           ))}
         </Specimen>
-        <Specimen title="Sombras" code={`<div className="rounded-lg bg-surface shadow-card" />`} previewClassName="!grid grid-cols-2 gap-5 bg-canvas sm:grid-cols-3">
+        <Specimen title="Sombras" code={`<div className="rounded-lg bg-surface shadow-border" />`} previewClassName="!grid grid-cols-2 gap-5 bg-canvas sm:grid-cols-3">
           {shadows.map(([c, use]) => (
             <div key={c} className="grid gap-2">
               <div className={cn('h-16 rounded-lg bg-surface', c)} />
@@ -331,7 +329,7 @@ export function FoundationsSection() {
       </SubSection>
 
       <SubSection id="movimento" title="Movimento" description="Movimento serve a um propósito: dar feedback, manter a continuidade espacial ou evitar mudanças bruscas. O que o usuário vê dezenas de vezes por dia não anima.">
-        <Specimen title="Curvas de easing" description="As curvas nativas do CSS são fracas. Usamos três curvas customizadas e banimos ease-in em interface.">
+        <Specimen title="Curvas de easing" description="As curvas nativas do CSS são fracas. Usamos duas curvas customizadas e banimos ease-in em interface.">
           <EasingDemo />
         </Specimen>
         <Specimen
@@ -347,13 +345,13 @@ className="transition-[background-color,transform] duration-150 ease-out active:
                 <tr><td>Feedback de botão (:active)</td><td className="tabular-nums">100–160 ms</td><td className="text-fg-muted">scale(0.97)</td></tr>
                 <tr><td>Tooltip</td><td className="tabular-nums">125–180 ms</td><td className="text-fg-muted">Vizinhos abrem na hora, sem animar</td></tr>
                 <tr><td>Menu, select, popover</td><td className="tabular-nums">150–200 ms</td><td className="text-fg-muted">Escala a partir do gatilho (nunca de 0)</td></tr>
-                <tr><td>Diálogo, gaveta</td><td className="tabular-nums">200–300 ms</td><td className="text-fg-muted">Saída mais rápida que a entrada</td></tr>
+                <tr><td>Diálogo</td><td className="tabular-nums">200–300 ms</td><td className="text-fg-muted">Saída mais rápida que a entrada</td></tr>
                 <tr><td>Paleta de comandos, atalhos</td><td className="tabular-nums">0 ms</td><td className="text-fg-muted">Usada por teclado, dezenas de vezes ao dia</td></tr>
               </tbody>
             </table>
           </div>
           <Alert tone="neutral" title="Reduzir movimento">
-            Com <code className="font-mono text-[0.8125rem]">prefers-reduced-motion</code>, escalas e deslocamentos desaparecem e ficam só as mudanças de opacidade e cor. Isso é feito nas variáveis <code className="font-mono text-[0.8125rem]">--ds-pop-from</code> e <code className="font-mono text-[0.8125rem]">--ds-slide</code>, sem código por componente.
+            Com <code className="font-mono text-[0.8125rem]">prefers-reduced-motion</code>, escalas e deslocamentos desaparecem e ficam só as mudanças de opacidade e cor. Isso é feito na variável <code className="font-mono text-[0.8125rem]">--ds-pop-from</code>, sem código por componente.
           </Alert>
         </Specimen>
       </SubSection>
@@ -387,7 +385,7 @@ className="transition-[background-color,transform] duration-150 ease-out active:
       <SubSection title="Camadas e breakpoints" description="Empilhamento e pontos de quebra seguem escalas fixas — nunca use z-index ou larguras soltas.">
         <Specimen title="Camadas (z-index)" code={`<div className="z-popover" />`} previewClassName="!grid sm:grid-cols-2">
           <ul className="grid gap-1.5 text-sm">
-            {[['z-sticky', 20, 'Cabeçalho de tabela, barra de ações'], ['z-header', 30, 'Cabeçalho da aplicação'], ['z-overlay', 60, 'Fundo escurecido'], ['z-modal', 70, 'Diálogos e gavetas'], ['z-popover', 80, 'Menus, selects'], ['z-toast', 90, 'Notificações'], ['z-tooltip', 100, 'Tooltips']].map(([n, v, d]) => (
+            {[['z-sticky', 20, 'Cabeçalho de tabela, barra de ações'], ['z-header', 30, 'Cabeçalho da aplicação'], ['z-overlay', 60, 'Fundo escurecido'], ['z-modal', 70, 'Diálogos'], ['z-popover', 80, 'Menus, selects'], ['z-tooltip', 100, 'Tooltips']].map(([n, v, d]) => (
               <li key={n} className="flex items-baseline gap-3"><code className="w-24 shrink-0 font-mono text-[0.8125rem] font-semibold">{n}</code><span className="w-8 text-fg-muted tabular-nums">{v}</span><span className="text-fg-muted">{d}</span></li>
             ))}
           </ul>

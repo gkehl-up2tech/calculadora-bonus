@@ -39,7 +39,7 @@ export function SegmentedNav({ items, linkAs, hrefProp = 'href', currentPath, la
                 className={cn(
                   'inline-flex h-control-md items-center justify-center rounded-md px-4 text-sm font-medium whitespace-nowrap text-fg-muted',
                   'transition-[background-color,color,box-shadow,transform] duration-150 ease-out hover:text-fg active:scale-[0.97]',
-                  'aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:shadow-sm',
+                  'aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg aria-[current=page]:shadow-border',
                 )}
                 {...linkProps}
               >

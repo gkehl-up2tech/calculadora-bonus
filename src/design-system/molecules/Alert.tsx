@@ -2,7 +2,7 @@ import type { ComponentProps, ReactNode } from 'react'
 import { AlertCircle, CheckCircle2, Info, TriangleAlert, X, type LucideIcon } from 'lucide-react'
 import { Icon, Text } from '../atoms'
 import { IconButton } from '../cells'
-import { toneBorder, toneSoft, toneText, type Tone } from '../foundations'
+import { toneSoft, toneText, type Tone } from '../foundations'
 import { cn } from '@/lib/cn'
 
 const defaultIcon: Record<Tone, LucideIcon> = {
@@ -11,7 +11,6 @@ const defaultIcon: Record<Tone, LucideIcon> = {
   success: CheckCircle2,
   warning: TriangleAlert,
   danger: AlertCircle,
-  info: Info,
 }
 
 export interface AlertProps extends Omit<ComponentProps<'div'>, 'title'> {
@@ -24,12 +23,12 @@ export interface AlertProps extends Omit<ComponentProps<'div'>, 'title'> {
 }
 
 /** Mensagem contextual persistente. Erros e avisos usam role="alert"; os demais, role="status". */
-export function Alert({ tone = 'info', title, icon, action, onDismiss, className, children, ...props }: AlertProps) {
+export function Alert({ tone = 'brand', title, icon, action, onDismiss, className, children, ...props }: AlertProps) {
   const urgent = tone === 'danger' || tone === 'warning'
   return (
     <div
       role={urgent ? 'alert' : 'status'}
-      className={cn('flex gap-3 rounded-lg border p-4', toneSoft[tone], toneBorder[tone], className)}
+      className={cn('flex gap-3 rounded-lg p-4', toneSoft[tone], className)}
       {...props}
     >
       <Icon icon={icon ?? defaultIcon[tone]} size="md" className={cn('mt-px', toneText[tone])} />

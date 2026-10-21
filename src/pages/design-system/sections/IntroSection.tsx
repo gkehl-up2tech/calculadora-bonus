@@ -24,15 +24,15 @@ const levels = [
   {
     key: 'cells',
     name: 'Células',
-    stripe: 'bg-brand-400',
+    stripe: 'bg-brand-500',
     what: 'Dois ou três átomos ligados por uma única relação visual. Sem estado de negócio nem comportamento próprio.',
-    examples: 'CheckboxField, IconButton, StatusBadge, InputGroup',
+    examples: 'IconButton, SwitchField, StatusBadge, InputGroup',
     imports: 'Átomos',
   },
   {
     key: 'molecules',
     name: 'Moléculas',
-    stripe: 'bg-brand-500',
+    stripe: 'bg-brand-600',
     what: 'Unidade funcional que resolve uma tarefa: tem estado, teclado, ARIA coordenada ou validação.',
     examples: 'FormField, Select, Combobox, Dialog, Pagination',
     imports: 'Átomos e células',
@@ -40,17 +40,17 @@ const levels = [
   {
     key: 'organisms',
     name: 'Organismos',
-    stripe: 'bg-brand-600',
+    stripe: 'bg-brand-700',
     what: 'Seção reconhecível da interface, que reúne várias tarefas relacionadas.',
-    examples: 'DataTable, AppHeader, FilterBar, FormSection, Wizard',
+    examples: 'DataTable, AppHeader, PageHeader, FormSection',
     imports: 'Átomos, células e moléculas',
   },
   {
     key: 'templates',
     name: 'Templates',
-    stripe: 'bg-brand-700',
+    stripe: 'bg-brand-800',
     what: 'Estrutura de página com slots. Define onde as coisas ficam, não o que dizem.',
-    examples: 'AppShell, ListPage, FormPage, SettingsLayout',
+    examples: 'AppShell, SettingsLayout',
     imports: 'Todos os níveis abaixo',
   },
 ] as const
@@ -122,7 +122,7 @@ export function IntroSection() {
         <div className="flex flex-wrap items-center gap-2" aria-label="Ordem das camadas">
           {['Tokens e lib', 'Átomos', 'Células', 'Moléculas', 'Organismos', 'Templates', 'Páginas'].map((name, i, all) => (
             <div key={name} className="flex items-center gap-2">
-              <Badge tone={i === 0 ? 'neutral' : 'brand'} appearance={i === 0 ? 'outline' : 'soft'} size="md">{name}</Badge>
+              <Badge tone={i === 0 ? 'neutral' : 'brand'} size="md">{name}</Badge>
               {i < all.length - 1 ? <Icon icon={ArrowRight} size="sm" className="text-fg-subtle" /> : null}
             </div>
           ))}
@@ -130,7 +130,7 @@ export function IntroSection() {
       </SubSection>
 
       <SubSection title="Em qual nível fica meu componente?" description="Responda na ordem. A primeira pergunta com “sim” define o nível.">
-        <div className="overflow-hidden rounded-lg bg-surface shadow-card">
+        <div className="overflow-hidden rounded-lg bg-surface shadow-border">
           <table className="w-full border-collapse text-left text-sm">
             <caption className="sr-only">Guia de decisão do nível do componente</caption>
             <thead className="bg-subtle">
@@ -153,7 +153,7 @@ export function IntroSection() {
         </div>
       </SubSection>
 
-      <Alert tone="info" title="Por que existe o nível “Células”?">
+      <Alert tone="brand" title="Por que existe o nível “Células”?">
         Na metodologia original, qualquer composição simples já é uma molécula. Na prática isso mistura coisas muito diferentes: um <em>checkbox com rótulo</em> (só layout) e um <em>Select</em> (estado, teclado, lista flutuante) não deveriam ter o mesmo peso. As células separam as composições puramente visuais das unidades com comportamento — o que deixa a pergunta “onde isso fica?” respondível. É uma extensão deliberada do Atomic Design, e os demais níveis seguem a definição de{' '}
         <Link href="https://atomicdesign.bradfrost.com/chapter-2/" target="_blank" rel="noreferrer">Brad Frost</Link>.
       </Alert>

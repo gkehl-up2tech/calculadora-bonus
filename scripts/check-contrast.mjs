@@ -38,16 +38,24 @@ if (!same) {
   process.exit(1)
 }
 
-function resolve(vars, value, depth = 0) {
+/** Resolve um valor de token para [r, g, b]: #hex, var(--x) e color-mix(in srgb, A p%, B). */
+function color(vars, value, depth = 0) {
   if (depth > 10) throw new Error(`Referência circular: ${value}`)
-  const ref = value.match(/^var\((--[\w-]+)\)$/)
-  if (ref) return resolve(vars, vars[ref[1]] ?? (() => { throw new Error(`Token ausente: ${ref[1]}`) })(), depth + 1)
-  return value
+  const v = value.trim()
+  const ref = v.match(/^var\((--[\w-]+)\)$/)
+  if (ref) return color(vars, vars[ref[1]] ?? (() => { throw new Error(`Token ausente: ${ref[1]}`) })(), depth + 1)
+  const hex = v.match(/^#([0-9a-f]{6})$/i)
+  if (hex) return [0, 2, 4].map((i) => parseInt(hex[1].slice(i, i + 2), 16))
+  const mix = v.match(/^color-mix\(in srgb,\s*(.+?)\s+(\d+(?:\.\d+)?)%\s*,\s*(.+)\)$/)
+  if (mix) {
+    const [a, b, p] = [color(vars, mix[1], depth + 1), color(vars, mix[3], depth + 1), Number(mix[2]) / 100]
+    return a.map((c, i) => c * p + b[i] * (1 - p))
+  }
+  throw new Error(`Valor de cor não suportado: ${value}`)
 }
 
-const lum = (hex) => {
-  const n = hex.replace('#', '')
-  const [r, g, b] = [0, 2, 4].map((i) => parseInt(n.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+const lum = (rgb) => {
+  const [r, g, b] = rgb.map((c) => c / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
 }
 const ratio = (a, b) => {
@@ -57,7 +65,6 @@ const ratio = (a, b) => {
 
 const TEXT = 4.5
 const UI = 3
-const tones = ['neutral', 'brand', 'success', 'warning', 'danger', 'info']
 const pairs = []
 const add = (fg, bg, min, label) => pairs.push({ fg, bg, min, label: label ?? `${fg} sobre ${bg}` })
 
@@ -68,14 +75,17 @@ for (const fg of ['--fg', '--fg-muted']) add(fg, '--bg-subtle', TEXT)
 add('--fg-subtle', '--bg-subtle', TEXT)
 add('--fg-inverse', '--bg-inverse', TEXT)
 for (const bg of ['--primary', '--primary-hover', '--primary-active']) add('--on-primary', bg, TEXT)
-for (const bg of ['--danger', '--danger-hover', '--danger-active']) add('--on-danger', bg, TEXT)
 for (const bg of ['--primary-soft', '--primary-soft-hover']) add('--primary-soft-fg', bg, TEXT)
-for (const t of tones) {
-  add(`--tone-${t}-fg`, `--tone-${t}-soft`, TEXT)
-  add(`--tone-${t}-on`, `--tone-${t}-solid`, TEXT)
-  // Barras e segmentos de gráfico usam o tom "solid": marca gráfica precisa de 3:1 contra a superfície (WCAG 1.4.11).
-  add(`--tone-${t}-solid`, '--bg-surface', UI, `marca de gráfico (${t}) sobre surface (1.4.11)`)
+// Tons: cada status tem UMA cor; ela precisa servir de texto sobre o próprio fundo suave e de marca sobre a superfície.
+for (const t of ['success', 'warning', 'danger']) {
+  add(`--${t}`, `--tone-${t}-soft`, TEXT, `${t}: texto/ícone sobre o fundo suave`)
+  add('--fg', `--tone-${t}-soft`, TEXT, `texto principal sobre o fundo suave de ${t}`)
+  add('--fg-muted', `--tone-${t}-soft`, TEXT, `texto de apoio sobre o fundo suave de ${t}`)
+  for (const bg of ['--bg-surface', '--bg-canvas']) add(`--${t}`, bg, UI, `${t}: marca de gráfico e borda de erro sobre ${bg} (1.4.11)`)
 }
+add('--danger', '--tone-danger-soft-hover', TEXT, 'danger: texto do botão sobre o fundo no hover')
+add('--fg-muted', '--bg-subtle', TEXT, 'neutral: texto sobre o fundo suave')
+add('--fg-subtle', '--bg-surface', UI, 'neutral: marca de gráfico sobre surface (1.4.11)')
 add('--line-control', '--bg-surface', UI, 'borda de controle sobre surface (1.4.11)')
 add('--line-control', '--bg-canvas', UI, 'borda de controle sobre canvas (1.4.11)')
 add('--focus', '--bg-surface', UI, 'anel de foco sobre surface (2.4.13)')
@@ -86,7 +96,7 @@ let failures = 0
 for (const [name, vars] of [['claro', light], ['escuro', dark]]) {
   console.log(`\nTema ${name}`)
   for (const p of pairs) {
-    const r = ratio(resolve(vars, vars[p.fg]), resolve(vars, vars[p.bg]))
+    const r = ratio(color(vars, vars[p.fg]), color(vars, vars[p.bg]))
     const ok = r >= p.min
     if (!ok) failures++
     if (!ok || process.argv.includes('--verbose')) console.log(`  ${ok ? '✓' : '✗'} ${r.toFixed(2).padStart(5)}:1 (mín ${p.min})  ${p.label}`)

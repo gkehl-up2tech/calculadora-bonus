@@ -44,10 +44,10 @@ export function Pagination({ page, pageCount, onPageChange, siblings = 1, label 
             <li key={p}>
               <Button
                 size="sm"
-                variant={p === page ? 'soft' : 'ghost'}
+                variant="ghost"
                 aria-current={p === page ? 'page' : undefined}
                 aria-label={`Página ${p}`}
-                className="min-w-control-sm px-2 tabular-nums"
+                className={cn('min-w-control-sm px-2 tabular-nums', p === page && 'bg-primary-soft text-primary-soft-fg hover:bg-primary-soft-hover hover:text-primary-soft-fg')}
                 onClick={() => onPageChange(p)}
               >
                 {p}

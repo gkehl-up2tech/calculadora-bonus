@@ -23,7 +23,7 @@ Sistema de cadastro de produtos (fiscal + vendas) da UP2Tech. Interface em **por
 - **Novo produto**: botão **sem ícone**, na mesma linha do toggle de navegação (à direita; slot `navActions` do `AppShell`, montado no `AppLayout`), só em Início e Produtos. Leva a `/produtos/novo`.
 - **Cabeçalho de página só com o título**: sem texto descritivo abaixo (Produtos, Início).
 - **Início** (pronta): só o dashboard (`src/pages/home`, métricas em `src/app/dashboard/metrics.ts`).
-- Gráficos: `StatCard` (um `hero` por tela), `BarList` (uma cor para categorias nominais) e `DistributionBar` (parte-do-todo com legenda). Todo valor aparece também em texto; cores de marcas gráficas vêm dos tons `solid` (validados a ≥ 3:1 por `check:contrast`).
+- Gráficos: `StatCard` (um `hero` por tela), `BarList` (uma cor para categorias nominais) e `DistributionBar` (parte-do-todo com legenda). Todo valor aparece também em texto; as marcas gráficas usam a cor do tom (`toneMark`), validada a ≥ 3:1 por `check:contrast`.
 - A busca global (`CommandPalette`) usa `searchProducts` (`src/app/products/search.ts`) sobre dados de exemplo **temporários**.
 
 ## Acessos (perfis)
@@ -39,6 +39,9 @@ Sistema de cadastro de produtos (fiscal + vendas) da UP2Tech. Interface em **por
 - Todo componente novo entra no `index.ts` da camada **e** na documentação (`src/pages/design-system/sections`), com demonstração viva e código.
 
 ## Estilo
+- **Essencial, sem variações extras.** Status tem UMA cor cada: `--success`, `--warning`, `--danger` (um valor por tema; o fundo suave é derivado com `color-mix`). Tons: `neutral | brand | success | warning | danger`, **só aparência soft** (`Badge` não tem `appearance`; nada de solid/outline, `info`, borda de tom ou escala 50–900 de status). Novo status = uma cor em `tokens.css` + um par de linhas em `tones.ts`.
+- **Só duas sombras:** `shadow-border` (cards, tabelas, itens ativos) e `shadow-popover` (o que flutua). Não crie outras.
+- `Button`: `primary`, `secondary`, `ghost` e `danger` (fundo suave na cor de erro).
 - Só **tokens semânticos** do Tailwind (`bg-surface`, `text-fg-muted`, `border-line-control`, `bg-primary`, `bg-tone-success-soft`…). Nunca cores primitivas (`bg-brand-600`), hex, tamanhos arbitrários ou `z-index` numérico (use `z-modal`, `z-popover`…).
 - Altere tokens apenas em `src/styles/tokens.css` e rode `npm run check:contrast`.
 - Compose classes com `cn()`, `className` por último. Variantes com `cva`.
@@ -48,7 +51,7 @@ Sistema de cadastro de produtos (fiscal + vendas) da UP2Tech. Interface em **por
 ## Movimento (skill emil-design-eng)
 - Só `transform` e `opacity`; ≤ 300 ms; `ease-out` (nunca `ease-in`); nada de `transition: all`; nada nasce de `scale(0)`.
 - Pressionar = `active:scale-[0.97]`. Hover sempre atrás de `hover:` do Tailwind (já gated por `(hover: hover)`).
-- Ações por teclado (paleta de comandos) não animam. Respeite `prefers-reduced-motion` (variáveis `--ds-pop-from` e `--ds-slide`).
+- Ações por teclado (paleta de comandos) não animam. Respeite `prefers-reduced-motion` (variável `--ds-pop-from`).
 
 ## Acessibilidade (WCAG 2.2 AA)
 - Foco visível, alvos ≥ 24 px (controles 40–44 px), nome acessível em todo controle, cor nunca como único sinal.

@@ -39,14 +39,14 @@ export function Specimen({ title, description, composedOf, code, children, previ
           {composedOf?.length ? (
             <div className="flex flex-wrap items-center gap-1" aria-label="Composto por">
               <Text as="span" variant="small" tone="subtle">composto por</Text>
-              {composedOf.map((c) => <Badge key={c} tone="neutral" appearance="outline" size="sm">{c}</Badge>)}
+              {composedOf.map((c) => <Badge key={c} tone="neutral" size="sm">{c}</Badge>)}
             </div>
           ) : null}
         </div>
         {description ? <Text tone="muted" className="max-w-prose text-pretty">{description}</Text> : null}
       </div>
 
-      <div className="overflow-hidden rounded-lg bg-surface shadow-card">
+      <div className="overflow-hidden rounded-lg bg-surface shadow-border">
         <div className={cn('flex flex-wrap items-center gap-3 p-5', previewClassName)}>{children}</div>
         {code ? (
           <div className="border-t border-line-subtle">

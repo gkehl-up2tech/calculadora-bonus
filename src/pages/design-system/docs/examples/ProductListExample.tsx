@@ -1,17 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { ColumnDef } from '@tanstack/react-table'
-import { Copy, Download, MoreHorizontal, Pencil, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import { Copy, Download, MoreHorizontal, Pencil, RefreshCw, Trash2 } from 'lucide-react'
 import {
-  Badge, Button, ConfirmDialog, DataTable, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator,
-  DropdownMenuTrigger, FilterBar, IconButton, ListPage, Select, StatusBadge, Text, toast, type ActiveFilter,
+  Button, ConfirmDialog, DataTable, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator,
+  DropdownMenuTrigger, IconButton, SearchField, Select, StatusBadge, Text, toast,
 } from '@/design-system'
-import { formatBRL, formatNumber } from '@/lib/format'
 import { DEPARTMENTS, PRODUCTS, STATUS_LABEL, STATUS_TONE, type Product, type ProductStatus } from '../sample-data'
 
 const ALL = 'all'
 
-/** Lista de produtos: FilterBar + DataTable (+ ListPage quando `page`). Todos os dados são ilustrativos. */
-export function ProductListExample({ page = false, caption = 'Produtos' }: { page?: boolean; caption?: string }) {
+/** Lista de produtos com busca, filtros, seleção em lote e exclusão confirmada. Todos os dados são ilustrativos. */
+export function ProductListExample({ caption = 'Produtos' }: { caption?: string }) {
   const [rows, setRows] = useState<Product[]>(PRODUCTS)
   const [search, setSearch] = useState('')
   const [department, setDepartment] = useState(ALL)
@@ -59,16 +58,6 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
       },
       { accessorKey: 'department', header: 'Departamento' },
       { accessorKey: 'ncm', header: 'NCM', cell: ({ getValue }) => <Text as="span" variant="code">{getValue<string>()}</Text> },
-      { accessorKey: 'price', header: 'Preço', meta: { align: 'right' }, cell: ({ getValue }) => formatBRL(getValue<number>()) },
-      {
-        accessorKey: 'stock',
-        header: 'Estoque',
-        meta: { align: 'right' },
-        cell: ({ getValue }) => {
-          const n = getValue<number>()
-          return n === 0 ? <Badge tone="danger" size="sm">Sem estoque</Badge> : formatNumber(n)
-        },
-      },
       {
         id: 'actions',
         enableSorting: false,
@@ -92,47 +81,8 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
     [],
   )
 
-  const activeFilters: ActiveFilter[] = [
-    ...(department !== ALL ? [{ id: 'department', label: `Departamento: ${department}` }] : []),
-    ...(status !== ALL ? [{ id: 'status', label: `Status: ${STATUS_LABEL[status as ProductStatus]}` }] : []),
-  ]
-  const clearAll = () => {
-    setSearch('')
-    setDepartment(ALL)
-    setStatus(ALL)
-  }
-
-  const filters = (
-    <FilterBar
-      search={search}
-      onSearchChange={setSearch}
-      searchPlaceholder="Buscar por nome, SKU ou NCM"
-      activeFilters={activeFilters}
-      onRemoveFilter={(id) => (id === 'department' ? setDepartment(ALL) : setStatus(ALL))}
-      onClearAll={clearAll}
-      filters={
-        <>
-          <Select
-            aria-label="Departamento"
-            className="sm:w-48"
-            value={department}
-            onValueChange={setDepartment}
-            options={[{ value: ALL, label: 'Todos os departamentos' }, ...DEPARTMENTS.map((c) => ({ value: c, label: c }))]}
-          />
-          <Select
-            aria-label="Status"
-            className="sm:w-40"
-            value={status}
-            onValueChange={setStatus}
-            options={[{ value: ALL, label: 'Todos os status' }, ...(['active', 'inactive', 'draft'] as const).map((s) => ({ value: s, label: STATUS_LABEL[s] }))]}
-          />
-        </>
-      }
-    />
-  )
-
-  const table = (
-    <>
+  return (
+    <div className="grid w-full gap-4">
       <DataTable
         caption={caption}
         data={data}
@@ -140,6 +90,27 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
         getRowId={(p) => p.id}
         selectable
         loading={loading}
+        toolbar={
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+            <div className="min-w-0 flex-1 basis-56 sm:max-w-xs">
+              <SearchField value={search} onValueChange={setSearch} aria-label="Buscar na tabela" placeholder="Título, SKU ou NCM" />
+            </div>
+            <Select
+              aria-label="Departamento"
+              className="sm:w-48"
+              value={department}
+              onValueChange={setDepartment}
+              options={[{ value: ALL, label: 'Todos os departamentos' }, ...DEPARTMENTS.map((c) => ({ value: c, label: c }))]}
+            />
+            <Select
+              aria-label="Status"
+              className="sm:w-40"
+              value={status}
+              onValueChange={setStatus}
+              options={[{ value: ALL, label: 'Todos os status' }, ...(['active', 'inactive', 'draft'] as const).map((s) => ({ value: s, label: STATUS_LABEL[s] }))]}
+            />
+          </div>
+        }
         actions={
           <>
             <Button variant="secondary" size="sm" leadingIcon={<RefreshCw aria-hidden />} onClick={() => setLoading(true)}>Atualizar</Button>
@@ -149,11 +120,12 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
         bulkActions={(selected, clear) => (
           <>
             <Button variant="secondary" size="sm" leadingIcon={<Download aria-hidden />} onClick={() => { toast.success(`${selected.length} produtos exportados`); clear() }}>Exportar</Button>
-            <Button variant="danger-ghost" size="sm" leadingIcon={<Trash2 aria-hidden />} onClick={() => setToDelete(selected)}>Excluir</Button>
+            <Button variant="danger" size="sm" leadingIcon={<Trash2 aria-hidden />} onClick={() => setToDelete(selected)}>Excluir</Button>
           </>
         )}
         onRowClick={(p) => toast.info(`Abrir ${p.title}`)}
       />
+      {rows.length < PRODUCTS.length ? <Button variant="ghost" size="sm" className="justify-self-start" onClick={() => setRows(PRODUCTS)}>Restaurar dados de exemplo</Button> : null}
       <ConfirmDialog
         open={toDelete !== null}
         onOpenChange={(o) => !o && setToDelete(null)}
@@ -168,31 +140,6 @@ export function ProductListExample({ page = false, caption = 'Produtos' }: { pag
           toast.success(ids.size > 1 ? `${ids.size} produtos excluídos` : 'Produto excluído')
         }}
       />
-    </>
-  )
-
-  if (!page) {
-    return (
-      <div className="grid w-full gap-4">
-        {filters}
-        {table}
-        {rows.length < PRODUCTS.length ? <Button variant="ghost" size="sm" className="justify-self-start" onClick={() => setRows(PRODUCTS)}>Restaurar dados de exemplo</Button> : null}
-      </div>
-    )
-  }
-
-  return (
-    <ListPage
-      header={{
-        title: 'Produtos',
-        headingLevel: 5,
-        description: 'Catálogo fiscal e comercial. Busque, filtre e edite em lote.',
-        breadcrumb: { label: 'Trilha do exemplo de lista', items: [{ label: 'Início', href: '#' }, { label: 'Produtos' }] },
-        actions: <Button leadingIcon={<Plus aria-hidden />}>Novo produto</Button>,
-      }}
-      filters={filters}
-    >
-      {table}
-    </ListPage>
+    </div>
   )
 }

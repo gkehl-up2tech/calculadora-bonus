@@ -19,7 +19,6 @@ const textVariants = cva('', {
       success: 'text-tone-success-fg',
       warning: 'text-tone-warning-fg',
       danger: 'text-tone-danger-fg',
-      info: 'text-tone-info-fg',
     },
     weight: { regular: 'font-normal', medium: 'font-medium', semibold: 'font-semibold' },
   },

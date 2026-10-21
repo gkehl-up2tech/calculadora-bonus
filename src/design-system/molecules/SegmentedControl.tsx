@@ -38,7 +38,7 @@ export function SegmentedControl<T extends string>({ value, onValueChange, optio
             'inline-flex items-center justify-center gap-1.5 rounded-md px-3 text-sm font-medium text-fg-muted',
             size === 'sm' ? 'h-7' : 'h-control-sm',
             'transition-[background-color,color,box-shadow,transform] duration-150 ease-out hover:text-fg active:scale-[0.97]',
-            'data-[state=on]:bg-surface data-[state=on]:text-fg data-[state=on]:shadow-sm',
+            'data-[state=on]:bg-surface data-[state=on]:text-fg data-[state=on]:shadow-border',
           )}
         >
           {o.label}

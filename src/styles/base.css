@@ -102,7 +102,6 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     --ds-pop-from: 1;
-    --ds-slide: 0%;
   }
   html {
     scroll-behavior: auto !important;

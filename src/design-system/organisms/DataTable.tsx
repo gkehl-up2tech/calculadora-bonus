@@ -132,7 +132,7 @@ export function DataTable<T>({
   const bulkMode = selectable && bulkActions && selected.length > 0
 
   return (
-    <div className={cn('overflow-hidden rounded-lg bg-surface shadow-card', className)}>
+    <div className={cn('overflow-hidden rounded-lg bg-surface shadow-border', className)}>
       {/* Toolbar ⇄ barra de lote: mesma altura para não deslocar a tabela. */}
       {toolbar || actions || showDensityToggle || bulkMode ? (
         <div className="flex min-h-14 flex-wrap items-center gap-2 border-b border-line-subtle px-3 py-2">

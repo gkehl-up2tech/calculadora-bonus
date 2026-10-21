@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react'
-import { toneDot, type Tone } from '../foundations'
+import { toneMark, type Tone } from '../foundations'
 import { cn } from '@/lib/cn'
 
 export interface DistributionSegment {
@@ -31,13 +31,13 @@ export function DistributionBar({ segments, format = defaultFormat, emptyText = 
         {segments
           .filter((s) => s.value > 0)
           .map((s) => (
-            <div key={s.id} className={toneDot[s.tone]} style={{ flex: `${s.value} 1 0%`, minWidth: 3 }} />
+            <div key={s.id} className={toneMark[s.tone]} style={{ flex: `${s.value} 1 0%`, minWidth: 3 }} />
           ))}
       </div>
       <ul className="grid gap-2 text-sm">
         {segments.map((s) => (
           <li key={s.id} className="flex items-center gap-2.5">
-            <span aria-hidden className={cn('size-2.5 shrink-0 rounded-xs', toneDot[s.tone])} />
+            <span aria-hidden className={cn('size-2.5 shrink-0 rounded-xs', toneMark[s.tone])} />
             <span className="min-w-0 flex-1 truncate text-fg">{s.label}</span>
             <span className="shrink-0 font-semibold text-fg tabular-nums">{format(s.value)}</span>
             <span className="w-10 shrink-0 text-right text-fg-muted tabular-nums">{Math.round((s.value / total) * 100)}%</span>

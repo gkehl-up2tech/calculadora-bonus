@@ -2,9 +2,9 @@ import type { ComponentProps } from 'react'
 import { Heading, Text } from '../atoms'
 import { cn } from '@/lib/cn'
 
-/** Superfície agrupadora. Borda é um anel translúcido (shadow-card), não uma linha sólida. */
+/** Superfície agrupadora. Borda é um anel translúcido (shadow-border), não uma linha sólida. */
 export function Card({ className, ...props }: ComponentProps<'div'>) {
-  return <div className={cn('rounded-lg bg-surface text-fg shadow-card', className)} {...props} />
+  return <div className={cn('rounded-lg bg-surface text-fg shadow-border', className)} {...props} />
 }
 
 export function CardHeader({ className, ...props }: ComponentProps<'div'>) {

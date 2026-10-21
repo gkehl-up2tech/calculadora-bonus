@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { ArrowRight, Download, Package, Plus, Trash2 } from 'lucide-react'
 import {
-  Avatar, Badge, Button, Checkbox, Divider, Heading, Icon, Input, Kbd, Label, Link, Logo, NativeSelect, ProgressBar,
-  Radio, RadioGroup, Skeleton, Spinner, Switch, Text, Textarea, Thumbnail, TONES, toneLabel, type CheckedState,
+  Avatar, Badge, Button, Checkbox, Heading, Icon, Input, Kbd, Label, Link, Logo, NativeSelect, ProgressBar,
+  Skeleton, Spinner, Switch, Text, Textarea, Thumbnail, TONES, toneLabel, type CheckedState,
 } from '@/design-system'
 import { PRODUCT_PHOTOS } from '@/app/products/photos'
 import { DocSection, SubSection } from '../docs/DocSection'
@@ -37,13 +37,11 @@ export function AtomsSection() {
       <SubSection title="Ações">
         <Specimen
           title="Button"
-          description="Seis variantes por intenção — uma ação primária por tela. Pressionar escala para 97% (feedback imediato, 150 ms). Em carregamento, a largura é preservada e o clique fica bloqueado."
+          description="Quatro variantes por intenção — uma ação primária por tela. Pressionar escala para 97% (feedback imediato, 150 ms). Em carregamento, a largura é preservada e o clique fica bloqueado."
           code={`<Button>Salvar</Button>
 <Button variant="secondary">Cancelar</Button>
-<Button variant="soft">Duplicar</Button>
 <Button variant="ghost">Ver detalhes</Button>
 <Button variant="danger">Excluir</Button>
-<Button variant="danger-ghost">Remover</Button>
 
 <Button leadingIcon={<Plus />}>Novo produto</Button>
 <Button loading>Salvando…</Button>
@@ -51,10 +49,8 @@ export function AtomsSection() {
         >
           <Button>Primário</Button>
           <Button variant="secondary">Secundário</Button>
-          <Button variant="soft">Suave</Button>
           <Button variant="ghost">Fantasma</Button>
           <Button variant="danger">Perigo</Button>
-          <Button variant="danger-ghost">Perigo suave</Button>
         </Specimen>
         <Specimen
           title="Button — tamanhos e estados"
@@ -71,12 +67,12 @@ export function AtomsSection() {
           <Button variant="secondary" trailingIcon={<ArrowRight aria-hidden />}>Continuar</Button>
           <Button loading>Salvando…</Button>
           <Button disabled>Desabilitado</Button>
-          <Button asChild variant="soft"><a href="#atomos"><Download aria-hidden />Como link</a></Button>
+          <Button asChild variant="secondary"><a href="#atomos"><Download aria-hidden />Como link</a></Button>
         </Specimen>
         <PropsTable
           of="Button"
           rows={[
-            { name: 'variant', type: "'primary' | 'secondary' | 'soft' | 'ghost' | 'danger' | 'danger-ghost'", default: "'primary'", description: 'Intenção visual da ação.' },
+            { name: 'variant', type: "'primary' | 'secondary' | 'ghost' | 'danger'", default: "'primary'", description: 'Intenção visual da ação. A danger usa o fundo suave na cor de erro.' },
             { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Altura 32/40/48 px (40/44/52 em telas de toque).' },
             { name: 'loading', type: 'boolean', default: 'false', description: 'Spinner, desabilita o clique e define aria-busy.' },
             { name: 'leadingIcon / trailingIcon', type: 'ReactNode', description: 'Ícone antes/depois do texto. Passe <Icon aria-hidden />.' },
@@ -117,20 +113,14 @@ export function AtomsSection() {
           <div className="grid max-w-xs gap-1.5"><Label htmlFor="d-sku">SKU</Label><Input id="d-sku" placeholder="UP-1000" /></div>
         </Specimen>
         <Specimen
-          title="Checkbox, Radio e Switch"
+          title="Checkbox e Switch"
           description="Alvo de toque ampliado além do tamanho visual. Checkbox tem estado indeterminado (usado em “selecionar todos”). Switch é para efeito imediato; checkbox, para enviar com o formulário."
           code={`<Checkbox id="a" /> <Label htmlFor="a">Aceito</Label>
 <Checkbox checked="indeterminate" />
-<RadioGroup defaultValue="a"><Radio value="a" /><Radio value="b" /></RadioGroup>
 <Switch aria-label="Ativo" />`}
           previewClassName="gap-x-8 gap-y-3"
         >
           <CheckboxDemo />
-          <RadioGroup defaultValue="b" className="flex gap-4" aria-label="Exemplo de radio">
-            <div className="flex items-center gap-2"><Radio value="a" id="d-r1" /><Label htmlFor="d-r1">Opção A</Label></div>
-            <div className="flex items-center gap-2"><Radio value="b" id="d-r2" /><Label htmlFor="d-r2">Opção B</Label></div>
-            <div className="flex items-center gap-2"><Radio value="c" id="d-r3" disabled /><Label htmlFor="d-r3">Desabilitada</Label></div>
-          </RadioGroup>
           <div className="flex items-center gap-2"><Switch id="d-sw1" /><Label htmlFor="d-sw1">Desligado</Label></div>
           <div className="flex items-center gap-2"><Switch id="d-sw2" defaultChecked /><Label htmlFor="d-sw2">Ligado</Label></div>
           <div className="flex items-center gap-2"><Switch id="d-sw3" disabled /><Label htmlFor="d-sw3">Desabilitado</Label></div>
@@ -140,18 +130,13 @@ export function AtomsSection() {
       <SubSection title="Indicadores">
         <Specimen
           title="Badge"
-          description="Rótulos curtos de estado ou classificação. Seis tons × três aparências. O texto sempre diz o significado."
+          description="Rótulos curtos de estado ou classificação. Cinco tons, uma aparência (soft: fundo suave e texto na cor do tom). O texto sempre diz o significado."
           code={`<Badge tone="success">Ativo</Badge>
-<Badge tone="danger" appearance="solid">Bloqueado</Badge>
-<Badge tone="info" appearance="outline" size="sm">Novo</Badge>`}
+<Badge tone="danger">Bloqueado</Badge>
+<Badge tone="brand" size="sm">Novo</Badge>`}
           previewClassName="!grid"
         >
-          {(['soft', 'solid', 'outline'] as const).map((a) => (
-            <div key={a} className="flex flex-wrap items-center gap-2">
-              <span className="w-16 text-xs text-fg-muted">{a}</span>
-              {TONES.map((t) => <Badge key={t} tone={t} appearance={a}>{toneLabel[t]}</Badge>)}
-            </div>
-          ))}
+          {TONES.map((t) => <Badge key={t} tone={t}>{toneLabel[t]}</Badge>)}
         </Specimen>
         <Specimen title="Avatar" description="Foto ou iniciais (primeira e última palavra do nome). O nome vira texto alternativo." code={`<Avatar name="Maria da Silva" size="md" />
 <Avatar name="Carlos" src="/foto.jpg" />`}>
@@ -211,23 +196,17 @@ export function AtomsSection() {
           <Text tone="muted">Gerencie o catálogo fiscal e comercial. <Link href="#atomos">Saiba mais</Link> sobre os campos obrigatórios.</Text>
           <div className="flex flex-wrap items-center gap-2"><Text as="span" variant="small" tone="muted">Atalho para buscar:</Text><Kbd>Ctrl</Kbd><Kbd>K</Kbd></div>
         </Specimen>
-        <Specimen title="Icon, Divider e Logo" code={`<Icon icon={Package} size="md" />
-<Divider />
-<Divider orientation="vertical" />
+        <Specimen title="Icon e Logo" code={`<Icon icon={Package} size="md" />
 <Logo />            // símbolo + texto
 <Logo wordmarkOnly /> // só o texto (usado no cabeçalho)
 <Logo markOnly />    // só o símbolo`} previewClassName="!grid">
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-6">
             <Icon icon={Package} size="md" />
             <Icon icon={Trash2} size="md" className="text-tone-danger-fg" />
-            <Divider orientation="vertical" className="h-6" />
             <Logo />
-            <Divider orientation="vertical" className="h-6" />
             <Logo wordmarkOnly />
-            <Divider orientation="vertical" className="h-6" />
             <Logo markOnly />
           </div>
-          <Divider />
           <Text variant="small" tone="muted">A marca é provisória: substitua o SVG em <code className="font-mono">atoms/Logo.tsx</code> pelo logotipo oficial.</Text>
         </Specimen>
       </SubSection>

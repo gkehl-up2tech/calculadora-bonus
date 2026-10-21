@@ -1,37 +1,13 @@
 import { useState } from 'react'
 import { Package, Plug, Plus, Settings } from 'lucide-react'
 import {
-  AppHeader, Button, CheckboxField, CommandPalette, ConfirmDialog, DropdownMenuItem, FormField, FormGrid, FormSection, Input, Logo,
-  PageHeader, StickyActionBar, Wizard, toast,
+  AppHeader, Button, CommandPalette, ConfirmDialog, DropdownMenuItem, FormField, FormGrid, FormSection, Input, Logo,
+  PageHeader, StickyActionBar, toast,
 } from '@/design-system'
 import { DocSection, SubSection } from '../docs/DocSection'
 import { Frame } from '../docs/Frame'
 import { Specimen } from '../docs/Specimen'
 import { ProductListExample } from '../docs/examples/ProductListExample'
-
-function WizardDemo() {
-  const [name, setName] = useState('')
-  const [fiscal, setFiscal] = useState(false)
-  return (
-    <div className="w-full">
-      <Wizard
-        steps={[
-          {
-            id: 'id', label: 'Identificação', description: 'Nome e SKU', canContinue: name.trim().length > 2,
-            content: <FormGrid><FormField label="Nome do produto" required hint="Mínimo de 3 letras para continuar.">{(c) => <Input {...c} value={name} onChange={(e) => setName(e.target.value)} />}</FormField></FormGrid>,
-          },
-          { id: 'sales', label: 'Vendas', description: 'Preço e estoque', content: <FormGrid><FormField label="Preço de venda">{(c) => <Input {...c} inputMode="decimal" placeholder="0,00" />}</FormField></FormGrid> },
-          {
-            id: 'tax', label: 'Fiscal', description: 'Confirmação', canContinue: fiscal,
-            content: <CheckboxField label="Conferi NCM, origem e tributação" description="Necessário para concluir o cadastro." checked={fiscal} onCheckedChange={(v) => setFiscal(v === true)} />,
-          },
-        ]}
-        finishLabel="Cadastrar produto"
-        onFinish={async () => { await new Promise((r) => setTimeout(r, 800)); toast.success('Produto cadastrado') }}
-      />
-    </div>
-  )
-}
 
 function ConfirmDemos() {
   const [simple, setSimple] = useState(false)
@@ -39,7 +15,7 @@ function ConfirmDemos() {
   return (
     <>
       <Button variant="secondary" onClick={() => setSimple(true)}>Confirmação simples</Button>
-      <Button variant="danger-ghost" onClick={() => setDanger(true)}>Exclusão com digitação</Button>
+      <Button variant="danger" onClick={() => setDanger(true)}>Exclusão com digitação</Button>
       <ConfirmDialog open={simple} onOpenChange={setSimple} title="Publicar alterações?" description="O produto passa a valer imediatamente nas vendas." confirmLabel="Publicar" onConfirm={() => void toast.success('Publicado')} />
       <ConfirmDialog
         open={danger} onOpenChange={setDanger} tone="danger" title="Excluir 'Parafuso sextavado M8'?"
@@ -82,11 +58,11 @@ export function OrganismsSection() {
       <SubSection title="Estrutura da aplicação">
         <Specimen
           title="AppHeader"
-          composedOf={['Logo', 'ThemeToggle', 'DropdownMenu', 'Persona']}
+          composedOf={['Logo', 'ThemeToggle', 'DropdownMenu', 'Persona', 'Badge']}
           description="Cabeçalho enxuto: marca à esquerda, botão “Buscar produtos” centralizado (abre a busca global, também com Ctrl/⌘ + K), tema e usuário à direita. Não há menu: a navegação principal é o toggle SegmentedNav acima do PageHeader de cada página. Destinos secundários (Conexões, Configurações) ficam no menu do usuário."
           code={`<AppHeader
   logo={<NavLink to="/"><Logo wordmarkOnly /></NavLink>}
-  user={{ name, email }}
+  user={{ name, email, role: 'Master' }}
   userMenu={<DropdownMenuItem icon={Plug}>Conexões</DropdownMenuItem>}
   onSearchClick={openSearch}
 />`}
@@ -104,34 +80,33 @@ export function OrganismsSection() {
   title="Produtos"
   description="Catálogo fiscal e comercial."
   breadcrumb={{ items: [{ label: 'Início', href: '/' }, { label: 'Produtos' }] }}
-  actions={<Button leadingIcon={<Plus />}>Novo produto</Button>}
+  actions={<Button variant="secondary">Importar</Button>}
 />`}
           previewClassName="!block"
         >
           <PageHeader
             title="Produtos"
             headingLevel={6}
-            description="Catálogo fiscal e comercial. Busque, filtre e edite em lote."
+            description="Texto de apoio opcional (nas páginas do sistema, o cabeçalho leva só o título)."
             breadcrumb={{ label: 'Exemplo de trilha da página', items: [{ label: 'Início', href: '#organismos' }, { label: 'Produtos' }] }}
-            actions={<><Button variant="secondary">Importar</Button><Button leadingIcon={<Plus aria-hidden />}>Novo produto</Button></>}
+            actions={<><Button variant="secondary">Importar</Button><Button>Exportar</Button></>}
           />
         </Specimen>
       </SubSection>
 
       <SubSection id="organismos-produtos" title="Listas de dados">
         <Specimen
-          title="DataTable + FilterBar"
+          title="DataTable"
           composedOf={['Checkbox', 'Badge', 'Select', 'SearchField', 'Pagination', 'DropdownMenu', 'ConfirmDialog']}
-          description="Ordenação em três estados (clique no cabeçalho), seleção com “selecionar todos” indeterminado, ações em lote, densidade, paginação, carregamento com skeleton e estado vazio. Números à direita e tabulares. No celular, os filtros vão para uma gaveta inferior e a tabela rola na horizontal."
-          code={`<FilterBar search={q} onSearchChange={setQ} filters={<Select … />} activeFilters={chips} onClearAll={clear} />
-
-<DataTable
+          description="Ordenação em três estados (clique no cabeçalho), seleção com “selecionar todos” indeterminado, ações em lote, densidade, paginação, carregamento com skeleton e estado vazio. Busca e filtros entram no slot `toolbar`. Números à direita e tabulares; no celular a tabela rola na horizontal."
+          code={`<DataTable
   caption="Produtos"
   data={data}                 // memoizado!
   columns={columns}           // ColumnDef<Product>[] (TanStack Table)
   getRowId={(p) => p.id}
+  toolbar={<SearchField … />} // busca e filtros
   selectable
-  bulkActions={(selected, clear) => <Button>Excluir</Button>}
+  bulkActions={(selected, clear) => <Button variant="danger">Excluir</Button>}
 />
 
 // meta da coluna: { align: 'right' } → número alinhado e tabular`}
@@ -171,19 +146,6 @@ export function OrganismsSection() {
             </StickyActionBar>
           </div>
         </Specimen>
-        <Specimen
-          title="Wizard"
-          composedOf={['Stepper', 'Card', 'Button']}
-          description="Cadastro guiado em etapas. Bloqueie “Continuar” com canContinue enquanto a etapa estiver incompleta; etapas concluídas podem ser revisitadas pelo Stepper."
-          code={`<Wizard
-  steps={[{ id: 'id', label: 'Identificação', canContinue: valid, content: <…/> }, …]}
-  finishLabel="Cadastrar produto"
-  onFinish={save}
-/>`}
-          previewClassName="!block"
-        >
-          <WizardDemo />
-        </Specimen>
       </SubSection>
 
       <SubSection title="Decisões e atalhos">
@@ -220,7 +182,7 @@ function AppHeaderPreview() {
     <div className="[&>header]:static">
       <AppHeader
         logo={<Logo wordmarkOnly />}
-        user={{ name: 'Usuário UP2Tech', email: 'usuario@up2tech.com.br' }}
+        user={{ name: 'Usuário UP2Tech', email: 'usuario@up2tech.com.br', role: 'Master' }}
         userMenu={
           <>
             <DropdownMenuItem icon={Plug}>Conexões</DropdownMenuItem>

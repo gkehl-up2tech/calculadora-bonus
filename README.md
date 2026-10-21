@@ -52,11 +52,11 @@ src/
 ├─ styles/base.css       reset, foco, toque, movimento reduzido
 ├─ lib/                  cn, tema, máscaras (NCM/CEST/CNPJ…), validadores (GTIN, CNPJ), formatação
 ├─ design-system/        ATOMIC DESIGN
-│  ├─ atoms/             Button, Input, Badge, Thumbnail, Checkbox…          (21)
-│  ├─ cells/             IconButton, CheckboxField, InputGroup, StatusBadge… (15)
-│  ├─ molecules/         FormField, Select, Combobox, StatCard, SegmentedNav… (28)
-│  ├─ organisms/         DataTable, AppHeader, FilterBar, FormSection…       (9)
-│  └─ templates/         AppShell, ListPage, FormPage, SettingsLayout        (4)
+│  ├─ atoms/             Button, Input, Badge, Thumbnail, Checkbox…          (19)
+│  ├─ cells/             IconButton, SwitchField, InputGroup, StatusBadge… (12)
+│  ├─ molecules/         FormField, Select, Combobox, StatCard, SegmentedNav… (24)
+│  ├─ organisms/         DataTable, AppHeader, PageHeader, FormSection…      (7)
+│  └─ templates/         AppShell, SettingsLayout                        (2)
 ├─ app/                  rotas e navegação (navigation.ts), layout, busca de produtos, métricas do dashboard
 └─ pages/                páginas (dados e regras de negócio)
 ```
@@ -69,7 +69,7 @@ src/
 
 ## Como construir uma tela
 
-1. Escolha um **template** (`ListPage`, `FormPage`, `SettingsLayout`; o `AppShell` já envolve todas as páginas).
+1. Escolha um **template** (`SettingsLayout` para abas de configuração; o `AppShell` já envolve todas as páginas).
 2. Monte com componentes existentes. Campos sempre dentro de `FormField`.
 3. Use **apenas tokens semânticos** (`bg-surface`, `text-fg-muted`, `border-line-control`…). Nada de hex, `px` soltos ou `z-index` numérico.
 4. Trate estados: vazio, carregando, erro, desabilitado e dados extremos.

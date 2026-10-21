@@ -6,7 +6,7 @@
  *   cells       → 2–3 átomos com uma única relação visual, sem lógica própria
  *   molecules   → unidades funcionais com comportamento (FormField, Select, Dialog…)
  *   organisms   → seções completas da interface (DataTable, AppHeader…)
- *   templates   → estruturas de página com slots (AppShell, ListPage…)
+ *   templates   → estruturas de página com slots (AppShell, SettingsLayout)
  *
  * Cada camada só importa das camadas abaixo (verificado pelo ESLint).
  */
