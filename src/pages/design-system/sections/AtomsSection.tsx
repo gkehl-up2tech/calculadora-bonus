@@ -167,7 +167,8 @@ export function AtomsSection() {
           description="Miniatura quadrada de foto. Sem imagem ou com falha ao carregar, mostra um ícone e o layout não quebra. Carrega sob demanda (lazy), próprio para tabelas longas. Use alt vazio quando o texto ao lado já descreve o item."
           code={`<Thumbnail src={product.photo} alt="" size="lg" />   // título ao lado: foto decorativa
 <Thumbnail src={product.photo} alt="Parafuso sextavado M8" size="xl" />
-<Thumbnail alt="Sem foto" />                         // ícone no lugar`}
+<Thumbnail alt="Sem foto" />                         // ícone no lugar
+<Thumbnail src={img.src} alt={img.alt} size="fill" />  // preenche a coluna (galeria), sempre quadrada`}
         >
           {(['sm', 'md', 'lg', 'xl'] as const).map((s, i) => (
             <div key={s} className="grid justify-items-center gap-1.5">
@@ -177,6 +178,7 @@ export function AtomsSection() {
           ))}
           <div className="grid justify-items-center gap-1.5"><Thumbnail alt="Sem foto" size="lg" /><Text variant="caption">sem foto</Text></div>
           <div className="grid justify-items-center gap-1.5"><Thumbnail src="data:image/png;base64,invalida" alt="Imagem com falha" size="lg" /><Text variant="caption">falha</Text></div>
+          <div className="grid w-28 justify-items-center gap-1.5"><Thumbnail src={PRODUCT_PHOTOS[2]} alt="" size="fill" className="rounded-lg" /><Text variant="caption">fill</Text></div>
         </Specimen>
         <Specimen
           title="Spinner, Skeleton e ProgressBar"

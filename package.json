@@ -12,7 +12,8 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "postbuild": "node scripts/postbuild.mjs",
     "check": "tsc --noEmit && eslint . && node scripts/check-contrast.mjs",
-    "build:embedded": "node scripts/build-embedded.mjs"
+    "build:embedded": "node scripts/build-embedded.mjs",
+    "docs:produto": "node --experimental-strip-types --no-warnings scripts/docs-produto.mjs"
   },
   "dependencies": {
     "@fontsource-variable/montserrat": "^5.3.0",

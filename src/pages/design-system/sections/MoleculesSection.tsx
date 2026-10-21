@@ -3,7 +3,7 @@ import { CircleCheck, Copy, FilePlus2, Info, MoreHorizontal, Package, PackageX, 
 import {
   Accordion, AccordionContent, AccordionItem, AccordionTrigger, Alert, BarList, Badge, Breadcrumb, Button, Card, CardContent,
   CardDescription, CardFooter, CardHeader, CardTitle, Combobox, CurrencyInput, Dialog, DialogClose, DialogContent, DialogTrigger,
-  DistributionBar, SegmentedNav, StatCard,
+  DistributionBar, NumberInput, SegmentedNav, SimpleTable, StatCard,
   DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
   DropdownMenuTrigger, EmptyState, FormField, IconButton, Input, MaskedInput, Pagination, Popover, PopoverContent, PopoverTrigger,
   SearchField, SegmentedControl, Select, Sheet, SheetContent, SheetTrigger, Stepper, Tabs, TabsContent, TabsList, TabsTrigger,
@@ -62,6 +62,19 @@ function CurrencyDemo() {
     <div className="grid w-full max-w-xs gap-3">
       <FormField label="Preço de venda">{(c) => <CurrencyInput {...c} value={price} onValueChange={setPrice} />}</FormField>
       <Text variant="small" tone="muted">Valor numérico: <code className="font-mono">{price === null ? 'null' : price}</code></Text>
+    </div>
+  )
+}
+
+function NumberDemo() {
+  const [weight, setWeight] = useState<number | null>(1.25)
+  const [qty, setQty] = useState<number | null>(12)
+  const [rate, setRate] = useState<number | null>(18)
+  return (
+    <div className="grid w-full gap-4 sm:grid-cols-3">
+      <FormField label="Peso bruto" hint="Aceita vírgula ou ponto.">{(c) => <NumberInput {...c} value={weight} onValueChange={setWeight} decimals={3} unit="kg" />}</FormField>
+      <FormField label="Quantidade">{(c) => <NumberInput {...c} value={qty} onValueChange={setQty} unit="un" min={0} />}</FormField>
+      <FormField label="Alíquota do ICMS">{(c) => <NumberInput {...c} value={rate} onValueChange={setRate} decimals={2} unit="%" min={0} max={100} />}</FormField>
     </div>
   )
 }
@@ -207,8 +220,50 @@ export function MoleculesSection() {
         >
           <CurrencyDemo />
         </Specimen>
+        <Specimen
+          title="NumberInput"
+          composedOf={['InputGroup']}
+          description="Número em pt-BR com vírgula decimal e unidade fixa ao lado. Guarda o texto enquanto se digita (“1,” continua “1,”) e formata ao sair do campo. Devolve number | null, com limites min/max. Teclado numérico no celular."
+          code={`<NumberInput value={weight} onValueChange={setWeight} decimals={3} unit="kg" />   // number | null
+<NumberInput value={rate} onValueChange={setRate} decimals={2} unit="%" min={0} max={100} />`}
+        >
+          <NumberDemo />
+        </Specimen>
         <Specimen title="SearchField" composedOf={['InputGroup', 'IconButton', 'ShortcutHint']} description="Esc limpa o campo; o botão de limpar aparece quando há texto." code={`<SearchField value={q} onValueChange={setQ} shortcut={['Ctrl', 'K']} />`}>
           <SearchDemo />
+        </Specimen>
+      </SubSection>
+
+      <SubSection title="Dados">
+        <Specimen
+          title="SimpleTable"
+          description="Tabela curta e somente leitura: saldos por depósito, fornecedores, histórico. Sem ordenação nem paginação (para listas longas use DataTable). Rola na horizontal em telas estreitas; aceita linha de total e estado vazio."
+          code={`<SimpleTable
+  caption="Saldo por depósito"
+  rows={deposits}
+  getRowId={(d) => d.id}
+  columns={[
+    { key: 'n', header: 'Depósito', cell: (d) => d.name, footer: 'Total' },
+    { key: 's', header: 'Saldo', align: 'right', cell: (d) => d.balance, footer: 74 },
+  ]}
+/>`}
+          previewClassName="!block"
+        >
+          <SimpleTable
+            caption="Saldo por depósito (exemplo)"
+            rows={[
+              { id: 'd1', name: 'Depósito central', balance: 44, reserved: 5 },
+              { id: 'd2', name: 'Loja Centro', balance: 19, reserved: 2 },
+              { id: 'd3', name: 'Loja Shopping', balance: 11, reserved: 0 },
+            ]}
+            getRowId={(d) => d.id}
+            columns={[
+              { key: 'n', header: 'Depósito', cell: (d) => d.name, footer: 'Total' },
+              { key: 's', header: 'Saldo', align: 'right', cell: (d) => d.balance, footer: 74 },
+              { key: 'r', header: 'Reservado', align: 'right', cell: (d) => d.reserved, footer: 7 },
+              { key: 'a', header: 'Disponível', align: 'right', cell: (d) => d.balance - d.reserved, footer: 67 },
+            ]}
+          />
         </Specimen>
       </SubSection>
 
@@ -347,7 +402,7 @@ toast('Produto excluído', { action: { label: 'Desfazer', onClick: undo } })`}
             </Accordion>
           </div>
         </Specimen>
-        <Specimen title="Breadcrumb e Pagination" composedOf={['Link', 'Icon', 'IconButton', 'Button']} description="No celular, a trilha mostra só a página atual e a paginação vira “Página X de Y”." code={`<Breadcrumb items={[{ label: 'Produtos', href: '/produtos' }, { label: 'Parafuso M8' }]} />
+        <Specimen title="Breadcrumb e Pagination" composedOf={['Link', 'Icon', 'IconButton', 'Button']} description="No celular, a trilha vira um link de volta (“‹ Produtos”) e a paginação vira “Página X de Y”." code={`<Breadcrumb items={[{ label: 'Produtos', href: '/produtos' }, { label: 'Parafuso M8' }]} />
 <Pagination page={page} pageCount={24} onPageChange={setPage} />`} previewClassName="!grid gap-5">
           <Breadcrumb label="Exemplo de trilha" items={[{ label: 'Início', href: '#moleculas' }, { label: 'Produtos', href: '#moleculas' }, { label: 'Parafuso sextavado M8' }]} />
           <PaginationDemo />

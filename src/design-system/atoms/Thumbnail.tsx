@@ -7,7 +7,7 @@ const thumbnailVariants = cva(
   'relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-md bg-subtle text-fg-subtle shadow-border',
   {
     variants: {
-      size: { sm: 'size-8', md: 'size-10', lg: 'size-12', xl: 'size-16' },
+      size: { sm: 'size-8', md: 'size-10', lg: 'size-12', xl: 'size-16', fill: 'aspect-square w-full' },
     },
     defaultVariants: { size: 'md' },
   },
