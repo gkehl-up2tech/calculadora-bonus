@@ -4,7 +4,7 @@ import { useSession } from '@/app/access/session'
 import { fieldsOf, type SectionDef, type FieldValue, type Values } from '@/app/products/schema'
 import { FieldControl, visibleFields } from './FieldControl'
 import { renderValue } from './value'
-import type { Errors } from './validate'
+import type { Errors } from '@/app/products/validate'
 
 export interface FieldsSectionProps {
   section: SectionDef

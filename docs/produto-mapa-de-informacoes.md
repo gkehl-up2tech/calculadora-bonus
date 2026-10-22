@@ -2,7 +2,7 @@
 
 > Gerado por `npm run docs:produto` a partir de `src/app/products/schema.ts`. **Não edite à mão**: mude o esquema e gere de novo.
 
-90 campos em 8 abas. **Obrigatório** e *recomendado* ausentes viram pendência (selo na aba e alerta na página). Só obrigatório bloqueia o salvamento.
+88 campos em 8 abas. **Obrigatório** e *recomendado* ausentes viram pendência (selo na aba e alerta na página). Só obrigatório bloqueia o salvamento.
 
 Os valores fiscais de exemplo (CST, alíquotas, cClassTrib) e as listas de opções são ilustrativos e parciais: confirme nas tabelas oficiais vigentes antes de emitir documentos fiscais.
 
@@ -20,7 +20,6 @@ Como o produto é reconhecido no catálogo.
 | Título | texto | **obrigatório** | Título do catálogo. O título de venda de cada canal fica em Marketing. · até 120 caracteres |
 | Status | lista | **obrigatório** |  |
 | Tipo de produto | lista | **obrigatório** | Define se o produto tem variações ou é um kit. |
-| Condição | lista | opcional |  |
 | Marca | texto | recomendado | Exigida pela maioria dos marketplaces. · até 60 caracteres |
 | Modelo | texto | opcional | até 60 caracteres |
 | Fabricante | texto | opcional | até 80 caracteres |
@@ -71,8 +70,7 @@ Classificação e tributação usadas na emissão da nota fiscal.
 | EX TIPI | texto | opcional | até 3 caracteres |
 | NVE | texto | opcional | Nomenclatura de Valor Aduaneiro e Estatística (comércio exterior). · até 6 caracteres |
 | Origem da mercadoria | lista | **obrigatório** |  |
-| Produzido em escala relevante? | lista | opcional |  |
-| CNPJ do fabricante | CNPJ | opcional | Obrigatório quando a escala NÃO é relevante. |
+| CNPJ do fabricante | CNPJ | opcional | CNPJ de quem fabricou o produto. |
 
 ### Unidade tributável
 

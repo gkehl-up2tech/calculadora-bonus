@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { CheckCircle2, TriangleAlert } from 'lucide-react'
-import { Badge, FormSection, Icon, SimpleTable, Text, Thumbnail } from '@/design-system'
+import { Badge, Button, FormSection, Icon, SimpleTable, Text, Thumbnail } from '@/design-system'
+import { ImageManager } from './ImageManager'
 import type { ImageKind, ProductDetail, ProductImage } from '@/app/products/detail'
 import type { SectionDef } from '@/app/products/schema'
 
@@ -25,11 +26,11 @@ export function imageChecks(images: ProductImage[]) {
   ]
 }
 
-function Block({ section, editing, children }: { section: SectionDef; editing: boolean; children: ReactNode }) {
+function Block({ section, editing, editable, children }: { section: SectionDef; editing: boolean; editable?: boolean; children: ReactNode }) {
   return (
     <FormSection title={section.title} description={section.description} headingLevel={2} id={`secao-${section.id}`}>
       {children}
-      {editing ? <Text variant="small" tone="muted" className="mt-4">Esta seção é só de leitura por enquanto: a edição chega em uma próxima etapa.</Text> : null}
+      {editing && !editable ? <Text variant="small" tone="muted" className="mt-4">Esta seção é só de leitura por enquanto: a edição chega em uma próxima etapa.</Text> : null}
     </FormSection>
   )
 }
@@ -38,20 +39,29 @@ export interface CustomSectionProps {
   section: SectionDef
   detail: ProductDetail
   editing: boolean
+  /** Fotos em exibição: o rascunho durante a edição, as salvas fora dela. */
+  images: ProductImage[]
+  onImagesChange: (images: ProductImage[]) => void
+  /** Entra na edição já na aba de imagens (só quando o perfil pode editar). */
+  onAddPhotos?: () => void
 }
 
 /** Seções cujo conteúdo não são campos do esquema: tabelas e galeria. */
-export function CustomSection({ section, detail, editing }: CustomSectionProps) {
+export function CustomSection({ section, detail, editing, images, onImagesChange, onAddPhotos }: CustomSectionProps) {
   const { extras } = detail
-  const block = (children: ReactNode) => <Block section={section} editing={editing}>{children}</Block>
+  const block = (children: ReactNode, editable?: boolean) => <Block section={section} editing={editing} editable={editable}>{children}</Block>
   switch (section.id) {
     case 'galeria':
+      if (editing) return block(<ImageManager images={images} onChange={onImagesChange} detailed />, true)
       return block(
-        extras.images.length === 0 ? (
-          <Text tone="muted">Nenhuma imagem cadastrada.</Text>
+        images.length === 0 ? (
+          <div className="grid justify-items-start gap-3">
+            <Text tone="muted">Nenhuma foto cadastrada. Sem foto o produto aparece com um ícone na lista e nos canais.</Text>
+            {onAddPhotos ? <Button variant="secondary" onClick={onAddPhotos}>Adicionar fotos</Button> : null}
+          </div>
         ) : (
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {extras.images.map((img, n) => (
+            {images.map((img, n) => (
               <li key={img.id} className="grid content-start gap-1.5">
                 <Thumbnail src={img.src} alt={img.alt || `Imagem ${n + 1} do produto`} size="fill" className="rounded-lg" />
                 <div className="flex flex-wrap items-center gap-1">
@@ -67,7 +77,7 @@ export function CustomSection({ section, detail, editing }: CustomSectionProps) 
     case 'qualidade-imagens':
       return block(
         <ul className="grid gap-2.5">
-          {imageChecks(extras.images).map((c) => (
+          {imageChecks(images).map((c) => (
             <li key={c.id} className="flex items-start gap-2.5 text-sm">
               <Icon icon={c.ok ? CheckCircle2 : TriangleAlert} size="md" className={c.ok ? 'text-tone-success-fg' : 'text-tone-warning-fg'} />
               <span>

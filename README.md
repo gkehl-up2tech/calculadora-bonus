@@ -13,7 +13,7 @@ Não há menu lateral. A navegação principal é um **toggle** (Início | Produ
 | Início | `/` | Toggle de navegação (com o botão **Novo produto** à direita, na mesma linha) e dashboard de indicadores |
 | Produtos | `/produtos` | Toggle de navegação. Tabela do catálogo: foto, SKU, título, NCM, EAN e departamento; clicar numa linha abre o produto |
 | Página do produto | `/produtos/:produtoId` | **Somente** pela lista de produtos ou pela busca global (Ctrl/⌘ + K). Sem item de menu. Abas: Principal, Fiscal, Operacional (só Logística), Marketing, Imagens, Especificações, Variações e kits, Histórico (`?aba=`). Botão **Editar produto**. Mapa completo dos campos em [`docs/produto-mapa-de-informacoes.md`](docs/produto-mapa-de-informacoes.md) |
-| Novo produto | (modal) | Botão *Novo produto* da linha do toggle, em Início e Produtos, ou pela busca (Ctrl/⌘ + K). Cadastro rápido: cria um rascunho e abre a página do produto para completar |
+| Novo produto | (modal) | Botão *Novo produto* da linha do toggle, em Início e Produtos, ou pela busca (Ctrl/⌘ + K). Cadastro rápido (um produto, com fotos) ou importação de vários por CSV; sempre cria rascunhos |
 | Conexões | `/conexoes` | **Somente** pelo menu do usuário (ícone de perfil) |
 | Configurações | `/configuracoes` (abas: Geral, Design System) | **Somente** pelo menu do usuário |
 
@@ -54,7 +54,7 @@ src/
 ├─ design-system/        ATOMIC DESIGN
 │  ├─ atoms/             Button, Input, Badge, Thumbnail, Checkbox…          (19)
 │  ├─ cells/             IconButton, SwitchField, InputGroup, StatusBadge… (12)
-│  ├─ molecules/         FormField, Select, Combobox, StatCard, SegmentedNav… (24)
+│  ├─ molecules/         FormField, Select, Combobox, FileDropzone, SegmentedNav… (25)
 │  ├─ organisms/         DataTable, AppHeader, PageHeader, FormSection…      (7)
 │  └─ templates/         AppShell, SettingsLayout                        (2)
 ├─ app/                  rotas e navegação (navigation.ts), layout, busca de produtos, métricas do dashboard

@@ -140,7 +140,6 @@ export const FIELDS: FieldDef[] = [
   { id: 'title', section: 'identificacao', label: 'Título', kind: 'text', importance: 'required', maxLength: 120, wide: true, hint: 'Título do catálogo. O título de venda de cada canal fica em Marketing.' },
   { id: 'status', section: 'identificacao', label: 'Status', kind: 'select', options: 'status', importance: 'required' },
   { id: 'tipo', section: 'identificacao', label: 'Tipo de produto', kind: 'select', options: 'tipo', importance: 'required', hint: 'Define se o produto tem variações ou é um kit.' },
-  { id: 'condicao', section: 'identificacao', label: 'Condição', kind: 'select', options: 'condicao' },
   { id: 'marca', section: 'identificacao', label: 'Marca', kind: 'text', importance: 'recommended', maxLength: 60, hint: 'Exigida pela maioria dos marketplaces.' },
   { id: 'modelo', section: 'identificacao', label: 'Modelo', kind: 'text', maxLength: 60 },
   { id: 'fabricante', section: 'identificacao', label: 'Fabricante', kind: 'text', maxLength: 80 },
@@ -166,8 +165,7 @@ export const FIELDS: FieldDef[] = [
   { id: 'extipi', section: 'fiscal-class', label: 'EX TIPI', kind: 'text', maxLength: 3 },
   { id: 'nve', section: 'fiscal-class', label: 'NVE', kind: 'text', maxLength: 6, hint: 'Nomenclatura de Valor Aduaneiro e Estatística (comércio exterior).' },
   { id: 'origem', section: 'fiscal-class', label: 'Origem da mercadoria', kind: 'select', options: 'origem', importance: 'required', wide: true },
-  { id: 'indEscala', section: 'fiscal-class', label: 'Produzido em escala relevante?', kind: 'select', options: 'escala' },
-  { id: 'cnpjFab', section: 'fiscal-class', label: 'CNPJ do fabricante', kind: 'cnpj', hint: 'Obrigatório quando a escala NÃO é relevante.' },
+  { id: 'cnpjFab', section: 'fiscal-class', label: 'CNPJ do fabricante', kind: 'cnpj', hint: 'CNPJ de quem fabricou o produto.' },
   // Fiscal › Unidade tributável
   { id: 'unidadeTrib', section: 'fiscal-unid', label: 'Unidade tributável', kind: 'select', options: 'unidade' },
   { id: 'fatorTrib', section: 'fiscal-unid', label: 'Fator de conversão', kind: 'decimal', hint: 'Quantas unidades tributáveis há em 1 unidade de venda.' },

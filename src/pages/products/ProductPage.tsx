@@ -9,14 +9,14 @@ import { can, readOnlyReason } from '@/app/access/permissions'
 import { useSession } from '@/app/access/session'
 import { userName } from '@/app/access/users'
 import { routes } from '@/app/navigation'
-import { findProduct, saveProductValues, useProductDetail } from '@/app/products/detail'
+import { findProduct, saveProductValues, useProductDetail, type ProductImage } from '@/app/products/detail'
 import { STATUS_LABEL, STATUS_TONE, type Product } from '@/app/products/sample-products'
 import { TABS, pendingFields, sectionsOf, visibleTabs, type FieldValue, type TabId, type Values } from '@/app/products/schema'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 import { usePageTitle } from '@/lib/usePageTitle'
 import { CustomSection } from './product/CustomSections'
 import { FieldsSection } from './product/FieldsSection'
-import { tabOfField, validate } from './product/validate'
+import { tabOfField, validate } from '@/app/products/validate'
 
 /**
  * Página do produto — /produtos/:produtoId. Sem item de menu: o acesso é pela lista "Produtos" ou pela busca global.
@@ -41,6 +41,10 @@ function NotFound() {
   )
 }
 
+/** Mesmas fotos, na mesma ordem e com os mesmos textos e tipos? */
+const sameImages = (a: ProductImage[], b: ProductImage[]) =>
+  a.length === b.length && a.every((x, i) => x.id === b[i]!.id && x.alt === b[i]!.alt && x.kind === b[i]!.kind)
+
 const SECTION_TABS = new Map<TabId, ReturnType<typeof sectionsOf>>(TABS.map((t) => [t.id, sectionsOf(t.id)]))
 
 function ProductDetailPage({ product }: { product: Product }) {
@@ -53,6 +57,7 @@ function ProductDetailPage({ product }: { product: Product }) {
   const [editingBy, setEditingBy] = useState<string | null>(null)
   const editing = editingBy === user.id && canEdit
   const [draft, setDraft] = useState<Values>(saved)
+  const [imagesDraft, setImagesDraft] = useState<ProductImage[]>(detail.extras.images)
   const [submitted, setSubmitted] = useState(false)
   const [discardOpen, setDiscardOpen] = useState(false)
   const [focusTarget, setFocusTarget] = useState<string | null>(null)
@@ -61,7 +66,8 @@ function ProductDetailPage({ product }: { product: Product }) {
   const shown = editing ? draft : saved
   usePageTitle(String(saved.title || 'Produto'))
 
-  const dirty = editing && JSON.stringify(draft) !== JSON.stringify(saved)
+  const imagesChanged = !sameImages(imagesDraft, detail.extras.images)
+  const dirty = editing && (JSON.stringify(draft) !== JSON.stringify(saved) || imagesChanged)
   const errors = useMemo(() => (editing && submitted ? validate(draft, product.id) : {}), [editing, submitted, draft, product.id])
 
   // Abas visíveis dependem do tipo do produto (variações/kit); a aba vem da URL (?aba=).
@@ -115,6 +121,7 @@ function ProductDetailPage({ product }: { product: Product }) {
   function startEditing(tab?: TabId) {
     if (!canEdit) return
     setDraft(saved)
+    setImagesDraft(detail.extras.images)
     setSubmitted(false)
     setEditingBy(user.id)
     if (tab) setTab(tab)
@@ -124,6 +131,7 @@ function ProductDetailPage({ product }: { product: Product }) {
     setEditingBy(null)
     setSubmitted(false)
     setDraft(saved)
+    setImagesDraft(detail.extras.images)
   }
 
   function save() {
@@ -140,7 +148,7 @@ function ProductDetailPage({ product }: { product: Product }) {
       setFocusTarget(`campo-${target}`)
       return
     }
-    const changed = saveProductValues(product, draft, user)
+    const changed = saveProductValues(product, draft, user, imagesChanged ? imagesDraft : undefined)
     setEditingBy(null)
     setSubmitted(false)
     toast.success(changed ? 'Produto salvo' : 'Nada foi alterado')
@@ -240,7 +248,7 @@ function ProductDetailPage({ product }: { product: Product }) {
               if (s.id === 'variacoes-lista' && shown.tipo !== 'variacoes') return null
               if (s.id === 'kit-composicao' && shown.tipo !== 'kit') return null
               return s.custom ? (
-                <CustomSection key={s.id} section={s} detail={detail} editing={editing} />
+                <CustomSection key={s.id} section={s} detail={detail} editing={editing} images={editing ? imagesDraft : detail.extras.images} onImagesChange={setImagesDraft} onAddPhotos={canEdit ? () => startEditing('imagens') : undefined} />
               ) : (
                 <FieldsSection key={s.id} section={s} values={shown} editing={editing} errors={errors} onChange={onChange} />
               )

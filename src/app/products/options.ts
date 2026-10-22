@@ -124,8 +124,6 @@ export const CCLASSTRIB_OPTIONS: Option[] = [code('000001', 'Situações tributa
 
 export const STATUS_OPTIONS: Option[] = [o('active', 'Ativo'), o('inactive', 'Inativo'), o('draft', 'Rascunho')]
 export const TIPO_OPTIONS: Option[] = [o('simples', 'Simples'), o('variacoes', 'Com variações'), o('kit', 'Kit'), o('fabricado', 'Fabricado'), o('materia-prima', 'Matéria-prima')]
-export const CONDICAO_OPTIONS: Option[] = [o('novo', 'Novo'), o('usado', 'Usado'), o('recondicionado', 'Recondicionado')]
-export const ESCALA_OPTIONS: Option[] = [o('S', 'Sim, escala relevante'), o('N', 'Não, escala não relevante')]
 export const EMBALAGEM_OPTIONS: Option[] = [o('caixa', 'Caixa'), o('saco', 'Saco'), o('blister', 'Blister'), o('envelope', 'Envelope'), o('pallet', 'Pallet'), o('granel', 'A granel')]
 export const GARANTIA_OPTIONS: Option[] = [o('fabricante', 'Do fabricante'), o('loja', 'Da loja'), o('sem', 'Sem garantia')]
 export const VOLTAGEM_OPTIONS: Option[] = [o('127', '127 V'), o('220', '220 V'), o('bivolt', 'Bivolt'), o('bateria', 'Bateria')]
@@ -134,12 +132,10 @@ export const VOLTAGEM_OPTIONS: Option[] = [o('127', '127 V'), o('220', '220 V'),
 export const OPTION_SETS = {
   status: STATUS_OPTIONS,
   tipo: TIPO_OPTIONS,
-  condicao: CONDICAO_OPTIONS,
   unidade: UNIT_OPTIONS,
   ncm: NCM_OPTIONS,
   cfop: CFOP_OPTIONS,
   origem: ORIGEM_OPTIONS,
-  escala: ESCALA_OPTIONS,
   icmsCst: ICMS_CST_OPTIONS,
   icmsModBc: ICMS_MOD_BC_OPTIONS,
   ipiCst: IPI_CST_OPTIONS,

@@ -15,6 +15,7 @@ export interface SegmentedControlProps<T extends string> {
   options: SegmentedOption<T>[]
   size?: 'sm' | 'md'
   'aria-label': string
+  id?: string
   className?: string
 }
 
@@ -27,6 +28,7 @@ export function SegmentedControl<T extends string>({ value, onValueChange, optio
       // Clicar no item já ativo não deve desmarcar: ignoramos o valor vazio.
       onValueChange={(v) => v && onValueChange(v as T)}
       aria-label={props['aria-label']}
+      id={props.id}
       className={cn('inline-flex rounded-lg bg-subtle p-0.5', className)}
     >
       {options.map((o) => (

@@ -3,7 +3,7 @@ import { CircleCheck, Copy, FilePlus2, Info, MoreHorizontal, Package, PackageX, 
 import {
   Alert, BarList, Badge, Breadcrumb, Button, Card, CardContent,
   CardDescription, CardFooter, CardHeader, CardTitle, Combobox, CurrencyInput, Dialog, DialogClose, DialogContent, DialogTrigger,
-  DistributionBar, NumberInput, SegmentedNav, SimpleTable, StatCard,
+  DistributionBar, FileDropzone, NumberInput, SegmentedNav, SimpleTable, StatCard,
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
   DropdownMenuTrigger, EmptyState, FormField, IconButton, Input, MaskedInput, Pagination,
   SearchField, SegmentedControl, Select, Tabs, TabsContent, TabsList, TabsTrigger,
@@ -75,6 +75,27 @@ function NumberDemo() {
       <FormField label="Peso bruto" hint="Aceita vírgula ou ponto.">{(c) => <NumberInput {...c} value={weight} onValueChange={setWeight} decimals={3} unit="kg" />}</FormField>
       <FormField label="Quantidade">{(c) => <NumberInput {...c} value={qty} onValueChange={setQty} unit="un" min={0} />}</FormField>
       <FormField label="Alíquota do ICMS">{(c) => <NumberInput {...c} value={rate} onValueChange={setRate} decimals={2} unit="%" min={0} max={100} />}</FormField>
+    </div>
+  )
+}
+
+function DropzoneDemo() {
+  const [names, setNames] = useState<string[]>([])
+  const [rejected, setRejected] = useState<string[]>([])
+  return (
+    <div className="grid w-full gap-3 sm:max-w-lg">
+      <FileDropzone
+        accept={['image/jpeg', 'image/png', 'image/webp']}
+        multiple
+        maxSizeMb={8}
+        title="Arraste as fotos aqui ou clique para escolher"
+        hint="JPG, PNG ou WebP, até 8 MB cada."
+        onFiles={(files, rej) => { setNames(files.map((f) => f.name)); setRejected(rej.map((r) => `${r.file.name}: ${r.reason}`)) }}
+      />
+      <Text variant="small" tone="muted" aria-live="polite">
+        {names.length ? `Escolhidos: ${names.join(', ')}` : 'Nenhum arquivo escolhido.'}
+        {rejected.length ? ` · Recusados: ${rejected.join('; ')}` : ''}
+      </Text>
     </div>
   )
 }
@@ -209,6 +230,19 @@ export function MoleculesSection() {
 <NumberInput value={rate} onValueChange={setRate} decimals={2} unit="%" min={0} max={100} />`}
         >
           <NumberDemo />
+        </Specimen>
+        <Specimen
+          title="FileDropzone"
+          composedOf={['Icon', 'campo de arquivo']}
+          description="Escolher arquivos por clique, teclado (o campo de arquivo recebe o foco) ou arrastando. Valida tipo e tamanho e devolve os recusados com o motivo em português; quem usa decide como mostrar (fotos de produto, CSV de importação)."
+          code={`<FileDropzone
+  accept={['image/jpeg', 'image/png', '.csv']}   // MIME e/ou extensão
+  multiple maxSizeMb={8}
+  onFiles={(files, rejected) => …}   // rejected: { file, reason }[]
+/>`}
+          previewClassName="!block"
+        >
+          <DropzoneDemo />
         </Specimen>
         <Specimen title="SearchField" composedOf={['InputGroup', 'IconButton', 'ShortcutHint']} description="Esc limpa o campo; o botão de limpar aparece quando há texto." code={`<SearchField value={q} onValueChange={setQ} shortcut={['Ctrl', 'K']} />`}>
           <SearchDemo />

@@ -118,7 +118,7 @@ export function buildDetail(p: Product): ProductDetail {
 
   Object.assign(v, {
     // Principal
-    sku: p.sku, title: p.title, status: p.status, responsavel: p.owner, tipo: s.tipo ?? 'simples', condicao: 'novo',
+    sku: p.sku, title: p.title, status: p.status, responsavel: p.owner, tipo: s.tipo ?? 'simples',
     marca: s.brand, modelo: `${s.model}${p.title.includes('·') ? '-' + p.title.split('· ')[1]!.slice(0, 3).toUpperCase() : ''}`,
     fabricante: s.brand, mpn: `${s.model}`.replace(/\s+/g, '-').toUpperCase(),
     ean: p.ean, gtinCaixa: p.ean ? ean13(i + 500) : '', unidadesCaixa: s.boxQty,
@@ -127,7 +127,7 @@ export function buildDetail(p: Product): ProductDetail {
     descricaoCurta: s.curta,
     observacoes: i % 4 === 0 ? 'Conferir a embalagem no recebimento do lote.' : '',
     // Fiscal
-    ncm: p.ncm, cest: s.cest ?? '', extipi: '', nve: '', origem: s.origem ?? '0', indEscala: 'S', cnpjFab: '',
+    ncm: p.ncm, cest: s.cest ?? '', extipi: '', nve: '', origem: s.origem ?? '0', cnpjFab: '',
     unidadeTrib: s.unidade ?? 'UN', fatorTrib: 1, eanTrib: p.ean,
     cfopDentro: s.cest ? '5405' : '5102', cfopFora: s.cest ? '6404' : '6102',
     infAdicionais: i % 5 === 0 ? 'Produto sujeito às condições da legislação vigente.' : '',
@@ -214,7 +214,7 @@ const historyText = (fieldId: string, value: Values[string]) => (fieldId === 're
  * Salva os valores, registra no histórico o que mudou e devolve os campos principais ao registro da lista
  * (título, SKU, NCM, EAN, status, responsável e pendências) — assim Produtos e Início refletem a edição.
  */
-export function saveProductValues(product: Product, input: Values, user: AppUser) {
+export function saveProductValues(product: Product, input: Values, user: AppUser, images?: ProductImage[]) {
   // A interface já esconde a edição; esta checagem protege contra chamadas indevidas. A regra real é do servidor.
   if (!can(user, 'product.edit', product)) throw new Error('Sem permissão para editar este produto.')
   const current = getProductDetail(product)
@@ -225,7 +225,16 @@ export function saveProductValues(product: Product, input: Values, user: AppUser
   const entries: HistoryEntry[] = changes.slice(0, 12).map((f, n) => ({
     id: `h-${at}-${n}`, at, user: user.name, field: f.label, from: historyText(f.id, current.values[f.id]), to: historyText(f.id, values[f.id]),
   }))
-  edited.set(product.id, { values, extras: { ...current.extras, history: [...entries, ...current.extras.history] } })
+  // Fotos: a lista inteira é substituída; o histórico registra só a mudança de quantidade ou de principal.
+  const nextImages = images ? normalizeImages(images, String(values.title ?? '')) : current.extras.images
+  const [before, after] = [current.extras.images, nextImages]
+  if (before.length !== after.length || before[0]?.id !== after[0]?.id) {
+    entries.unshift({
+      id: `h-${at}-img`, at, user: user.name, field: 'Imagens',
+      from: before.length === 1 ? '1 imagem' : `${before.length} imagens`, to: after.length === 1 ? '1 imagem' : `${after.length} imagens`,
+    })
+  }
+  edited.set(product.id, { values, extras: { ...current.extras, images: nextImages, history: [...entries, ...current.extras.history] } })
 
   Object.assign(product, {
     sku: String(values.sku ?? ''),
@@ -235,6 +244,7 @@ export function saveProductValues(product: Product, input: Values, user: AppUser
     ean: String(values.ean ?? ''),
     status: values.status as Product['status'],
     owner: String(values.responsavel ?? product.owner),
+    ...(images ? { photo: nextImages[0]?.src ?? '' } : {}),
     pendencias: derivePendencias(values),
   })
   version++
@@ -248,14 +258,29 @@ export function suggestSku(): string {
   return `UP-${max + 1}`
 }
 
+/** A primeira imagem é a principal (só uma); sem texto alternativo, usa o título do produto. */
+export function normalizeImages(images: ProductImage[], title: string): ProductImage[] {
+  return images.map((img, i) => ({
+    ...img,
+    kind: i === 0 ? 'principal' : img.kind === 'principal' ? 'detalhe' : img.kind,
+    alt: img.alt.trim() || title,
+  }))
+}
+
+/** Cadastra vários produtos de uma vez (importação). Mantém a ordem do arquivo no topo do catálogo. */
+export function createProducts(list: Values[], user: AppUser): Product[] {
+  // Cada produto entra no topo: criar do último para o primeiro deixa a ordem do arquivo.
+  return [...list].reverse().map((v) => createProduct(v, user)).reverse()
+}
+
 /**
  * Cadastra um produto novo, sempre como RASCUNHO, e o coloca no topo do catálogo. O responsável é quem cria
  * (só o Master escolhe outro). As pendências saem do esquema, como nos demais produtos.
  */
-export function createProduct(input: Values, user: AppUser): Product {
+export function createProduct(input: Values, user: AppUser, photos: ProductImage[] = []): Product {
   if (!can(user, 'product.create')) throw new Error('Sem permissão para criar produtos.')
   const owner = can(user, 'product.reassign') && typeof input.responsavel === 'string' && input.responsavel ? input.responsavel : user.id
-  const values: Values = { ...emptyValues(), ...input, status: 'draft', condicao: 'novo', responsavel: owner }
+  const values: Values = { ...emptyValues(), ...input, status: 'draft', responsavel: owner }
   const n = PRODUCTS.reduce((m, p) => Math.max(m, Number(p.id.slice(1))), 0) + 1
   const product: Product = {
     id: `p${n}`,
@@ -264,7 +289,7 @@ export function createProduct(input: Values, user: AppUser): Product {
     department: String(values.departamento ?? ''),
     ncm: String(values.ncm ?? ''),
     ean: String(values.ean ?? ''),
-    photo: '',
+    photo: photos[0]?.src ?? '',
     status: 'draft',
     owner,
     pendencias: derivePendencias(values),
@@ -275,7 +300,7 @@ export function createProduct(input: Values, user: AppUser): Product {
   edited.set(product.id, {
     values,
     extras: {
-      images: [],
+      images: normalizeImages(photos, product.title),
       variations: [],
       kitItems: [],
       history: [{ id: `h-${product.id}`, at: new Date().toISOString(), user: user.name, field: 'Cadastro', from: '—', to: 'Produto criado' }],

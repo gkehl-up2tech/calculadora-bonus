@@ -1,5 +1,5 @@
-import { PRODUCTS } from '@/app/products/sample-products'
-import { DRAFT_REQUIRED, FIELDS, SECTIONS, applies, isEmpty, type TabId, type Values } from '@/app/products/schema'
+import { PRODUCTS } from './sample-products'
+import { DRAFT_REQUIRED, FIELDS, SECTIONS, applies, isEmpty, type TabId, type Values } from './schema'
 import { isValidCnpj, isValidGtin, unmask } from '@/lib/masks'
 
 export type Errors = Record<string, string>
@@ -28,7 +28,6 @@ export function validate(values: Values, productId: string): Errors {
     if (!isEmpty(values[id]) && !isValidGtin(str(values[id]))) e[id] = 'GTIN inválido: confira os dígitos (8, 12, 13 ou 14).'
   }
   if (!isEmpty(values.cnpjFab) && !isValidCnpj(str(values.cnpjFab))) e.cnpjFab = 'CNPJ inválido.'
-  if (values.indEscala === 'N' && isEmpty(values.cnpjFab)) e.cnpjFab = 'Obrigatório quando a escala não é relevante.'
 
   const gtin = str(values.ean)
   const sameGtin = gtin && !e.ean ? PRODUCTS.find((p) => p.id !== productId && p.ean === gtin) : undefined
