@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Badge, Chip } from '@/design-system'
-import { OWNERS } from '@/app/access/users'
+import { owners } from '@/app/access/users'
 import { OPTION_SETS, NCM_OPTIONS, type Option } from '@/app/products/options'
 import { DEPARTMENTS } from '@/app/products/sample-products'
 import { isEmpty, type FieldDef, type FieldValue, type Values } from '@/app/products/schema'
@@ -9,7 +9,7 @@ import { formatBRL, formatNumber } from '@/lib/format'
 /** Opções de um campo de lista (o departamento vem do catálogo). */
 export function optionsOf(field: FieldDef): Option[] {
   if (field.options === 'departamento') return DEPARTMENTS.map((d) => ({ value: d, label: d }))
-  if (field.options === 'responsavel') return OWNERS.map((u) => ({ value: u.id, label: u.name }))
+  if (field.options === 'responsavel') return owners().map((u) => ({ value: u.id, label: u.name }))
   return field.options ? [...OPTION_SETS[field.options]] : []
 }
 

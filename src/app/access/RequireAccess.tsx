@@ -21,7 +21,7 @@ function AccessDenied({ role }: { role: Role }) {
       headingLevel={1}
       icon={ShieldAlert}
       title="Você não tem acesso a esta página"
-      description={`O perfil ${ROLE_LABEL[role]} não inclui esta área. Fale com um usuário Master se precisar dela.`}
+      description={`O perfil ${ROLE_LABEL[role]} não inclui esta área. Fale com um Admin se precisar dela.`}
       actions={<Button asChild variant="secondary"><RouterLink to={routes.home}>Voltar ao Início</RouterLink></Button>}
     />
   )

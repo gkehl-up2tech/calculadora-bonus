@@ -1,4 +1,4 @@
-import { Palette, Plug, Settings, SlidersHorizontal } from 'lucide-react'
+import { Palette, Plug, Settings, ShieldCheck, SlidersHorizontal, Users } from 'lucide-react'
 import type { NavEntry } from '@/design-system'
 import type { Action } from './access/permissions'
 
@@ -10,8 +10,11 @@ export const routes = {
   home: '/',
   products: '/produtos',
   product: (id: string) => `/produtos/${id}`,
+  tax: '/tributacao',
   connections: '/conexoes',
   settings: '/configuracoes',
+  settingsUsers: '/configuracoes/usuarios',
+  settingsRoles: '/configuracoes/papeis',
   designSystem: '/configuracoes/design-system',
 } as const
 
@@ -31,5 +34,7 @@ export const userMenuItems = [
 /** Abas dentro de Configurações. */
 export const settingsItems: NavEntry[] = [
   { id: 'general', label: 'Geral', href: routes.settings, icon: SlidersHorizontal, end: true },
+  { id: 'users', label: 'Usuários', href: routes.settingsUsers, icon: Users },
+  { id: 'roles', label: 'Papéis', href: routes.settingsRoles, icon: ShieldCheck },
   { id: 'design-system', label: 'Design System', href: routes.designSystem, icon: Palette },
 ]

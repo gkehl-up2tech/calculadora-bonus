@@ -1,34 +1,130 @@
-import type { AppUser } from './users'
+import type { FieldDef } from '../products/schema'
+import { isFiscalField } from '../products/schema'
+import { ROLES, type AppUser, type Role } from './users'
 
 /**
- * Quem pode o quê:
- *
- *   Ação                              Master   Gerente de produto          Acesso comum
- *   Ver produtos e todas as abas      sim      sim                         sim
- *   Criar produto                     sim      sim                         não
- *   Editar produto                    sim      só os que são seus          não
- *   Trocar o responsável do produto   sim      não                         não
- *   Conexões e Configurações          sim      não                         não
+ * PERMISSÕES — cada papel é uma lista de permissões; a tela só pergunta `can(...)`.
+ * Papéis fixos, mas montados assim: criar papéis personalizados depois é só ganhar uma tela, sem refazer regras.
  *
  * ATENÇÃO: isto só controla a interface. A regra real precisa ser aplicada também no servidor.
  */
-export type Action = 'product.create' | 'product.edit' | 'product.reassign' | 'connections.view' | 'settings.view'
+export interface PermissionDef {
+  id: Permission
+  label: string
+  group: string
+}
 
-export function can(user: AppUser, action: Action, product?: { owner: string }): boolean {
+export type Permission =
+  | 'product.create'
+  | 'product.edit.own'
+  | 'product.edit.any'
+  | 'product.reassign'
+  | 'product.activate.own'
+  | 'product.activate.any'
+  | 'fiscal.edit.own'
+  | 'fiscal.edit.any'
+  | 'fiscal.review'
+  | 'queue.view'
+  | 'sync.retry'
+  | 'settings.view'
+  | 'connections.view'
+  | 'users.manage'
+  | 'roles.view'
+
+export const PERMISSIONS: PermissionDef[] = [
+  { id: 'product.create', label: 'Criar produtos', group: 'Produtos' },
+  { id: 'product.edit.own', label: 'Editar os produtos de que é responsável', group: 'Produtos' },
+  { id: 'product.edit.any', label: 'Editar qualquer produto', group: 'Produtos' },
+  { id: 'product.reassign', label: 'Trocar o responsável do produto', group: 'Produtos' },
+  { id: 'product.activate.own', label: 'Ativar e inativar os próprios produtos', group: 'Produtos' },
+  { id: 'product.activate.any', label: 'Ativar e inativar qualquer produto', group: 'Produtos' },
+  { id: 'fiscal.edit.own', label: 'Editar a parte fiscal dos próprios produtos', group: 'Tributação' },
+  { id: 'fiscal.edit.any', label: 'Editar a parte fiscal de qualquer produto', group: 'Tributação' },
+  { id: 'fiscal.review', label: 'Aprovar a tributação ou pedir ajuste', group: 'Tributação' },
+  { id: 'queue.view', label: 'Ver a fila da Tributação', group: 'Tributação' },
+  { id: 'sync.retry', label: 'Reenviar produtos para a API', group: 'Integração' },
+  { id: 'settings.view', label: 'Configurações e Design System', group: 'Administração' },
+  { id: 'connections.view', label: 'Conexões', group: 'Administração' },
+  { id: 'users.manage', label: 'Criar e gerir usuários', group: 'Administração' },
+  { id: 'roles.view', label: 'Ver papéis e permissões', group: 'Administração' },
+]
+
+export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
+  admin: PERMISSIONS.map((p) => p.id),
+  manager: ['product.create', 'product.edit.own', 'product.activate.own', 'fiscal.edit.own'],
+  tax: ['fiscal.edit.any', 'fiscal.review', 'queue.view'],
+  viewer: [],
+}
+
+export const hasPermission = (user: AppUser, permission: Permission) => user.active && ROLE_PERMISSIONS[user.role].includes(permission)
+
+/** O que a tela precisa saber de um produto para decidir. */
+export interface AccessProduct {
+  owner: string
+  /** Situação da tributação (no cadastro novo ainda não existe). */
+  fiscal?: 'none' | 'review' | 'adjust' | 'approved'
+}
+
+export type Action =
+  | 'product.create'
+  | 'product.edit'
+  | 'product.reassign'
+  | 'product.activate'
+  | 'fiscal.edit'
+  | 'fiscal.submit'
+  | 'fiscal.review'
+  | 'queue.view'
+  | 'sync.retry'
+  | 'connections.view'
+  | 'settings.view'
+  | 'users.manage'
+  | 'roles.view'
+
+const own = (user: AppUser, product?: AccessProduct) => product?.owner === user.id
+
+export function can(user: AppUser, action: Action, product?: AccessProduct): boolean {
+  const has = (p: Permission) => hasPermission(user, p)
   switch (action) {
     case 'product.create':
-      return user.role === 'master' || user.role === 'manager'
-    case 'product.edit':
-      return user.role === 'master' || (user.role === 'manager' && product?.owner === user.id)
     case 'product.reassign':
+    case 'fiscal.review':
+    case 'queue.view':
+    case 'sync.retry':
     case 'connections.view':
     case 'settings.view':
-      return user.role === 'master'
+    case 'users.manage':
+    case 'roles.view':
+      return has(action)
+    case 'product.edit':
+      return has('product.edit.any') || (has('product.edit.own') && own(user, product))
+    case 'product.activate':
+      return has('product.activate.any') || (has('product.activate.own') && own(user, product))
+    case 'fiscal.edit':
+      // Enquanto a Tributação analisa, o responsável não mexe no fiscal (senão o dado muda debaixo da análise).
+      return has('fiscal.edit.any') || (has('fiscal.edit.own') && own(user, product) && product?.fiscal !== 'review')
+    case 'fiscal.submit':
+      return can(user, 'product.edit', product) || (has('fiscal.edit.own') && own(user, product))
   }
 }
 
-/** Por que a edição está indisponível (para explicar na tela). Vazio quando pode editar. */
-export function readOnlyReason(user: AppUser, product: { owner: string }, ownerName: string): string {
-  if (can(user, 'product.edit', product)) return ''
-  return user.role === 'viewer' ? 'Seu acesso é só de visualização.' : `Produto de ${ownerName}: você só edita os seus.`
+/** Pode editar este campo? A parte fiscal e o resto têm donos diferentes; "Responsável" é só de quem troca responsáveis. */
+export function canEditField(user: AppUser, field: FieldDef, product: AccessProduct): boolean {
+  if (field.adminOnly) return can(user, 'product.reassign')
+  return isFiscalField(field) ? can(user, 'fiscal.edit', product) : can(user, 'product.edit', product)
 }
+
+/** Resumo de edição de um produto para este usuário. */
+export function editScope(user: AppUser, product: AccessProduct) {
+  const general = can(user, 'product.edit', product)
+  const fiscal = can(user, 'fiscal.edit', product)
+  return { general, fiscal, any: general || fiscal }
+}
+
+/** Por que a edição está indisponível (para explicar na tela). Vazio quando pode editar algo. */
+export function readOnlyReason(user: AppUser, product: AccessProduct, ownerName: string): string {
+  if (editScope(user, product).any) return ''
+  if (user.role === 'viewer') return 'Seu acesso é só de visualização.'
+  return `Produto de ${ownerName}: você só edita os seus.`
+}
+
+export const PERMISSIONS_BY_ROLE = ROLES.map((role) => ({ role, permissions: ROLE_PERMISSIONS[role] }))

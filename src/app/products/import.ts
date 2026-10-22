@@ -5,7 +5,7 @@
 import { decodeCsv, detectDelimiter, parseCsv, toCsv } from '@/lib/csv'
 import { applyMask, MASKS } from '@/lib/masks'
 import { can } from '../access/permissions'
-import { OWNERS, type AppUser } from '../access/users'
+import { owners, type AppUser } from '../access/users'
 import { ORIGEM_OPTIONS, UNIT_OPTIONS } from './options'
 import { PRODUCTS, DEPARTMENTS } from './sample-products'
 import { FIELDS, isEmpty, type Values } from './schema'
@@ -23,7 +23,7 @@ export interface ImportColumn {
   required?: boolean
   help: string
   example: [string, string]
-  masterOnly?: boolean
+  adminOnly?: boolean
 }
 
 export const IMPORT_COLUMNS: ImportColumn[] = [
@@ -37,11 +37,11 @@ export const IMPORT_COLUMNS: ImportColumn[] = [
   { key: 'ncm', header: 'ncm', label: 'NCM', help: '8 dígitos, com ou sem pontos.', example: ['6116.10.00', '8539.50.00'] },
   { key: 'origem', header: 'origem', label: 'Origem', help: 'Número de 0 a 8 (0 = Nacional).', example: ['0', '0'] },
   { key: 'descricaoCurta', header: 'descricao_curta', label: 'Descrição curta', help: 'Até 255 caracteres.', example: ['Luva de malha com banho de látex.', 'Lâmpada LED branca de 9 W.'] },
-  { key: 'responsavel', header: 'responsavel', label: 'Responsável', help: 'Nome ou e-mail de um gerente de produto. Só o Master escolhe; para os demais, é você.', example: ['', ''], masterOnly: true },
+  { key: 'responsavel', header: 'responsavel', label: 'Responsável', help: 'Nome ou e-mail de um gerente de produto. Só o Admin escolhe; para os demais, é você.', example: ['', ''], adminOnly: true },
 ]
 
 /** Colunas que o perfil pode usar. */
-export const importColumnsFor = (user: AppUser) => IMPORT_COLUMNS.filter((c) => !c.masterOnly || can(user, 'product.reassign'))
+export const importColumnsFor = (user: AppUser) => IMPORT_COLUMNS.filter((c) => !c.adminOnly || can(user, 'product.reassign'))
 
 /** Texto do modelo (CSV com ";" e BOM, que o Excel abre direto em português). */
 export function templateCsv(user: AppUser): string {
@@ -152,7 +152,7 @@ export function parseImport(buffer: ArrayBuffer, user: AppUser): ImportResult {
     values.ncm = applyMask(digits, MASKS.ncm)
 
     if (canPickOwner && raw.responsavel) {
-      const owner = OWNERS.find((u) => norm(u.name) === norm(raw.responsavel!) || norm(u.email) === norm(raw.responsavel!))
+      const owner = owners().find((u) => norm(u.name) === norm(raw.responsavel!) || norm(u.email) === norm(raw.responsavel!))
       if (!owner) errors.push(`Responsável "${raw.responsavel}" não encontrado entre os gerentes de produto.`)
       else values.responsavel = owner.id
     }

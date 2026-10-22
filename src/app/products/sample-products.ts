@@ -16,6 +16,16 @@ export const PENDENCIA_LABEL: Record<Pendencia, string> = {
   descricao: 'Sem descrição',
 }
 
+/** Situação da tributação, aprovada pela equipe de Tributação. */
+export type FiscalStatus = 'none' | 'review' | 'adjust' | 'approved'
+export const FISCAL_LABEL: Record<FiscalStatus, string> = { none: 'Não enviada', review: 'Aguardando análise', adjust: 'Ajuste pedido', approved: 'Aprovada' }
+export const FISCAL_TONE = { none: 'neutral', review: 'warning', adjust: 'danger', approved: 'success' } as const
+
+/** Situação do envio para a API. */
+export type SyncStatus = 'none' | 'pending' | 'synced' | 'error'
+export const SYNC_LABEL: Record<SyncStatus, string> = { none: 'Não enviado', pending: 'Enviando…', synced: 'Sincronizado', error: 'Erro na sincronização' }
+export const SYNC_TONE = { none: 'neutral', pending: 'warning', synced: 'success', error: 'danger' } as const
+
 export interface Product {
   id: string
   sku: string
@@ -31,6 +41,8 @@ export interface Product {
   owner: string
   /** Vazio = cadastro completo. */
   pendencias: Pendencia[]
+  fiscal: FiscalStatus
+  sync: SyncStatus
 }
 
 const bases = [
@@ -63,6 +75,9 @@ export const PRODUCTS: Product[] = Array.from({ length: 57 }, (_, i) => {
   const variant = variants[Math.floor(i / bases.length) % variants.length]!
   const status = statuses[i % statuses.length]!
   const pendencias: Pendencia[] = []
+  // Rascunhos em momentos diferentes da tributação, para exercitar a fila: a cada 4 rascunhos, 1 em análise, 1 com ajuste pedido, 2 não enviados.
+  const draftIndex = status === 'draft' ? Math.floor((i - 5) / 7) : -1
+  const fiscal: FiscalStatus = status !== 'draft' ? 'approved' : draftIndex % 4 === 0 ? 'review' : draftIndex % 4 === 1 ? 'adjust' : 'none'
   if (status === 'draft') {
     pendencias.push('fiscal')
   }
@@ -80,6 +95,9 @@ export const PRODUCTS: Product[] = Array.from({ length: 57 }, (_, i) => {
     status,
     owner: i % 2 === 0 ? 'u-marina' : 'u-rafael',
     pendencias,
+    fiscal,
+    // Ativos já foram enviados (dois com erro, para exercitar o reenvio); o resto ainda não.
+    sync: status === 'active' ? (i % 13 === 5 ? 'error' : 'synced') : 'none',
   }
 })
 

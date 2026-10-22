@@ -1,5 +1,8 @@
 import { createBrowserRouter, createMemoryRouter, RouterProvider, type RouteObject } from 'react-router'
 import { Toaster, TooltipProvider } from '@/design-system'
+import { TaxQueuePage } from '@/pages/tax/TaxQueuePage'
+import { UsersPage } from '@/pages/settings/UsersPage'
+import { RolesPage } from '@/pages/settings/RolesPage'
 import { ConnectionsPage } from '@/pages/ConnectionsPage'
 import { HomePage } from '@/pages/home/HomePage'
 import { ProductPage } from '@/pages/products/ProductPage'
@@ -19,12 +22,15 @@ const routes: RouteObject[] = [
       { path: 'produtos', element: <ProductsPage /> },
       // Sem item de menu: só pela lista de produtos, pela busca global ou ao criar um produto.
       { path: 'produtos/:produtoId', element: <ProductPage /> },
+      { path: 'tributacao', element: <RequireAccess action="queue.view"><TaxQueuePage /></RequireAccess> },
       { path: 'conexoes', element: <RequireAccess action="connections.view"><ConnectionsPage /></RequireAccess> },
       {
         path: 'configuracoes',
         element: <RequireAccess action="settings.view"><SettingsRoute /></RequireAccess>,
         children: [
           { index: true, element: <SettingsGeneralPage /> },
+          { path: 'usuarios', element: <RequireAccess action="users.manage"><UsersPage /></RequireAccess> },
+          { path: 'papeis', element: <RequireAccess action="roles.view"><RolesPage /></RequireAccess> },
           { path: 'design-system', element: <DesignSystemPage /> },
         ],
       },

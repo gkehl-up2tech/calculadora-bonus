@@ -75,7 +75,7 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
   const dirty = mode === 'csv' ? csv !== null : JSON.stringify(values) !== JSON.stringify(initial) || images.length > 0
   const errors = validate(values, '')
   const visible = (id: string) => (submitted || touched.has(id) ? errors[id] : undefined)
-  const isMaster = can(user, 'product.reassign')
+  const isAdmin = can(user, 'product.reassign')
 
   const pending = pendingFields(values)
   const pendingTotal = TABS.reduce((n, t) => n + pending[t.id].length, 0)
@@ -244,7 +244,7 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
                   {control('sku')}
                   {control('marca')}
                   {control('ean')}
-                  {isMaster ? control('responsavel') : <div className="grid content-start gap-1.5"><FieldLabel>Responsável</FieldLabel><Text className="flex h-control-md items-center">{user.name} (você)</Text></div>}
+                  {isAdmin ? control('responsavel') : <div className="grid content-start gap-1.5"><FieldLabel>Responsável</FieldLabel><Text className="flex h-control-md items-center">{user.name} (você)</Text></div>}
                   {control('descricaoCurta', 'sm:col-span-2')}
                 </FormGrid>
 

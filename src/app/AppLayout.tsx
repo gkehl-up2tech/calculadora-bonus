@@ -8,8 +8,10 @@ import {
 import { setThemePreference } from '@/lib/theme'
 import { can } from './access/permissions'
 import { setSession, useSession } from './access/session'
-import { ROLE_LABEL, USERS } from './access/users'
+import { ROLE_LABEL, USERS, useUsersVersion } from './access/users'
 import { NewProductDialog } from '@/pages/products/NewProductDialog'
+import { PRODUCTS } from './products/sample-products'
+import { useCatalogVersion } from './products/detail'
 import { searchProducts } from './products/search'
 import { mainNav, routes, userMenuItems } from './navigation'
 
@@ -23,6 +25,15 @@ export function AppLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const user = useSession()
+  useUsersVersion()
+  const catalog = useCatalogVersion()
+  // Fila da Tributação no toggle: só para quem a vê e não cria produtos (o botão Novo produto ocupa a linha no celular).
+  // Quem cria produtos e vê a fila (Admin) chega por Ctrl/⌘ + K.
+  const waiting = useMemo(() => PRODUCTS.filter((p) => p.fiscal === 'review').length, [catalog]) // eslint-disable-line react-hooks/exhaustive-deps
+  const nav = useMemo(
+    () => [...mainNav, ...(can(user, 'queue.view') && !can(user, 'product.create') ? [{ id: 'tax', label: waiting > 0 ? `Tributação (${waiting})` : 'Tributação', href: routes.tax, end: true }] : [])],
+    [user, waiting],
+  )
   const [query, setQuery] = useState('')
   const [newOpen, setNewOpen] = useState(false)
 
@@ -35,6 +46,7 @@ export function AppLayout() {
       { id: 'go-home', label: 'Início', icon: Home, onSelect: () => navigate(routes.home) },
       { id: 'go-products', label: 'Produtos', icon: Package, keywords: ['catálogo', 'lista', 'todos os produtos'], onSelect: () => navigate(routes.products) },
       ...(can(user, 'product.create') ? [{ id: 'new-product', label: 'Novo produto', icon: Plus, keywords: ['cadastrar', 'criar', 'adicionar'], onSelect: () => setNewOpen(true) }] : []),
+      ...(can(user, 'queue.view') ? [{ id: 'go-tax', label: 'Tributação', icon: Package, keywords: ['fila', 'aprovação', 'fiscal'], onSelect: () => navigate(routes.tax) }] : []),
       ...(can(user, 'connections.view') ? [{ id: 'go-connections', label: 'Conexões', icon: Plug, keywords: ['integrações'], onSelect: () => navigate(routes.connections) }] : []),
       ...(can(user, 'settings.view')
         ? [
@@ -70,7 +82,7 @@ export function AppLayout() {
 
   return (
     <AppShell
-      nav={mainNav}
+      nav={nav}
       // "Novo produto" fica na linha do toggle, só em Início e Produtos.
       navActions={
         can(user, 'product.create') && (pathname === routes.home || pathname === routes.products) ? (
@@ -104,7 +116,7 @@ export function AppLayout() {
               if (next) toast.info(`Agora você é ${next.name}`, { description: ROLE_LABEL[next.role] })
             }}
           >
-            {USERS.map((u) => (
+            {USERS.filter((u) => u.active).map((u) => (
               <DropdownMenuRadioItem key={u.id} value={u.id}>
                 <span className="grid min-w-0 leading-tight">
                   <span className="truncate">{u.name}</span>

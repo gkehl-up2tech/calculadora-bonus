@@ -15,9 +15,10 @@ Não há menu lateral. A navegação principal é um **toggle** (Início | Produ
 | Página do produto | `/produtos/:produtoId` | **Somente** pela lista de produtos ou pela busca global (Ctrl/⌘ + K). Sem item de menu. Abas: Principal, Fiscal, Operacional (só Logística), Marketing, Imagens, Especificações, Variações e kits, Histórico (`?aba=`). Botão **Editar produto**. Mapa completo dos campos em [`docs/produto-mapa-de-informacoes.md`](docs/produto-mapa-de-informacoes.md) |
 | Novo produto | (modal) | Botão *Novo produto* da linha do toggle, em Início e Produtos, ou pela busca (Ctrl/⌘ + K). Cadastro rápido (um produto, com fotos) ou importação de vários por CSV; sempre cria rascunhos |
 | Conexões | `/conexoes` | **Somente** pelo menu do usuário (ícone de perfil) |
-| Configurações | `/configuracoes` (abas: Geral, Design System) | **Somente** pelo menu do usuário |
+| Tributação | `/tributacao` | Fila de produtos aguardando análise ou com ajuste pedido; item do toggle só para o papel Tributação (Admin pela busca, Ctrl/⌘ + K) |
+| Configurações | `/configuracoes` (abas: Geral, Usuários, Papéis, Design System) | **Somente** pelo menu do usuário (Admin) |
 
-**Perfis de acesso:** Master (tudo), Gerente de produto (cria e edita os próprios produtos; vê os demais) e Acesso comum (só leitura). Conexões e Configurações são só do Master. Detalhes em [`docs/acessos.md`](docs/acessos.md). Como ainda não há login, o perfil é escolhido no menu do usuário (**Entrar como**, provisório).
+**Papéis:** Admin (tudo, inclusive usuários e papéis), Gerente de produto (cria e edita os próprios produtos, envia o fiscal e ativa depois da aprovação), Tributação (equipe terceira: revisa, completa e aprova ou pede ajuste na fila `/tributacao`) e Acesso comum (só leitura). Ao ativar e a cada edição o produto é sincronizado com a API (simulado). Usuários e Papéis ficam em Configurações. Detalhes em [`docs/acessos.md`](docs/acessos.md). Como ainda não há login, o papel é escolhido no menu do usuário (**Entrar como**, provisório).
 
 A busca global encontra produtos por título, SKU, NCM, EAN ou departamento e abre a página do produto. Hoje ela consulta dados de exemplo (`src/app/products/sample-products.ts` e `photos.ts`, **temporários**; as fotos são ilustrações em SVG embutido); ao ligar uma fonte real, troque `searchProducts` em `src/app/products/search.ts`.
 

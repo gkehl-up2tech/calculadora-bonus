@@ -62,7 +62,7 @@ export function OrganismsSection() {
           description="Cabeçalho enxuto: marca à esquerda, botão “Buscar produtos” centralizado (abre a busca global, também com Ctrl/⌘ + K), tema e usuário à direita. Não há menu: a navegação principal é o toggle SegmentedNav acima do PageHeader de cada página. Destinos secundários (Conexões, Configurações) ficam no menu do usuário."
           code={`<AppHeader
   logo={<NavLink to="/"><Logo wordmarkOnly /></NavLink>}
-  user={{ name, email, role: 'Master' }}
+  user={{ name, email, role: 'Admin' }}
   userMenu={<DropdownMenuItem icon={Plug}>Conexões</DropdownMenuItem>}
   onSearchClick={openSearch}
 />`}
@@ -182,7 +182,7 @@ function AppHeaderPreview() {
     <div className="[&>header]:static">
       <AppHeader
         logo={<Logo wordmarkOnly />}
-        user={{ name: 'Usuário UP2Tech', email: 'usuario@up2tech.com.br', role: 'Master' }}
+        user={{ name: 'Usuário UP2Tech', email: 'usuario@up2tech.com.br', role: 'Admin' }}
         userMenu={
           <>
             <DropdownMenuItem icon={Plug}>Conexões</DropdownMenuItem>

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { CircleCheck, CirclePause, TriangleAlert } from 'lucide-react'
+import { CircleCheck, CirclePause, FileCheck2, TriangleAlert } from 'lucide-react'
 import {
   BarList, Card, CardContent, CardDescription, CardHeader, CardTitle, DistributionBar, ProgressField, StatCard, Text,
 } from '@/design-system'
@@ -27,11 +27,12 @@ export function ProductsDashboard() {
     <div className="grid gap-4">
       <section aria-labelledby="kpis-titulo" className="grid gap-3">
         <h2 id="kpis-titulo" className="sr-only">Indicadores principais</h2>
-        <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+        <dl className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-6">
           <StatCard hero label="Produtos cadastrados" value={formatNumber(m.total)} helper="Total do catálogo" className="col-span-2" />
           <StatCard label="Produtos ativos" value={formatNumber(m.active)} helper={`${pct(m.active, m.total)}% do cadastro`} icon={CircleCheck} tone="success" />
           <StatCard label="Produtos incompletos" value={formatNumber(m.incomplete)} helper={`${pct(m.incomplete, m.total)}% com pendências`} icon={TriangleAlert} tone="warning" />
-          <StatCard label="Produtos inativos" value={formatNumber(m.inactive)} helper={`${pct(m.inactive, m.total)}% do cadastro`} icon={CirclePause} tone="neutral" className="max-lg:col-span-2" />
+          <StatCard label="Produtos inativos" value={formatNumber(m.inactive)} helper={`${pct(m.inactive, m.total)}% do cadastro`} icon={CirclePause} tone="neutral" />
+          <StatCard label="Na fila da Tributação" value={formatNumber(m.fiscalReview)} helper={m.fiscalAdjust > 0 ? `${m.fiscalAdjust} com ajuste pedido` : 'Aguardando análise'} icon={FileCheck2} tone="warning" />
         </dl>
       </section>
 

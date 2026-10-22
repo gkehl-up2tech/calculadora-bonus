@@ -8,6 +8,9 @@ export interface DashboardMetrics {
   /** Produtos com ao menos uma pendência de cadastro. */
   incomplete: number
   complete: number
+  /** Produtos na fila da Tributação (aguardando análise) e os que voltaram com pedido de ajuste. */
+  fiscalReview: number
+  fiscalAdjust: number
   pendencias: { id: Pendencia; label: string; count: number }[]
   byDepartment: { id: string; label: string; count: number }[]
 }
@@ -37,6 +40,8 @@ export function computeDashboardMetrics(products: Product[]): DashboardMetrics {
     draft: count((p) => p.status === 'draft'),
     incomplete,
     complete: products.length - incomplete,
+    fiscalReview: count((p) => p.fiscal === 'review'),
+    fiscalAdjust: count((p) => p.fiscal === 'adjust'),
     pendencias,
     byDepartment,
   }

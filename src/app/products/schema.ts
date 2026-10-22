@@ -57,8 +57,8 @@ export interface FieldDef {
   wide?: boolean
   /** Calculado e somente leitura. */
   readOnly?: boolean
-  /** Só o perfil Master altera (os demais veem o valor, sem controle de edição). */
-  masterOnly?: boolean
+  /** Só o Admin altera (os demais veem o valor, sem controle de edição). */
+  adminOnly?: boolean
   /** Mostra o campo só para estes departamentos (ex.: voltagem só para eletrônicos). */
   departments?: string[]
   /** Mostra o campo só para estes tipos de produto. */
@@ -143,7 +143,7 @@ export const FIELDS: FieldDef[] = [
   { id: 'marca', section: 'identificacao', label: 'Marca', kind: 'text', importance: 'recommended', maxLength: 60, hint: 'Exigida pela maioria dos marketplaces.' },
   { id: 'modelo', section: 'identificacao', label: 'Modelo', kind: 'text', maxLength: 60 },
   { id: 'fabricante', section: 'identificacao', label: 'Fabricante', kind: 'text', maxLength: 80 },
-  { id: 'responsavel', section: 'identificacao', label: 'Responsável', kind: 'select', options: 'responsavel', importance: 'required', masterOnly: true, hint: 'Gerente de produto dono do cadastro: só ele (e o Master) edita. Só o Master troca.' },
+  { id: 'responsavel', section: 'identificacao', label: 'Responsável', kind: 'select', options: 'responsavel', importance: 'required', adminOnly: true, hint: 'Gerente de produto dono do cadastro: só ele (e o Admin) edita. Só o Admin troca.' },
   { id: 'mpn', section: 'identificacao', label: 'Código do fabricante (MPN)', kind: 'text', maxLength: 40 },
   // Principal › Códigos de barras
   { id: 'ean', section: 'codigos', label: 'EAN / GTIN', kind: 'gtin', importance: 'recommended', hint: 'Código de barras da unidade de venda (8, 12, 13 ou 14 dígitos). Deixe vazio se o produto não tem GTIN.' },
@@ -262,6 +262,9 @@ function cubagem(v: Values) {
 }
 
 // ───────────────────────── Consultas
+
+/** O campo pertence à aba Fiscal (o que a Tributação aprova)? */
+export const isFiscalField = (field: FieldDef) => SECTIONS.find((s) => s.id === field.section)?.tab === 'fiscal'
 
 export const sectionsOf = (tab: TabId) => SECTIONS.filter((s) => s.tab === tab)
 export const fieldsOf = (section: string) => FIELDS.filter((f) => f.section === section)

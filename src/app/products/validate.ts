@@ -1,4 +1,4 @@
-import { PRODUCTS } from './sample-products'
+import { PRODUCTS, type FiscalStatus, type ProductStatus } from './sample-products'
 import { DRAFT_REQUIRED, FIELDS, SECTIONS, applies, isEmpty, type TabId, type Values } from './schema'
 import { isValidCnpj, isValidGtin, unmask } from '@/lib/masks'
 
@@ -10,10 +10,15 @@ const num = (v: Values[string]) => (typeof v === 'number' ? v : null)
 /**
  * Regras de preenchimento. Formatos inválidos e duplicidades bloqueiam sempre; "recomendado" nunca bloqueia.
  * Obrigatórios: em RASCUNHO só o essencial (DRAFT_REQUIRED); ativar ou inativar exige todos.
+ * Ativar também exige a tributação aprovada (`ctx`).
  */
-export function validate(values: Values, productId: string): Errors {
+export function validate(values: Values, productId: string, ctx?: { fiscal: FiscalStatus; previousStatus: ProductStatus }): Errors {
   const e: Errors = {}
   const draft = values.status === 'draft'
+  // Ativar exige a tributação aprovada (quem já está ativo e perdeu a aprovação por edição pode continuar a salvar).
+  if (ctx && values.status === 'active' && ctx.previousStatus !== 'active' && ctx.fiscal !== 'approved') {
+    e.status = 'Para ativar, a tributação precisa estar aprovada. Envie para a Tributação na aba Fiscal.'
+  }
   for (const f of FIELDS) {
     if (!applies(f, values) || f.importance !== 'required' || !isEmpty(values[f.id])) continue
     if (draft && !DRAFT_REQUIRED.includes(f.id)) continue

@@ -23,7 +23,7 @@ Como o produto é reconhecido no catálogo.
 | Marca | texto | recomendado | Exigida pela maioria dos marketplaces. · até 60 caracteres |
 | Modelo | texto | opcional | até 60 caracteres |
 | Fabricante | texto | opcional | até 80 caracteres |
-| Responsável | lista | **obrigatório** | Gerente de produto dono do cadastro: só ele (e o Master) edita. Só o Master troca. · só o Master altera |
+| Responsável | lista | **obrigatório** | Gerente de produto dono do cadastro: só ele (e o Admin) edita. Só o Admin troca. |
 | Código do fabricante (MPN) | texto | opcional | até 40 caracteres |
 
 ### Códigos de barras

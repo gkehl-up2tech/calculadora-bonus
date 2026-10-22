@@ -5,17 +5,19 @@ import {
   Alert, Badge, Button, Card, ConfirmDialog, EmptyState, KeyValue, PageHeader, StatusBadge, StickyActionBar,
   Tabs, TabsContent, TabsList, TabsTrigger, Thumbnail, toast,
 } from '@/design-system'
-import { can, readOnlyReason } from '@/app/access/permissions'
+import { can, editScope, readOnlyReason } from '@/app/access/permissions'
 import { useSession } from '@/app/access/session'
 import { userName } from '@/app/access/users'
 import { routes } from '@/app/navigation'
-import { findProduct, saveProductValues, useProductDetail, type ProductImage } from '@/app/products/detail'
-import { STATUS_LABEL, STATUS_TONE, type Product } from '@/app/products/sample-products'
+import { findProduct, retrySync, saveProductValues, useProductDetail, type ProductImage } from '@/app/products/detail'
+import { FISCAL_LABEL, FISCAL_TONE, STATUS_LABEL, STATUS_TONE, SYNC_LABEL, SYNC_TONE, type Product } from '@/app/products/sample-products'
 import { TABS, pendingFields, sectionsOf, visibleTabs, type FieldValue, type TabId, type Values } from '@/app/products/schema'
+import { formatDateTime } from '@/lib/format'
 import { useMediaQuery } from '@/lib/useMediaQuery'
 import { usePageTitle } from '@/lib/usePageTitle'
 import { CustomSection } from './product/CustomSections'
 import { FieldsSection } from './product/FieldsSection'
+import { FiscalPanel } from './product/FiscalPanel'
 import { tabOfField, validate } from '@/app/products/validate'
 
 /**
@@ -49,7 +51,8 @@ const SECTION_TABS = new Map<TabId, ReturnType<typeof sectionsOf>>(TABS.map((t) 
 
 function ProductDetailPage({ product }: { product: Product }) {
   const user = useSession()
-  const canEdit = can(user, 'product.edit', product)
+  const scope = editScope(user, product)
+  const canEdit = scope.any
   const detail = useProductDetail(product)!
   const saved = detail.values
   const [params, setParams] = useSearchParams()
@@ -68,7 +71,7 @@ function ProductDetailPage({ product }: { product: Product }) {
 
   const imagesChanged = !sameImages(imagesDraft, detail.extras.images)
   const dirty = editing && (JSON.stringify(draft) !== JSON.stringify(saved) || imagesChanged)
-  const errors = useMemo(() => (editing && submitted ? validate(draft, product.id) : {}), [editing, submitted, draft, product.id])
+  const errors = useMemo(() => (editing && submitted ? validate(draft, product.id, { fiscal: product.fiscal, previousStatus: product.status }) : {}), [editing, submitted, draft, product.id, product.fiscal, product.status])
 
   // Abas visíveis dependem do tipo do produto (variações/kit); a aba vem da URL (?aba=).
   const tabs = visibleTabs(shown)
@@ -135,7 +138,7 @@ function ProductDetailPage({ product }: { product: Product }) {
   }
 
   function save() {
-    const found = validate(draft, product.id)
+    const found = validate(draft, product.id, { fiscal: product.fiscal, previousStatus: product.status })
     setSubmitted(true)
     const first = Object.keys(found)[0]
     if (first) {
@@ -148,10 +151,12 @@ function ProductDetailPage({ product }: { product: Product }) {
       setFocusTarget(`campo-${target}`)
       return
     }
+    const fiscalBefore = product.fiscal
     const changed = saveProductValues(product, draft, user, imagesChanged ? imagesDraft : undefined)
     setEditingBy(null)
     setSubmitted(false)
-    toast.success(changed ? 'Produto salvo' : 'Nada foi alterado')
+    if (fiscalBefore === 'approved' && product.fiscal === 'review') toast.warning('Produto salvo e devolvido à Tributação', { description: 'Você mudou um dado fiscal: a aprovação cai e a Tributação analisa de novo.' })
+    else toast.success(changed ? 'Produto salvo' : 'Nada foi alterado')
   }
 
   const onChange = (id: string, value: FieldValue) => setDraft((d) => ({ ...d, [id]: value }))
@@ -185,7 +190,7 @@ function ProductDetailPage({ product }: { product: Product }) {
               <Button onClick={save}><Save aria-hidden />Salvar alterações</Button>
             </> : undefined
           ) : canEdit ? (
-            <Button onClick={() => startEditing()}><Pencil aria-hidden />Editar produto</Button>
+            <Button onClick={() => startEditing(scope.general ? undefined : 'fiscal')}><Pencil aria-hidden />{scope.general ? 'Editar produto' : 'Editar tributação'}</Button>
           ) : undefined
         }
       />
@@ -193,16 +198,35 @@ function ProductDetailPage({ product }: { product: Product }) {
       <Card className="p-4 sm:p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <Thumbnail src={product.photo} alt={`Foto de ${saved.title}`} size="xl" className="size-20 sm:size-24" />
-          <dl className="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-6">
+          <dl className="grid flex-1 grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-4">
             <KeyValue label="Departamento">{String(saved.departamento)}</KeyValue>
             <KeyValue label="Marca">{String(saved.marca)}</KeyValue>
             <KeyValue label="Responsável">{userName(product.owner)}</KeyValue>
             <KeyValue label="NCM" mono>{String(saved.ncm)}</KeyValue>
             <KeyValue label="EAN" mono>{String(saved.ean)}</KeyValue>
             <KeyValue label="Tipo">{{ simples: 'Simples', variacoes: 'Com variações', kit: 'Kit' }[String(saved.tipo)] ?? ''}</KeyValue>
+            <KeyValue label="Tributação"><StatusBadge tone={FISCAL_TONE[product.fiscal]}>{FISCAL_LABEL[product.fiscal]}</StatusBadge></KeyValue>
+            <KeyValue label="Sincronização com a API">
+              <span className="flex flex-wrap items-center gap-2">
+                <StatusBadge tone={SYNC_TONE[product.sync]}>{SYNC_LABEL[product.sync]}</StatusBadge>
+                {product.sync === 'synced' && detail.extras.workflow.syncedAt ? <span className="text-xs font-normal text-fg-muted">{formatDateTime(detail.extras.workflow.syncedAt)}</span> : null}
+                {product.sync === 'error' && can(user, 'sync.retry') ? <Button size="sm" variant="secondary" onClick={() => { retrySync(product, user); toast.info('Reenvio solicitado') }}>Reenviar</Button> : null}
+              </span>
+              {product.sync === 'error' && detail.extras.workflow.syncError ? <span className="mt-1 block text-xs font-normal text-tone-danger-fg">{detail.extras.workflow.syncError}</span> : null}
+            </KeyValue>
           </dl>
         </div>
       </Card>
+
+      {product.fiscal === 'adjust' ? (
+        <Alert
+          tone="danger"
+          title="A Tributação pediu ajuste neste produto"
+          action={active === 'fiscal' ? undefined : <Button size="sm" variant="secondary" onClick={() => setTab('fiscal')}>Ver na aba Fiscal</Button>}
+        >
+          {detail.extras.workflow.note ? <>“{detail.extras.workflow.note}” </> : null}O produto só pode ser ativado depois da aprovação.
+        </Alert>
+      ) : null}
 
       {pendingTotal > 0 ? (
         <Alert
@@ -244,13 +268,14 @@ function ProductDetailPage({ product }: { product: Product }) {
         </TabsList>
         {tabs.map((t) => (
           <TabsContent key={t.id} value={t.id} className="grid gap-8 pt-6">
+            {t.id === 'fiscal' ? <FiscalPanel product={product} workflow={detail.extras.workflow} user={user} editing={editing} onEditFiscal={() => startEditing('fiscal')} /> : null}
             {SECTION_TABS.get(t.id)!.map((s) => {
               if (s.id === 'variacoes-lista' && shown.tipo !== 'variacoes') return null
               if (s.id === 'kit-composicao' && shown.tipo !== 'kit') return null
               return s.custom ? (
-                <CustomSection key={s.id} section={s} detail={detail} editing={editing} images={editing ? imagesDraft : detail.extras.images} onImagesChange={setImagesDraft} onAddPhotos={canEdit ? () => startEditing('imagens') : undefined} />
+                <CustomSection key={s.id} section={s} detail={detail} editing={editing && scope.general} images={editing ? imagesDraft : detail.extras.images} onImagesChange={setImagesDraft} onAddPhotos={scope.general ? () => startEditing('imagens') : undefined} />
               ) : (
-                <FieldsSection key={s.id} section={s} values={shown} editing={editing} errors={errors} onChange={onChange} />
+                <FieldsSection key={s.id} section={s} values={shown} editing={editing} errors={errors} onChange={onChange} product={product} />
               )
             })}
           </TabsContent>

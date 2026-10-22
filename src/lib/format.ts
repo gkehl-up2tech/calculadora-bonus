@@ -19,3 +19,7 @@ export function getInitials(name: string) {
   const last = parts.length > 1 ? parts[parts.length - 1]![0]! : ''
   return (first + last).toUpperCase()
 }
+
+const dateTime = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short', timeZone: 'America/Sao_Paulo' })
+/** "21/10/2026 09:40" no horário de Brasília. */
+export const formatDateTime = (iso: string) => dateTime.format(new Date(iso))

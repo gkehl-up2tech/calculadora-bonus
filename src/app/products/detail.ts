@@ -7,11 +7,11 @@
  * Valores fiscais (NCM, CST, alíquotas, CEST…) são ILUSTRATIVOS — não use para emitir documentos fiscais.
  */
 import { useSyncExternalStore } from 'react'
-import { can } from '../access/permissions'
+import { can, canEditField } from '../access/permissions'
 import { userName, type AppUser } from '../access/users'
 import { galleryFor } from './photos'
-import { PRODUCTS, type Product } from './sample-products'
-import { FIELDS, derivePendencias, isEmpty, type FieldDef, type Values } from './schema'
+import { FISCAL_LABEL, PRODUCTS, type FiscalStatus, type Product } from './sample-products'
+import { FIELDS, derivePendencias, isEmpty, isFiscalField, type FieldDef, type Values } from './schema'
 
 // ───────────────────────── Tipos dos blocos em tabela
 
@@ -21,11 +21,25 @@ export interface Variation { id: string; label: string; sku: string; ean: string
 export interface KitItem { id: string; title: string; sku: string; qty: number }
 export interface HistoryEntry { id: string; at: string; user: string; field: string; from: string; to: string }
 
+/** Dados de apoio da tributação e da sincronização (a situação em si fica em `product.fiscal` e `product.sync`). */
+export interface Workflow {
+  /** Quando foi enviado para análise. */
+  submittedAt?: string
+  /** Comentário do último pedido de ajuste. */
+  note?: string
+  /** Quem aprovou ou pediu ajuste, e quando. */
+  reviewedBy?: string
+  reviewedAt?: string
+  syncedAt?: string
+  syncError?: string
+}
+
 export interface ProductExtras {
   images: ProductImage[]
   variations: Variation[]
   kitItems: KitItem[]
   history: HistoryEntry[]
+  workflow: Workflow
 }
 
 export interface ProductDetail {
@@ -179,7 +193,14 @@ function buildExtras(p: Product, v: Values, s: Spec, i: number, b: number): Prod
     { id: 'h3', at: '2026-09-30T16:48:00-03:00', user: USERS[0]!, field: 'Foto principal', from: 'Sem foto', to: 'Vista frontal' },
     { id: 'h4', at: '2026-09-02T09:30:00-03:00', user: USERS[2]!, field: 'Cadastro', from: '—', to: 'Produto criado' },
   ]
-  return { images, variations, kitItems, history }
+  const workflow: Workflow = {
+    ...(p.fiscal === 'review' ? { submittedAt: '2026-10-21T09:40:00-03:00' } : {}),
+    ...(p.fiscal === 'adjust' ? { note: 'O NCM não confere com a descrição do produto. Revise e envie de novo.', reviewedBy: 'Beatriz Nunes', reviewedAt: '2026-10-20T15:10:00-03:00' } : {}),
+    ...(p.fiscal === 'approved' ? { reviewedBy: 'Beatriz Nunes', reviewedAt: '2026-09-15T11:20:00-03:00' } : {}),
+    ...(p.sync === 'synced' ? { syncedAt: '2026-10-20T18:00:00-03:00' } : {}),
+    ...(p.sync === 'error' ? { syncError: 'A API recusou o envio: GTIN já cadastrado no destino.' } : {}),
+  }
+  return { images, variations, kitItems, history, workflow }
 }
 
 // ───────────────────────── Armazenamento em memória
@@ -210,23 +231,105 @@ export function plainValue(value: Values[string]): string {
 
 const historyText = (fieldId: string, value: Values[string]) => (fieldId === 'responsavel' && typeof value === 'string' ? userName(value) : plainValue(value))
 
+const nowIso = () => new Date().toISOString()
+const touch = () => {
+  version++
+  listeners.forEach((l) => l())
+}
+
+/** Troca os dados de apoio/histórico de um produto sem mexer nos valores. */
+function patchExtras(product: Product, fn: (e: ProductExtras) => Partial<ProductExtras>) {
+  const cur = getProductDetail(product)
+  edited.set(product.id, { values: cur.values, extras: { ...cur.extras, ...fn(cur.extras) } })
+}
+
+function logHistory(product: Product, who: string, field: string, from: string, to: string) {
+  const at = nowIso()
+  patchExtras(product, (e) => ({ history: [{ id: `h-${at}-${field}-${e.history.length}`, at, user: who, field, from, to }, ...e.history] }))
+}
+
+/** Campos fiscais obrigatórios ainda vazios (nomes para mostrar). A Tributação só aprova com tudo preenchido. */
+export function fiscalMissing(values: Values): string[] {
+  return FIELDS.filter((f) => isFiscalField(f) && f.importance === 'required' && isEmpty(values[f.id])).map((f) => f.label)
+}
+
+function setFiscal(product: Product, to: FiscalStatus, who: string, patch: Partial<Workflow>, note?: string) {
+  const from = product.fiscal
+  product.fiscal = to
+  patchExtras(product, (e) => ({ workflow: { ...e.workflow, ...patch } }))
+  logHistory(product, who, 'Tributação', FISCAL_LABEL[from], FISCAL_LABEL[to] + (note ? `: ${note}` : ''))
+  touch()
+}
+
+/** Envia o produto para a fila da Tributação. Exige NCM e origem (o mínimo para analisar). */
+export function submitForReview(product: Product, user: AppUser): { ok: true } | { ok: false; missing: string[] } {
+  if (!can(user, 'fiscal.submit', product)) throw new Error('Sem permissão para enviar este produto à Tributação.')
+  const v = getProductDetail(product).values
+  const missing = ['ncm', 'origem'].filter((id) => isEmpty(v[id])).map((id) => FIELDS.find((f) => f.id === id)!.label)
+  if (missing.length) return { ok: false, missing }
+  setFiscal(product, 'review', user.name, { submittedAt: nowIso(), note: undefined })
+  return { ok: true }
+}
+
+/** Aprova a tributação. Exige todos os campos fiscais obrigatórios. */
+export function approveFiscal(product: Product, user: AppUser): { ok: true } | { ok: false; missing: string[] } {
+  if (!can(user, 'fiscal.review')) throw new Error('Sem permissão para aprovar a tributação.')
+  const missing = fiscalMissing(getProductDetail(product).values)
+  if (missing.length) return { ok: false, missing }
+  setFiscal(product, 'approved', user.name, { reviewedBy: user.name, reviewedAt: nowIso(), note: undefined })
+  scheduleSync(product)
+  return { ok: true }
+}
+
+/** Devolve o produto ao responsável com um comentário do que precisa mudar. */
+export function requestFiscalAdjust(product: Product, user: AppUser, note: string) {
+  if (!can(user, 'fiscal.review')) throw new Error('Sem permissão para pedir ajuste.')
+  setFiscal(product, 'adjust', user.name, { note: note.trim(), reviewedBy: user.name, reviewedAt: nowIso() }, note.trim())
+}
+
+/**
+ * Envio automático para a API: produtos ativos e inativos são enviados ao ativar e a cada edição. Aqui é simulado
+ * (~1 s e sucesso); com a API real, `product.sync` e `workflow.syncError` vêm da resposta dela.
+ */
+function scheduleSync(product: Product) {
+  if (product.status === 'draft') return
+  product.sync = 'pending'
+  patchExtras(product, (e) => ({ workflow: { ...e.workflow, syncError: undefined } }))
+  touch()
+  setTimeout(() => {
+    product.sync = 'synced'
+    patchExtras(product, (e) => ({ workflow: { ...e.workflow, syncedAt: nowIso(), syncError: undefined } }))
+    touch()
+  }, 900)
+}
+
+/** Reenvia para a API (só o Admin). */
+export function retrySync(product: Product, user: AppUser) {
+  if (!can(user, 'sync.retry')) throw new Error('Sem permissão para reenviar.')
+  logHistory(product, user.name, 'Sincronização', 'Erro na sincronização', 'Reenvio solicitado')
+  scheduleSync(product)
+}
+
 /**
  * Salva os valores, registra no histórico o que mudou e devolve os campos principais ao registro da lista
  * (título, SKU, NCM, EAN, status, responsável e pendências) — assim Produtos e Início refletem a edição.
+ * Cada campo só muda se o usuário pode editá-lo (a parte fiscal e o resto têm donos diferentes).
+ * Mudou dado fiscal de um produto aprovado, sem ser a Tributação? A aprovação cai e ele volta para a fila.
  */
 export function saveProductValues(product: Product, input: Values, user: AppUser, images?: ProductImage[]) {
-  // A interface já esconde a edição; esta checagem protege contra chamadas indevidas. A regra real é do servidor.
-  if (!can(user, 'product.edit', product)) throw new Error('Sem permissão para editar este produto.')
+  // A interface já esconde a edição; estas checagens protegem contra chamadas indevidas. A regra real é do servidor.
+  const general = can(user, 'product.edit', product)
+  if (!general && !can(user, 'fiscal.edit', product)) throw new Error('Sem permissão para editar este produto.')
   const current = getProductDetail(product)
-  // Só o Master troca o responsável.
-  const values = can(user, 'product.reassign') ? input : { ...input, responsavel: product.owner }
+  const values: Values = { ...current.values }
+  for (const f of FIELDS) if (canEditField(user, f, product)) values[f.id] = input[f.id] ?? null
   const changes = FIELDS.filter((f) => !f.readOnly && f.kind !== 'computed' && JSON.stringify(current.values[f.id]) !== JSON.stringify(values[f.id]))
-  const at = new Date().toISOString()
+  const at = nowIso()
   const entries: HistoryEntry[] = changes.slice(0, 12).map((f, n) => ({
     id: `h-${at}-${n}`, at, user: user.name, field: f.label, from: historyText(f.id, current.values[f.id]), to: historyText(f.id, values[f.id]),
   }))
   // Fotos: a lista inteira é substituída; o histórico registra só a mudança de quantidade ou de principal.
-  const nextImages = images ? normalizeImages(images, String(values.title ?? '')) : current.extras.images
+  const nextImages = images && general ? normalizeImages(images, String(values.title ?? '')) : current.extras.images
   const [before, after] = [current.extras.images, nextImages]
   if (before.length !== after.length || before[0]?.id !== after[0]?.id) {
     entries.unshift({
@@ -234,8 +337,12 @@ export function saveProductValues(product: Product, input: Values, user: AppUser
       from: before.length === 1 ? '1 imagem' : `${before.length} imagens`, to: after.length === 1 ? '1 imagem' : `${after.length} imagens`,
     })
   }
-  edited.set(product.id, { values, extras: { ...current.extras, images: nextImages, history: [...entries, ...current.extras.history] } })
+  const reopen = product.fiscal === 'approved' && !can(user, 'fiscal.review') && changes.some(isFiscalField)
+  if (reopen) entries.unshift({ id: `h-${at}-fiscal`, at, user: user.name, field: 'Tributação', from: FISCAL_LABEL.approved, to: `${FISCAL_LABEL.review}: dado fiscal alterado` })
+  const workflow = reopen ? { ...current.extras.workflow, submittedAt: at } : current.extras.workflow
+  edited.set(product.id, { values, extras: { ...current.extras, images: nextImages, workflow, history: [...entries, ...current.extras.history] } })
 
+  const statusChanged = values.status !== product.status
   Object.assign(product, {
     sku: String(values.sku ?? ''),
     title: String(values.title ?? ''),
@@ -244,11 +351,13 @@ export function saveProductValues(product: Product, input: Values, user: AppUser
     ean: String(values.ean ?? ''),
     status: values.status as Product['status'],
     owner: String(values.responsavel ?? product.owner),
-    ...(images ? { photo: nextImages[0]?.src ?? '' } : {}),
+    ...(images && general ? { photo: nextImages[0]?.src ?? '' } : {}),
+    ...(reopen ? { fiscal: 'review' as const } : {}),
     pendencias: derivePendencias(values),
   })
-  version++
-  listeners.forEach((l) => l())
+  touch()
+  // Todo produto fora de rascunho é enviado ao ativar/inativar e a cada edição.
+  if (product.status !== 'draft' && (changes.length > 0 || statusChanged || before !== after)) scheduleSync(product)
   return changes.length
 }
 
@@ -275,7 +384,7 @@ export function createProducts(list: Values[], user: AppUser): Product[] {
 
 /**
  * Cadastra um produto novo, sempre como RASCUNHO, e o coloca no topo do catálogo. O responsável é quem cria
- * (só o Master escolhe outro). As pendências saem do esquema, como nos demais produtos.
+ * (só quem troca responsáveis escolhe outro). As pendências saem do esquema, como nos demais produtos.
  */
 export function createProduct(input: Values, user: AppUser, photos: ProductImage[] = []): Product {
   if (!can(user, 'product.create')) throw new Error('Sem permissão para criar produtos.')
@@ -293,6 +402,8 @@ export function createProduct(input: Values, user: AppUser, photos: ProductImage
     status: 'draft',
     owner,
     pendencias: derivePendencias(values),
+    fiscal: 'none',
+    sync: 'none',
   }
   values.sku = product.sku
   values.title = product.title
@@ -304,6 +415,7 @@ export function createProduct(input: Values, user: AppUser, photos: ProductImage
       variations: [],
       kitItems: [],
       history: [{ id: `h-${product.id}`, at: new Date().toISOString(), user: user.name, field: 'Cadastro', from: '—', to: 'Produto criado' }],
+      workflow: {},
     },
   })
   version++
