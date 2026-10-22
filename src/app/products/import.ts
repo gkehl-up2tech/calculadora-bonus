@@ -5,7 +5,7 @@
 import { decodeCsv, detectDelimiter, parseCsv, toCsv } from '@/lib/csv'
 import { applyMask, MASKS } from '@/lib/masks'
 import { can } from '../access/permissions'
-import { owners, type AppUser } from '../access/users'
+import { canOwn, owners, type AppUser } from '../access/users'
 import { ORIGEM_OPTIONS, UNIT_OPTIONS } from './options'
 import { PRODUCTS, DEPARTMENTS } from './sample-products'
 import { FIELDS, isEmpty, type Values } from './schema'
@@ -123,7 +123,7 @@ export function parseImport(buffer: ArrayBuffer, user: AppUser): ImportResult {
       if (key && allowed.has(key)) raw[key] = (cells[i] ?? '').trim()
     })
     const errors: string[] = []
-    const values: Values = { ...emptyValues(), status: 'draft', responsavel: user.id }
+    const values: Values = { ...emptyValues(), status: 'draft', responsavel: canOwn(user) ? user.id : '' }
 
     values.title = raw.title ?? ''
     values.marca = raw.marca ?? ''

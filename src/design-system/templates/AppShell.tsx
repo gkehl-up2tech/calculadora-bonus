@@ -49,7 +49,7 @@ export function AppShell({ nav, navActions, user, userMenu, search, linkAs, href
           {nav.length || navActions ? (
             <div className="flex flex-wrap items-center justify-between gap-3">
               {nav.length ? <SegmentedNav items={nav} linkAs={linkAs} hrefProp={hrefProp} currentPath={currentPath} /> : <span />}
-              {navActions}
+              {navActions ? <div className="ml-auto">{navActions}</div> : null}
             </div>
           ) : null}
           {children}

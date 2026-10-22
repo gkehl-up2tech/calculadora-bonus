@@ -5,6 +5,8 @@ import {
 } from '@/design-system'
 import { can } from '@/app/access/permissions'
 import { useSession } from '@/app/access/session'
+import { canOwn, userName, type AppUser } from '@/app/access/users'
+import { completeRequest, formatFileSize, type RegistrationRequest } from '@/app/requests/requests'
 import { createProduct, createProducts, emptyValues, suggestSku, type ProductImage } from '@/app/products/detail'
 import { MAX_IMPORT_MB, parseImport, type ImportResult } from '@/app/products/import'
 import { FIELDS, TABS, pendingFields, type FieldValue, type Values } from '@/app/products/schema'
@@ -26,13 +28,17 @@ const TIPO_HINT: Record<string, string> = {
   kit: 'Junta outros produtos. Os itens do kit são definidos depois, na aba Variações e kits.',
 }
 
-function initialValues(userId: string): Values {
-  return { ...emptyValues(), status: 'draft', tipo: 'simples', unidade: 'UN', sku: suggestSku(), responsavel: userId }
+/** Quem só cadastra (Acesso comum) não é responsável por produtos: escolhe o responsável. A solicitação já traz quem pediu. */
+function initialValues(user: AppUser, request?: RegistrationRequest): Values {
+  const base: Values = { ...emptyValues(), status: 'draft', tipo: 'simples', unidade: 'UN', sku: suggestSku(), responsavel: canOwn(user) ? user.id : '' }
+  return request ? { ...base, title: request.title, departamento: request.departamento, categoria: request.categoria, responsavel: request.requestedBy } : base
 }
 
 export interface NewProductDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  /** Atende uma solicitação: parte dos dados do pedido e, ao criar, marca a solicitação como atendida. */
+  request?: RegistrationRequest
 }
 
 /**
@@ -41,10 +47,10 @@ export interface NewProductDialogProps {
  * souber, marca, GTIN, descrição e NCM/origem. O produto nasce como RASCUNHO e o resto é completado na página dele;
  * o rodapé mostra, ao vivo, o que ficará pendente. "Criar e adicionar outro" mantém departamento, marca e unidade.
  */
-export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) {
+export function NewProductDialog({ open, onOpenChange, request }: NewProductDialogProps) {
   const navigate = useNavigate()
   const user = useSession()
-  const [values, setValues] = useState<Values>(() => initialValues(user.id))
+  const [values, setValues] = useState<Values>(() => initialValues(user, request))
   const [initial, setInitial] = useState<Values>(values)
   const [touched, setTouched] = useState<Set<string>>(new Set())
   const [submitted, setSubmitted] = useState(false)
@@ -60,7 +66,7 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
   if (open !== wasOpen) {
     setWasOpen(open)
     if (open) {
-      const fresh = initialValues(user.id)
+      const fresh = initialValues(user, request)
       setValues(fresh)
       setInitial(fresh)
       setTouched(new Set())
@@ -98,12 +104,13 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
       document.getElementById(`campo-${target}`)?.focus()
       return
     }
-    const product = createProduct(values, user, images)
+    const product = createProduct(values, user, images, request?.id)
+    if (request) completeRequest(request.id, product.id, user)
     const open = () => navigate(routes.product(product.id))
-    if (another) {
+    if (another && !request) {
       toast.success(`Produto criado: ${product.title}`, { description: 'Rascunho. Complete o restante na página do produto.', action: { label: 'Abrir', onClick: open } })
       // Mantém o contexto de um lote: departamento, tipo, unidade, marca e responsável.
-      const next = { ...initialValues(user.id), departamento: values.departamento, tipo: values.tipo, unidade: values.unidade, marca: values.marca, responsavel: values.responsavel }
+      const next = { ...initialValues(user), departamento: values.departamento, tipo: values.tipo, unidade: values.unidade, marca: values.marca, responsavel: values.responsavel }
       setValues(next)
       setInitial(next)
       setTouched(new Set())
@@ -113,7 +120,7 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
     } else {
       onOpenChange(false)
       open()
-      toast.success('Produto criado', { description: 'Está como rascunho. Complete os dados pendentes aqui na página dele.' })
+      toast.success(request ? `Solicitação atendida: ${product.title}` : 'Produto criado', { description: request ? `${userName(request.requestedBy)} vê o produto na lista de solicitações. Complete os dados pendentes aqui.` : 'Está como rascunho. Complete os dados pendentes aqui na página dele.' })
     }
   }
 
@@ -157,8 +164,8 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
       <Dialog open={open} onOpenChange={(next) => (next ? onOpenChange(true) : requestClose())}>
         <DialogContent
           size="lg"
-          title="Novo produto"
-          description={mode === 'um' ? 'Preencha o essencial. O produto nasce como rascunho e você completa o restante na página dele.' : 'Crie vários produtos de uma vez a partir de uma planilha. Eles nascem como rascunhos.'}
+          title={request ? 'Criar produto da solicitação' : 'Novo produto'}
+          description={request ? 'Confira os dados do pedido e complete o essencial. O produto nasce como rascunho.' : mode === 'um' ? 'Preencha o essencial. O produto nasce como rascunho e você completa o restante na página dele.' : 'Crie vários produtos de uma vez a partir de uma planilha. Eles nascem como rascunhos.'}
           onOpenAutoFocus={(e) => {
             e.preventDefault()
             document.getElementById(mode === 'um' ? 'campo-title' : 'novo-produto-modo')?.focus()
@@ -171,7 +178,7 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
                 </Text>
                 <div className="flex flex-col-reverse gap-2 sm:flex-row sm:shrink-0">
                   <Button variant="ghost" onClick={requestClose}>Cancelar</Button>
-                  <Button variant="secondary" onClick={() => submit(true)}>Criar e adicionar outro</Button>
+                  {request ? null : <Button variant="secondary" onClick={() => submit(true)}>Criar e adicionar outro</Button>}
                   <Button onClick={() => submit(false)}>Criar produto</Button>
                 </div>
               </div>
@@ -193,6 +200,12 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
           }
         >
           <div className="grid gap-5">
+            {request ? (
+              <div className="grid gap-1 rounded-lg bg-subtle p-4">
+                <Text weight="semibold">Solicitação de {userName(request.requestedBy)}{request.urgent ? ' · Urgente' : ''}</Text>
+                <Text variant="small" tone="muted">Categoria: {request.categoria} · Arquivo: {request.file.name} ({formatFileSize(request.file.size)})</Text>
+              </div>
+            ) : (
             <SegmentedControl
               id="novo-produto-modo"
               aria-label="Forma de cadastro"
@@ -201,6 +214,7 @@ export function NewProductDialog({ open, onOpenChange }: NewProductDialogProps) 
               options={[{ value: 'um', label: 'Um produto' }, { value: 'csv', label: 'Importar vários (CSV)' }]}
               className="justify-self-start max-sm:w-full [&>button]:max-sm:flex-1"
             />
+            )}
 
             {mode === 'csv' ? (
               <ImportPanel

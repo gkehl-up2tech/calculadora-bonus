@@ -10,6 +10,7 @@ export const routes = {
   home: '/',
   products: '/produtos',
   product: (id: string) => `/produtos/${id}`,
+  requests: '/solicitacoes',
   tax: '/tributacao',
   connections: '/conexoes',
   settings: '/configuracoes',

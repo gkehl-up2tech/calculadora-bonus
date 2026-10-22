@@ -10,6 +10,8 @@ import { can } from './access/permissions'
 import { setSession, useSession } from './access/session'
 import { ROLE_LABEL, USERS, useUsersVersion } from './access/users'
 import { NewProductDialog } from '@/pages/products/NewProductDialog'
+import { NewRequestDialog } from '@/pages/requests/NewRequestDialog'
+import { pendingCount, useRequestsVersion } from './requests/requests'
 import { PRODUCTS } from './products/sample-products'
 import { useCatalogVersion } from './products/detail'
 import { searchProducts } from './products/search'
@@ -27,15 +29,21 @@ export function AppLayout() {
   const user = useSession()
   useUsersVersion()
   const catalog = useCatalogVersion()
-  // Fila da Tributação no toggle: só para quem a vê e não cria produtos (o botão Novo produto ocupa a linha no celular).
-  // Quem cria produtos e vê a fila (Admin) chega por Ctrl/⌘ + K.
+  useRequestsVersion()
+  // Itens extras do toggle, só para quem os usa, com a contagem do que espera ação.
   const waiting = useMemo(() => PRODUCTS.filter((p) => p.fiscal === 'review').length, [catalog]) // eslint-disable-line react-hooks/exhaustive-deps
+  const requestsWaiting = pendingCount(user)
   const nav = useMemo(
-    () => [...mainNav, ...(can(user, 'queue.view') && !can(user, 'product.create') ? [{ id: 'tax', label: waiting > 0 ? `Tributação (${waiting})` : 'Tributação', href: routes.tax, end: true }] : [])],
-    [user, waiting],
+    () => [
+      ...mainNav,
+      ...(can(user, 'request.view') ? [{ id: 'requests', label: requestsWaiting > 0 ? `Solicitações (${requestsWaiting})` : 'Solicitações', href: routes.requests, end: true }] : []),
+      ...(can(user, 'queue.view') ? [{ id: 'tax', label: waiting > 0 ? `Tributação (${waiting})` : 'Tributação', href: routes.tax, end: true }] : []),
+    ],
+    [user, waiting, requestsWaiting],
   )
   const [query, setQuery] = useState('')
   const [newOpen, setNewOpen] = useState(false)
+  const [requestOpen, setRequestOpen] = useState(false)
 
   const groups = useMemo<CommandGroup[]>(() => {
     const q = normalize(query.trim())
@@ -46,6 +54,8 @@ export function AppLayout() {
       { id: 'go-home', label: 'Início', icon: Home, onSelect: () => navigate(routes.home) },
       { id: 'go-products', label: 'Produtos', icon: Package, keywords: ['catálogo', 'lista', 'todos os produtos'], onSelect: () => navigate(routes.products) },
       ...(can(user, 'product.create') ? [{ id: 'new-product', label: 'Novo produto', icon: Plus, keywords: ['cadastrar', 'criar', 'adicionar'], onSelect: () => setNewOpen(true) }] : []),
+      ...(can(user, 'request.create') ? [{ id: 'new-request', label: 'Solicitar cadastro', icon: Plus, keywords: ['pedir', 'novo produto', 'cadastrar', 'solicitação'], onSelect: () => setRequestOpen(true) }] : []),
+      ...(can(user, 'request.view') ? [{ id: 'go-requests', label: 'Solicitações', icon: Package, keywords: ['pedidos', 'cadastro', 'fila'], onSelect: () => navigate(routes.requests) }] : []),
       ...(can(user, 'queue.view') ? [{ id: 'go-tax', label: 'Tributação', icon: Package, keywords: ['fila', 'aprovação', 'fiscal'], onSelect: () => navigate(routes.tax) }] : []),
       ...(can(user, 'connections.view') ? [{ id: 'go-connections', label: 'Conexões', icon: Plug, keywords: ['integrações'], onSelect: () => navigate(routes.connections) }] : []),
       ...(can(user, 'settings.view')
@@ -83,10 +93,14 @@ export function AppLayout() {
   return (
     <AppShell
       nav={nav}
-      // "Novo produto" fica na linha do toggle, só em Início e Produtos.
+      // "Novo produto" (ou "Solicitar cadastro", para o gerente) fica na linha do toggle, em Início, Produtos e Solicitações.
       navActions={
-        can(user, 'product.create') && (pathname === routes.home || pathname === routes.products) ? (
-          <Button onClick={() => setNewOpen(true)}>Novo produto</Button>
+        pathname === routes.home || pathname === routes.products || pathname === routes.requests ? (
+          can(user, 'product.create') ? (
+            <Button onClick={() => setNewOpen(true)}>Novo produto</Button>
+          ) : can(user, 'request.create') ? (
+            <Button onClick={() => setRequestOpen(true)}>Solicitar cadastro</Button>
+          ) : undefined
         ) : undefined
       }
       user={{ name: user.name, email: user.email, role: ROLE_LABEL[user.role] }}
@@ -135,6 +149,7 @@ export function AppLayout() {
     >
       <Outlet />
       <NewProductDialog open={newOpen} onOpenChange={setNewOpen} />
+      <NewRequestDialog open={requestOpen} onOpenChange={setRequestOpen} />
     </AppShell>
   )
 }

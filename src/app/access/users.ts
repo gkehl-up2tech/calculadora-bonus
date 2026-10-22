@@ -5,22 +5,22 @@
  */
 import { useSyncExternalStore } from 'react'
 
-export type Role = 'admin' | 'manager' | 'tax' | 'viewer'
+export type Role = 'admin' | 'manager' | 'tax' | 'common'
 
-export const ROLES: Role[] = ['admin', 'manager', 'tax', 'viewer']
+export const ROLES: Role[] = ['admin', 'manager', 'tax', 'common']
 
 export const ROLE_LABEL: Record<Role, string> = {
   admin: 'Admin',
   manager: 'Gerente de produto',
   tax: 'Tributação',
-  viewer: 'Acesso comum',
+  common: 'Acesso comum',
 }
 
 export const ROLE_SUMMARY: Record<Role, string> = {
   admin: 'Gere usuários, papéis e configurações, e pode atuar em tudo.',
-  manager: 'Cria produtos e edita os seus, inclusive a parte fiscal; envia para a Tributação e ativa depois da aprovação.',
+  manager: 'Solicita o cadastro de novos produtos; edita os seus, inclusive a parte fiscal, envia para a Tributação e ativa depois da aprovação.',
   tax: 'Equipe terceira: revisa, ajusta e aprova a tributação de qualquer produto.',
-  viewer: 'Só consulta.',
+  common: 'Equipe de cadastro: atende as solicitações, cria produtos do zero e edita qualquer produto (sem ativar nem mexer no fiscal).',
 }
 
 export interface AppUser {
@@ -39,7 +39,7 @@ export const USERS: AppUser[] = [
   { id: 'u-marina', name: 'Marina Costa', email: 'marina.costa@up2tech.com.br', role: 'manager', active: true },
   { id: 'u-rafael', name: 'Rafael Lima', email: 'rafael.lima@up2tech.com.br', role: 'manager', active: true },
   { id: 'u-beatriz', name: 'Beatriz Nunes', email: 'beatriz.nunes@contabilparceira.com.br', role: 'tax', active: true, external: true },
-  { id: 'u-carla', name: 'Carla Souza', email: 'carla.souza@up2tech.com.br', role: 'viewer', active: true },
+  { id: 'u-carla', name: 'Carla Souza', email: 'carla.souza@up2tech.com.br', role: 'common', active: true },
 ]
 
 const listeners = new Set<() => void>()
@@ -57,8 +57,11 @@ export function useUsersVersion() {
 export const findUser = (id: string) => USERS.find((u) => u.id === id)
 export const userName = (id: string) => findUser(id)?.name ?? '—'
 
-/** Quem pode ser responsável por um produto: quem cria produtos e está ativo. */
+/** Quem pode ser responsável por um produto: gerentes de produto e Admin ativos. */
 export const owners = () => USERS.filter((u) => u.active && (u.role === 'admin' || u.role === 'manager'))
+
+/** Esta pessoa pode ser responsável por produtos? (Quem só cadastra, como o Acesso comum, precisa indicar um responsável.) */
+export const canOwn = (user: AppUser) => owners().some((u) => u.id === user.id)
 
 export interface NewUser {
   name: string

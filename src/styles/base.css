@@ -114,3 +114,10 @@
     scroll-behavior: smooth;
   }
 }
+
+/* Botão de fechar do aviso (Sonner) com alvo de 24 px, o mínimo do WCAG 2.2 (o padrão da biblioteca tem 20 px). */
+[data-sonner-toaster] [data-sonner-toast] [data-close-button] {
+  /* !important: o CSS da biblioteca não está em camada e venceria o das camadas. */
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+}

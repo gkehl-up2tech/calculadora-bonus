@@ -8,7 +8,7 @@
  */
 import { useSyncExternalStore } from 'react'
 import { can, canEditField } from '../access/permissions'
-import { userName, type AppUser } from '../access/users'
+import { canOwn, userName, type AppUser } from '../access/users'
 import { galleryFor } from './photos'
 import { FISCAL_LABEL, PRODUCTS, type FiscalStatus, type Product } from './sample-products'
 import { FIELDS, derivePendencias, isEmpty, isFiscalField, type FieldDef, type Values } from './schema'
@@ -386,9 +386,11 @@ export function createProducts(list: Values[], user: AppUser): Product[] {
  * Cadastra um produto novo, sempre como RASCUNHO, e o coloca no topo do catálogo. O responsável é quem cria
  * (só quem troca responsáveis escolhe outro). As pendências saem do esquema, como nos demais produtos.
  */
-export function createProduct(input: Values, user: AppUser, photos: ProductImage[] = []): Product {
+export function createProduct(input: Values, user: AppUser, photos: ProductImage[] = [], fromRequest?: string): Product {
   if (!can(user, 'product.create')) throw new Error('Sem permissão para criar produtos.')
-  const owner = can(user, 'product.reassign') && typeof input.responsavel === 'string' && input.responsavel ? input.responsavel : user.id
+  const picked = can(user, 'product.reassign') && typeof input.responsavel === 'string' && input.responsavel ? input.responsavel : ''
+  if (!picked && !canOwn(user)) throw new Error('Indique o responsável pelo produto.')
+  const owner = picked || user.id
   const values: Values = { ...emptyValues(), ...input, status: 'draft', responsavel: owner }
   const n = PRODUCTS.reduce((m, p) => Math.max(m, Number(p.id.slice(1))), 0) + 1
   const product: Product = {
@@ -414,7 +416,7 @@ export function createProduct(input: Values, user: AppUser, photos: ProductImage
       images: normalizeImages(photos, product.title),
       variations: [],
       kitItems: [],
-      history: [{ id: `h-${product.id}`, at: new Date().toISOString(), user: user.name, field: 'Cadastro', from: '—', to: 'Produto criado' }],
+      history: [{ id: `h-${product.id}`, at: new Date().toISOString(), user: user.name, field: 'Cadastro', from: '—', to: fromRequest ? `Produto criado a partir da solicitação ${fromRequest.toUpperCase()}` : 'Produto criado' }],
       workflow: {},
     },
   })

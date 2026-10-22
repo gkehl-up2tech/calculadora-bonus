@@ -2,10 +2,9 @@ import { useMemo, useState } from 'react'
 import { Link as RouterLink, useNavigate } from 'react-router'
 import type { ColumnDef } from '@tanstack/react-table'
 import { DataTable, PageHeader, SearchField, Select, Text, Thumbnail } from '@/design-system'
-import { can } from '@/app/access/permissions'
 import { useSession } from '@/app/access/session'
 import { useCatalogVersion } from '@/app/products/detail'
-import { owners, userName } from '@/app/access/users'
+import { canOwn, owners, userName } from '@/app/access/users'
 import { routes } from '@/app/navigation'
 import { filterProducts } from '@/app/products/search'
 import { DEPARTMENTS, PRODUCTS, type Product } from '@/app/products/sample-products'
@@ -107,7 +106,7 @@ export function ProductsPage() {
             <div className="min-w-0 flex-1 basis-64 sm:max-w-sm">
               <SearchField value={search} onValueChange={setSearch} aria-label="Buscar na tabela" placeholder="Título, SKU, NCM ou EAN" />
             </div>
-            <Select aria-label="Responsável" className="sm:w-52" value={owner} onValueChange={setOwner} options={[{ value: ALL, label: 'Todos os responsáveis' }, ...(!can(user, 'product.create') ? [] : [{ value: MINE, label: 'Meus produtos' }]), ...owners().filter((u) => u.id !== user.id || !can(user, 'product.create')).map((u) => ({ value: u.id, label: u.name }))]} />
+            <Select aria-label="Responsável" className="sm:w-52" value={owner} onValueChange={setOwner} options={[{ value: ALL, label: 'Todos os responsáveis' }, ...(!canOwn(user) ? [] : [{ value: MINE, label: 'Meus produtos' }]), ...owners().filter((u) => u.id !== user.id || !canOwn(user)).map((u) => ({ value: u.id, label: u.name }))]} />
             <Select aria-label="Departamento" className="sm:w-56" value={department} onValueChange={setDepartment} options={[{ value: ALL, label: 'Todos os departamentos' }, ...DEPARTMENTS.map((d) => ({ value: d, label: d }))]} />
           </div>
         }
