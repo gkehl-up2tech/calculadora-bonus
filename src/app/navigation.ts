@@ -10,7 +10,6 @@ export const routes = {
   home: '/',
   products: '/produtos',
   product: (id: string) => `/produtos/${id}`,
-  newProduct: '/produtos/novo',
   connections: '/conexoes',
   settings: '/configuracoes',
   designSystem: '/configuracoes/design-system',

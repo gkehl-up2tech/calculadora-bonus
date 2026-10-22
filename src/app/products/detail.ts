@@ -84,6 +84,9 @@ const USERS = ['Marina Costa', 'Rafael Lima', 'Importação do catálogo']
 
 const round2 = (n: number) => Math.round(n * 100) / 100
 
+/** Todos os campos do esquema vazios (booleanos falsos, listas vazias, números nulos). */
+export const emptyValues = (): Values => Object.fromEntries(FIELDS.map((f) => [f.id, blankValue(f)]))
+
 function blankValue(f: FieldDef) {
   if (f.kind === 'boolean') return false
   if (f.kind === 'tags' || f.kind === 'lines') return [] as string[]
@@ -237,6 +240,55 @@ export function saveProductValues(product: Product, input: Values, user: AppUser
   version++
   listeners.forEach((l) => l())
   return changes.length
+}
+
+/** Próximo SKU livre no padrão UP-0000 (maior número existente + 1). */
+export function suggestSku(): string {
+  const max = PRODUCTS.reduce((m, p) => Math.max(m, Number(/^UP-(\d+)$/.exec(p.sku)?.[1] ?? 0)), 0)
+  return `UP-${max + 1}`
+}
+
+/**
+ * Cadastra um produto novo, sempre como RASCUNHO, e o coloca no topo do catálogo. O responsável é quem cria
+ * (só o Master escolhe outro). As pendências saem do esquema, como nos demais produtos.
+ */
+export function createProduct(input: Values, user: AppUser): Product {
+  if (!can(user, 'product.create')) throw new Error('Sem permissão para criar produtos.')
+  const owner = can(user, 'product.reassign') && typeof input.responsavel === 'string' && input.responsavel ? input.responsavel : user.id
+  const values: Values = { ...emptyValues(), ...input, status: 'draft', condicao: 'novo', responsavel: owner }
+  const n = PRODUCTS.reduce((m, p) => Math.max(m, Number(p.id.slice(1))), 0) + 1
+  const product: Product = {
+    id: `p${n}`,
+    sku: String(values.sku ?? '').trim(),
+    title: String(values.title ?? '').trim(),
+    department: String(values.departamento ?? ''),
+    ncm: String(values.ncm ?? ''),
+    ean: String(values.ean ?? ''),
+    photo: '',
+    status: 'draft',
+    owner,
+    pendencias: derivePendencias(values),
+  }
+  values.sku = product.sku
+  values.title = product.title
+  PRODUCTS.unshift(product)
+  edited.set(product.id, {
+    values,
+    extras: {
+      images: [],
+      variations: [],
+      kitItems: [],
+      history: [{ id: `h-${product.id}`, at: new Date().toISOString(), user: user.name, field: 'Cadastro', from: '—', to: 'Produto criado' }],
+    },
+  })
+  version++
+  listeners.forEach((l) => l())
+  return product
+}
+
+/** Muda quando o catálogo ganha ou perde produtos: use como dependência de listas e indicadores. */
+export function useCatalogVersion() {
+  return useSyncExternalStore((cb) => (listeners.add(cb), () => void listeners.delete(cb)), () => version)
 }
 
 export function useProductDetail(product: Product | undefined): ProductDetail | undefined {

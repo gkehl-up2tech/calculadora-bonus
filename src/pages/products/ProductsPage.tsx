@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from 'react-router'
 import type { ColumnDef } from '@tanstack/react-table'
 import { DataTable, PageHeader, SearchField, Select, Text, Thumbnail } from '@/design-system'
 import { useSession } from '@/app/access/session'
+import { useCatalogVersion } from '@/app/products/detail'
 import { OWNERS, userName } from '@/app/access/users'
 import { routes } from '@/app/navigation'
 import { filterProducts } from '@/app/products/search'
@@ -24,6 +25,7 @@ export function ProductsPage() {
   const [department, setDepartment] = useState(ALL)
   const [owner, setOwner] = useState(ALL)
   const user = useSession()
+  const catalog = useCatalogVersion()
 
   // Memoizado: a tabela volta à página 1 quando `data` muda de referência.
   const data = useMemo(
@@ -31,7 +33,8 @@ export function ProductsPage() {
       filterProducts(PRODUCTS, search).filter(
         (p) => (department === ALL || p.department === department) && (owner === ALL || p.owner === (owner === MINE ? user.id : owner)),
       ),
-    [search, department, owner, user.id],
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `catalog` muda quando um produto é criado
+    [search, department, owner, user.id, catalog],
   )
 
   const columns = useMemo<ColumnDef<Product, any>[]>( // eslint-disable-line @typescript-eslint/no-explicit-any

@@ -4,6 +4,7 @@ import {
   BarList, Card, CardContent, CardDescription, CardHeader, CardTitle, DistributionBar, ProgressField, StatCard, Text,
 } from '@/design-system'
 import { computeDashboardMetrics } from '@/app/dashboard/metrics'
+import { useCatalogVersion } from '@/app/products/detail'
 import { PRODUCTS } from '@/app/products/sample-products'
 import { formatNumber } from '@/lib/format'
 
@@ -18,7 +19,9 @@ const pct = (part: number, total: number) => (total > 0 ? Math.round((part / tot
 
 /** Indicadores do catálogo de produtos. Os dados são de exemplo (temporários) até existir a fonte real. */
 export function ProductsDashboard() {
-  const m = useMemo(() => computeDashboardMetrics(PRODUCTS), [])
+  const catalog = useCatalogVersion()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- `catalog` muda quando um produto é criado ou editado
+  const m = useMemo(() => computeDashboardMetrics(PRODUCTS), [catalog])
 
   return (
     <div className="grid gap-4">

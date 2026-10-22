@@ -13,7 +13,7 @@ Não há menu lateral. A navegação principal é um **toggle** (Início | Produ
 | Início | `/` | Toggle de navegação (com o botão **Novo produto** à direita, na mesma linha) e dashboard de indicadores |
 | Produtos | `/produtos` | Toggle de navegação. Tabela do catálogo: foto, SKU, título, NCM, EAN e departamento; clicar numa linha abre o produto |
 | Página do produto | `/produtos/:produtoId` | **Somente** pela lista de produtos ou pela busca global (Ctrl/⌘ + K). Sem item de menu. Abas: Principal, Fiscal, Operacional (só Logística), Marketing, Imagens, Especificações, Variações e kits, Histórico (`?aba=`). Botão **Editar produto**. Mapa completo dos campos em [`docs/produto-mapa-de-informacoes.md`](docs/produto-mapa-de-informacoes.md) |
-| Novo produto | `/produtos/novo` | Botão *Novo produto* da linha do toggle, em Início e Produtos (mesma página do produto, em modo de criação). Em branco |
+| Novo produto | (modal) | Botão *Novo produto* da linha do toggle, em Início e Produtos, ou pela busca (Ctrl/⌘ + K). Cadastro rápido: cria um rascunho e abre a página do produto para completar |
 | Conexões | `/conexoes` | **Somente** pelo menu do usuário (ícone de perfil) |
 | Configurações | `/configuracoes` (abas: Geral, Design System) | **Somente** pelo menu do usuário |
 

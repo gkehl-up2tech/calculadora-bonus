@@ -13,13 +13,13 @@ Três perfis. As regras ficam em `src/app/access/permissions.ts` (uma função `
 
 ## Responsável
 
-Todo produto tem um **Responsável** (gerente de produto ou Master), campo obrigatório da aba Principal. É ele quem edita o produto.
+Todo produto tem um **Responsável** (gerente de produto ou Master), campo obrigatório da aba Principal. É ele quem edita o produto. Quem cria o produto vira o responsável; só o Master escolhe outro no cadastro.
 Aparece na faixa-resumo da página do produto e como coluna (e filtro "Meus produtos") na lista. Só o Master altera.
 
 ## Como a interface reage
 
 - Sem permissão de edição: o botão **Editar produto** some, a página mostra o selo "Somente leitura" e o motivo.
-- Sem permissão de criar: o botão **Novo produto** some e `/produtos/novo` mostra "Você não tem acesso a esta página".
+- Sem permissão de criar: o botão **Novo produto** some (e a opção da busca global também).
 - Conexões e Configurações: somem do menu do usuário e da busca global; abrir o endereço mostra o mesmo aviso.
 
 ## Demonstração (provisório)

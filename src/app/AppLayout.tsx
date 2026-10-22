@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router'
-import { Home, Monitor, Moon, Package, Palette, Plug, Settings, Sun } from 'lucide-react'
+import { Home, Monitor, Moon, Package, Palette, Plug, Plus, Settings, Sun } from 'lucide-react'
 import {
   AppShell, Button, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, Logo,
   toast, type CommandGroup, type CommandItem,
@@ -9,6 +9,7 @@ import { setThemePreference } from '@/lib/theme'
 import { can } from './access/permissions'
 import { setSession, useSession } from './access/session'
 import { ROLE_LABEL, USERS } from './access/users'
+import { NewProductDialog } from '@/pages/products/NewProductDialog'
 import { searchProducts } from './products/search'
 import { mainNav, routes, userMenuItems } from './navigation'
 
@@ -23,6 +24,7 @@ export function AppLayout() {
   const { pathname } = useLocation()
   const user = useSession()
   const [query, setQuery] = useState('')
+  const [newOpen, setNewOpen] = useState(false)
 
   const groups = useMemo<CommandGroup[]>(() => {
     const q = normalize(query.trim())
@@ -32,6 +34,7 @@ export function AppLayout() {
     const pages = match([
       { id: 'go-home', label: 'Início', icon: Home, onSelect: () => navigate(routes.home) },
       { id: 'go-products', label: 'Produtos', icon: Package, keywords: ['catálogo', 'lista', 'todos os produtos'], onSelect: () => navigate(routes.products) },
+      ...(can(user, 'product.create') ? [{ id: 'new-product', label: 'Novo produto', icon: Plus, keywords: ['cadastrar', 'criar', 'adicionar'], onSelect: () => setNewOpen(true) }] : []),
       ...(can(user, 'connections.view') ? [{ id: 'go-connections', label: 'Conexões', icon: Plug, keywords: ['integrações'], onSelect: () => navigate(routes.connections) }] : []),
       ...(can(user, 'settings.view')
         ? [
@@ -71,7 +74,7 @@ export function AppLayout() {
       // "Novo produto" fica na linha do toggle, só em Início e Produtos.
       navActions={
         can(user, 'product.create') && (pathname === routes.home || pathname === routes.products) ? (
-          <Button onClick={() => navigate(routes.newProduct)}>Novo produto</Button>
+          <Button onClick={() => setNewOpen(true)}>Novo produto</Button>
         ) : undefined
       }
       user={{ name: user.name, email: user.email, role: ROLE_LABEL[user.role] }}
@@ -119,6 +122,7 @@ export function AppLayout() {
       }
     >
       <Outlet />
+      <NewProductDialog open={newOpen} onOpenChange={setNewOpen} />
     </AppShell>
   )
 }

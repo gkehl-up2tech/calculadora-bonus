@@ -21,18 +21,12 @@ import { tabOfField, validate } from './product/validate'
 /**
  * Página do produto — /produtos/:produtoId. Sem item de menu: o acesso é pela lista "Produtos" ou pela busca global.
  * Todas as informações vêm do esquema (src/app/products/schema.ts): trocar um campo de aba é mudar uma linha lá.
- * /produtos/novo (cadastro) segue em branco até a próxima etapa.
+ * O cadastro de produto novo é o modal NewProductDialog (botão "Novo produto"), não uma rota.
  */
-export function ProductPage({ isNew = false }: { isNew?: boolean }) {
+export function ProductPage() {
   const { produtoId } = useParams()
-  if (isNew) return <NewProduct />
   const product = findProduct(produtoId)
   return product ? <ProductDetailPage key={product.id} product={product} /> : <NotFound />
-}
-
-function NewProduct() {
-  usePageTitle('Novo produto')
-  return <h1 className="sr-only">Novo produto</h1>
 }
 
 function NotFound() {

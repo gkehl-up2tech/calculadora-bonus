@@ -247,6 +247,12 @@ export const FIELDS: FieldDef[] = [
   { id: 'certificacoes', section: 'conformidade', label: 'Outras certificações', kind: 'tags', wide: true, hint: 'Separe por vírgula.' },
 ]
 
+/**
+ * O que um RASCUNHO precisa para ser salvo. Os demais campos obrigatórios só passam a bloquear quando o produto
+ * deixa de ser rascunho (ativar ou inativar): assim dá para cadastrar aos poucos sem perder o que já foi digitado.
+ */
+export const DRAFT_REQUIRED = ['sku', 'title', 'status', 'tipo', 'departamento', 'unidade', 'responsavel']
+
 // ───────────────────────── Cálculos
 
 const num = (v: FieldValue | undefined) => (typeof v === 'number' ? v : null)

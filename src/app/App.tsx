@@ -17,8 +17,7 @@ const routes: RouteObject[] = [
     children: [
       { index: true, element: <HomePage /> },
       { path: 'produtos', element: <ProductsPage /> },
-      // Sem item de menu: só pela lista de produtos, pela busca global ou pelo botão "Novo produto" do Início.
-      { path: 'produtos/novo', element: <RequireAccess action="product.create"><ProductPage isNew /></RequireAccess> },
+      // Sem item de menu: só pela lista de produtos, pela busca global ou ao criar um produto.
       { path: 'produtos/:produtoId', element: <ProductPage /> },
       { path: 'conexoes', element: <RequireAccess action="connections.view"><ConnectionsPage /></RequireAccess> },
       {

@@ -31,14 +31,15 @@ export function DialogContent({ title, description, size = 'md', footer, hideClo
           // Sem descrição, informamos explicitamente para o Radix não emitir aviso de acessibilidade.
           {...(description ? {} : { 'aria-describedby': undefined })}
           className={cn(
-            'relative w-full origin-center rounded-xl bg-raised text-fg shadow-popover outline-none',
+            // Nunca passa da altura da tela: o corpo rola e título e rodapé ficam sempre visíveis.
+            'relative flex max-h-[calc(100dvh-2rem)] w-full origin-center flex-col rounded-xl bg-raised text-fg shadow-popover outline-none',
             'data-[state=closed]:animate-pop-out data-[state=open]:animate-pop-in',
             sizes[size],
             className,
           )}
           {...props}
         >
-          <div className="flex items-start justify-between gap-4 p-5 pb-0">
+          <div className="flex shrink-0 items-start justify-between gap-4 p-5 pb-0">
             <div className="grid gap-1">
               <DialogPrimitive.Title asChild><Heading level={2} size="lg">{title}</Heading></DialogPrimitive.Title>
               {description ? <DialogPrimitive.Description asChild><Text tone="muted">{description}</Text></DialogPrimitive.Description> : null}
@@ -49,8 +50,8 @@ export function DialogContent({ title, description, size = 'md', footer, hideClo
               </DialogPrimitive.Close>
             )}
           </div>
-          {children ? <div className="p-5">{children}</div> : <div className="h-5" />}
-          {footer ? <div className="flex flex-col-reverse gap-2 border-t border-line-subtle px-5 py-3 sm:flex-row sm:justify-end">{footer}</div> : null}
+          {children ? <div className="relative min-h-0 flex-1 overflow-y-auto p-5">{children}</div> : <div className="h-5" />}
+          {footer ? <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-line-subtle px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:flex-row sm:justify-end">{footer}</div> : null}
         </DialogPrimitive.Content>
       </DialogPrimitive.Overlay>
     </DialogPrimitive.Portal>
